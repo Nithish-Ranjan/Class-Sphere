@@ -56,6 +56,7 @@ interface AuthContextType {
     email_or_id: string,
     password: string,
     remember_me?: boolean,
+    institution_code?: string,
     selected_role?: string
   ) => Promise<User>;
   loginAsDemoPersona: (personaKey: 'student' | 'faculty' | 'hod') => void;
@@ -111,13 +112,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     email_or_id: string,
     password: string,
     remember_me = false,
+    institution_code = 'INST-DEMO',
     selected_role?: string
   ): Promise<User> => {
     const data = await authApi.login(
       email_or_id,
       password,
       remember_me,
-      'INST-DEMO',
+      institution_code,
       selected_role
     );
     storeAuthData(data.access_token, data.refresh_token, data.user, remember_me);

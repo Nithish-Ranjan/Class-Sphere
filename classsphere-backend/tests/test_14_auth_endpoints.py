@@ -5,7 +5,10 @@ RS256 token rotation, and safe identity disclosure.
 """
 from datetime import timedelta
 import pytest
+from sqlalchemy import text
 from app.core.security import create_refresh_token
+from app.core.database import AsyncSessionLocal
+from app.services.auth_service import auth_service
 
 @pytest.mark.asyncio
 async def test_successful_login(async_client, test_tenant):
@@ -243,5 +246,105 @@ async def test_login_response_enriched_profile_serialization(async_client, test_
     assert user["is_active"] is True
     assert user["is_phone_verified"] is False
     assert user["is_demo"] is False
+
+@pytest.mark.asyncio
+async def test_login_unknown_institution_code_rejected(async_client, test_tenant):
+    """POST /api/v1/auth/login with unknown institution_code returns 401 TENANT_NOT_FOUND."""
+    payload = {
+        "email_or_id": test_tenant["faculty_email"],
+        "password": test_tenant["test_password"],
+        "institution_code": "INST-UNKNOWN-999",
+    }
+    response = await async_client.post("/api/v1/auth/login", json=payload)
+    assert response.status_code == 401
+    assert response.json()["error"]["code"] == "TENANT_NOT_FOUND"
+
+@pytest.mark.asyncio
+async def test_login_valid_registered_non_demo_institution(async_client, test_tenant):
+    """POST /api/v1/auth/login with registered non-demo institution_code resolves and succeeds."""
+    auth_service.register_tenant_code("INST-TEST", test_tenant["institution_id"])
+    payload = {
+        "email_or_id": test_tenant["faculty_email"],
+        "password": test_tenant["test_password"],
+        "institution_code": "INST-TEST",
+    }
+    response = await async_client.post("/api/v1/auth/login", json=payload)
+    assert response.status_code == 200
+    assert response.json()["user"]["institution_id"] == str(test_tenant["institution_id"])
+
+@pytest.mark.asyncio
+async def test_login_candidate_lookup_under_faculty_least_privilege(async_client, test_tenant):
+    """Verifies student roll number candidate lookup succeeds under the synthetic FACULTY least-privilege context."""
+    auth_service.register_tenant_code("INST-TEST", test_tenant["institution_id"])
+    payload = {
+        "email_or_id": "TS-01",
+        "password": test_tenant["test_password"],
+        "institution_code": "INST-TEST",
+    }
+    response = await async_client.post("/api/v1/auth/login", json=payload)
+    assert response.status_code == 200
+    assert response.json()["user"]["institutional_id"] in ("TS-01", "ENR-TS-01")
+    assert response.json()["user"]["role"] == "STUDENT"
+
+@pytest.mark.asyncio
+async def test_login_multirole_requires_selection_and_returns_roles(async_client, test_tenant, migrator_conn):
+    """Users with multiple database roles receive 401 ROLE_SELECTION_REQUIRED with assigned roles list in details."""
+    try:
+        with migrator_conn.cursor() as cur:
+            cur.execute(
+                "INSERT INTO user_roles (user_id, role) VALUES (%s, 'HOD') ON CONFLICT DO NOTHING;",
+                (test_tenant["faculty_user_id"],),
+            )
+        auth_service.register_tenant_code("INST-TEST", test_tenant["institution_id"])
+
+        # 1. Login without selected_role
+        payload = {
+            "email_or_id": test_tenant["faculty_email"],
+            "password": test_tenant["test_password"],
+            "institution_code": "INST-TEST",
+        }
+        response = await async_client.post("/api/v1/auth/login", json=payload)
+        assert response.status_code == 401
+        err = response.json()["error"]
+        assert err["code"] == "ROLE_SELECTION_REQUIRED"
+        assert "FACULTY" in err["details"]
+        assert "HOD" in err["details"]
+
+        # 2. Login with authorized selected_role
+        payload["selected_role"] = "HOD"
+        resp_hod = await async_client.post("/api/v1/auth/login", json=payload)
+        assert resp_hod.status_code == 200
+        assert resp_hod.json()["user"]["role"] == "HOD"
+
+        # 3. Login with unauthorized selected_role
+        payload["selected_role"] = "ADMIN"
+        resp_unauth = await async_client.post("/api/v1/auth/login", json=payload)
+        assert resp_unauth.status_code == 401
+        assert resp_unauth.json()["error"]["code"] == "ROLE_NOT_AUTHORIZED"
+    finally:
+        with migrator_conn.cursor() as cur:
+            cur.execute(
+                "DELETE FROM user_roles WHERE user_id = %s AND role = 'HOD';",
+                (test_tenant["faculty_user_id"],),
+            )
+
+@pytest.mark.asyncio
+async def test_login_transaction_context_cleanup(async_client, test_tenant):
+    """Verifies that after login, session context variables are cleanly cleared and do not leak."""
+    auth_service.register_tenant_code("INST-TEST", test_tenant["institution_id"])
+    payload = {
+        "email_or_id": test_tenant["student_email"],
+        "password": test_tenant["test_password"],
+        "institution_code": "INST-TEST",
+    }
+    response = await async_client.post("/api/v1/auth/login", json=payload)
+    assert response.status_code == 200
+
+    # Probe fresh session
+    async with AsyncSessionLocal() as session:
+        role_res = await session.execute(text("SELECT current_setting('app.current_user_role', true);"))
+        dept_res = await session.execute(text("SELECT current_setting('app.current_department_id', true);"))
+        assert role_res.scalar() in (None, "")
+        assert dept_res.scalar() in (None, "")
 
 

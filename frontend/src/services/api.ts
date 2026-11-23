@@ -157,7 +157,7 @@ export const authApi = {
       email_or_id,
       password,
       remember_me,
-      institution_code,
+      institution_code: institution_code?.trim() || 'INST-DEMO',
       selected_role,
     };
     const res = await api.post<AuthResponse>('/auth/login', payload);

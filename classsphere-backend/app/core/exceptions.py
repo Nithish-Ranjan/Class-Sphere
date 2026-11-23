@@ -25,11 +25,17 @@ class AppException(Exception):
         self.details = details or []
 
 class AuthenticationError(AppException):
-    def __init__(self, message: str = "Invalid credentials", code: str = "AUTHENTICATION_FAILED"):
+    def __init__(
+        self,
+        message: str = "Invalid credentials",
+        code: str = "AUTHENTICATION_FAILED",
+        details: Optional[List[Any]] = None,
+    ):
         super().__init__(
             message=message,
             code=code,
             status_code=status.HTTP_401_UNAUTHORIZED,
+            details=details,
         )
 
 class PermissionDeniedError(AppException):

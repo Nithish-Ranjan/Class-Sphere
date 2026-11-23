@@ -6,6 +6,7 @@ combined identifier lookup, and RS256 token issuance.
 from typing import List, Optional
 from uuid import UUID
 from sqlalchemy import select, or_, func, text
+from app.core.config import settings
 from app.core.database import AsyncSessionLocal, set_tenant_context
 from app.core.security import verify_password, create_access_token, create_refresh_token, decode_token
 from app.core.exceptions import AuthenticationError
@@ -16,11 +17,29 @@ from app.schemas.auth import TokenResponse, UserProfileResponse
 
 # Canonical demo tenant ID for INST-DEMO mapping
 DEMO_INSTITUTION_ID = UUID("c0a80123-0000-0000-0000-000000000001")
+DEV_INSTITUTION_ID = UUID("d0000000-0000-0000-0000-000000000001")
 DUMMY_HASH = "$argon2id$v=19$m=65536,t=3,p=4$dummyhashforseededdemo"
 
 
 class AuthService:
     """Authentication and identity lifecycle management."""
+
+    # Dynamic tenant registry (avoids cross-tenant scans and maintains RLS compliance)
+    _tenant_registry = {
+        "INST-DEMO": DEMO_INSTITUTION_ID,
+    }
+    if settings.ENVIRONMENT in ("development", "test"):
+        _tenant_registry["INST-DEV"] = DEV_INSTITUTION_ID
+
+    @classmethod
+    def register_tenant_code(cls, code: str, institution_id: UUID) -> None:
+        """Registers or updates a tenant code mapping in the application registry."""
+        cls._tenant_registry[code.strip().upper()] = institution_id
+
+    @classmethod
+    def get_registered_tenant_id(cls, code: str) -> Optional[UUID]:
+        """Resolves an institution code to its registered UUID."""
+        return cls._tenant_registry.get(code.strip().upper())
 
     @staticmethod
     async def build_user_profile(
@@ -140,8 +159,12 @@ class AuthService:
         target_inst_id = institution_id
         if not target_inst_id and institution_code:
             code_upper = institution_code.strip().upper()
-            if code_upper == "INST-DEMO":
-                target_inst_id = DEMO_INSTITUTION_ID
+            target_inst_id = cls.get_registered_tenant_id(code_upper)
+            if not target_inst_id:
+                raise AuthenticationError(
+                    message=f"Institutional tenant with code '{code_upper}' is not recognized or not found.",
+                    code="TENANT_NOT_FOUND",
+                )
 
         if not target_inst_id:
             raise AuthenticationError(
@@ -192,7 +215,7 @@ class AuthService:
                         {"dept_id": str(dept_id)},
                     )
                     await session.execute(
-                        text("SELECT set_config('app.current_user_role', 'ADMIN', true)")
+                        text("SELECT set_config('app.current_user_role', 'FACULTY', true)")
                     )
 
                     # 3B. Student Profiles (roll_number and enrollment_number)
@@ -272,6 +295,7 @@ class AuthService:
                         raise AuthenticationError(
                             "User possesses multiple assigned roles. Explicit 'selected_role' is required.",
                             code="ROLE_SELECTION_REQUIRED",
+                            details=db_roles,
                         )
 
                 # Step 7: Assemble Enriched Safe Profile

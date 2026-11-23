@@ -16,6 +16,7 @@ import {
   Building,
 } from 'lucide-react';
 import { useAuth, DEMO_PERSONAS } from '../../context/AuthContext';
+import { Role } from '../../types';
 import { Button } from '../../components/ui/Button';
 import { Input } from '../../components/ui/Input';
 import { SurfacePanel } from '../../components/ui/SurfacePanel';
@@ -30,10 +31,13 @@ export const LoginPage: React.FC = () => {
 
   const [identifier, setIdentifier] = useState('');
   const [password, setPassword] = useState('');
+  const [institutionCode, setInstitutionCode] = useState('INST-DEMO');
   const [rememberMe, setRememberMe] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [availableRoles, setAvailableRoles] = useState<Role[] | null>(null);
+  const [selectedRole, setSelectedRole] = useState<Role | null>(null);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -41,25 +45,52 @@ export const LoginPage: React.FC = () => {
       setErrorMessage('Please enter both your institutional identifier and password.');
       return;
     }
+    if (!institutionCode.trim()) {
+      setErrorMessage('Please specify an institution code (e.g. INST-DEMO).');
+      return;
+    }
+
+    if (availableRoles && availableRoles.length > 1 && !selectedRole) {
+      setErrorMessage('Please select one of your authorized roles to continue.');
+      return;
+    }
 
     setIsLoading(true);
     setErrorMessage(null);
 
     try {
-      const user = await loginWithCredentials(identifier.trim(), password, rememberMe);
+      const user = await loginWithCredentials(
+        identifier.trim(),
+        password,
+        rememberMe,
+        institutionCode.trim(),
+        selectedRole || undefined
+      );
       if (user.role === 'STUDENT') navigate('/student/overview');
       else if (user.role === 'FACULTY') navigate('/faculty/overview');
       else if (user.role === 'HOD') navigate('/hod/overview');
       else navigate('/student/overview');
     } catch (err: any) {
-      const serverMessage =
-        err.response?.data?.error?.message ||
-        err.response?.data?.detail ||
-        (typeof err.response?.data?.error === 'string' ? err.response?.data?.error : null);
-      setErrorMessage(
-        serverMessage ||
-          'Upstream authentication service is not connected. For local preview, please use the Institutional Sandbox Personas below.'
-      );
+      const errCode = err.response?.data?.error?.code;
+      const errDetails = err.response?.data?.error?.details;
+
+      if (errCode === 'ROLE_SELECTION_REQUIRED') {
+        const roles: Role[] = Array.isArray(errDetails) && errDetails.length > 0
+          ? errDetails
+          : ['STUDENT', 'FACULTY'];
+        setAvailableRoles(roles);
+        setSelectedRole(roles[0]);
+        setErrorMessage(null);
+      } else {
+        const serverMessage =
+          err.response?.data?.error?.message ||
+          err.response?.data?.detail ||
+          (typeof err.response?.data?.error === 'string' ? err.response?.data?.error : null);
+        setErrorMessage(
+          serverMessage ||
+            'Upstream authentication service is not connected. For local preview, please use the Institutional Sandbox Personas below.'
+        );
+      }
     } finally {
       setIsLoading(false);
     }
@@ -195,11 +226,27 @@ export const LoginPage: React.FC = () => {
             {/* Standard Credentials Form */}
             <form onSubmit={handleSubmit} className="space-y-4">
               <Input
+                label="Institution Code"
+                type="text"
+                placeholder="e.g. INST-DEMO"
+                value={institutionCode}
+                onChange={(e) => {
+                  setInstitutionCode(e.target.value);
+                  setAvailableRoles(null);
+                }}
+                leftIcon={<Building className="w-4 h-4" />}
+                required
+              />
+
+              <Input
                 label="Institutional ID or Email"
                 type="text"
-                placeholder="e.g. STU-2026-0842 or user@institution.edu"
+                placeholder="e.g. 24CS-A01, FAC-001, or user@institution.edu"
                 value={identifier}
-                onChange={(e) => setIdentifier(e.target.value)}
+                onChange={(e) => {
+                  setIdentifier(e.target.value);
+                  setAvailableRoles(null);
+                }}
                 leftIcon={<Mail className="w-4 h-4" />}
                 required
               />
@@ -223,6 +270,42 @@ export const LoginPage: React.FC = () => {
                 }
                 required
               />
+
+              {availableRoles && availableRoles.length > 1 && (
+                <div className="p-3.5 rounded-xl bg-teal/10 border border-teal/20 space-y-2.5 animate-in fade-in duration-200">
+                  <div className="flex items-center justify-between">
+                    <span className="text-xs font-semibold text-text-primary flex items-center gap-1.5">
+                      <GraduationCap className="w-4 h-4 text-teal" />
+                      Multiple Roles Assigned
+                    </span>
+                    <span className="text-[10px] font-mono text-teal bg-teal/10 px-2 py-0.5 rounded border border-teal/20">
+                      Select Active Role
+                    </span>
+                  </div>
+                  <p className="text-[11px] text-text-muted leading-normal">
+                    This account possesses multiple roles in the database. Select your active session role:
+                  </p>
+                  <div className="grid grid-cols-2 gap-2 pt-0.5">
+                    {availableRoles.map((r) => (
+                      <button
+                        key={r}
+                        type="button"
+                        onClick={() => setSelectedRole(r)}
+                        className={`p-2 rounded-lg text-left border transition-all ${
+                          selectedRole === r
+                            ? 'bg-teal/20 border-teal text-text-primary ring-1 ring-teal/30'
+                            : 'bg-surface-raised border-glass-border text-text-secondary hover:text-text-primary'
+                        }`}
+                      >
+                        <div className="text-xs font-semibold">{r}</div>
+                        <div className="text-[10px] text-text-muted">
+                          {r === 'STUDENT' ? 'Student Portal' : r === 'FACULTY' ? 'Faculty Portal' : r === 'HOD' ? 'Department Head' : 'Administrator'}
+                        </div>
+                      </button>
+                    ))}
+                  </div>
+                </div>
+              )}
 
               <div className="flex items-center justify-between text-xs pt-1">
                 <label className="flex items-center gap-2 cursor-pointer text-text-secondary hover:text-text-primary select-none">
@@ -255,7 +338,7 @@ export const LoginPage: React.FC = () => {
                 isLoading={isLoading}
                 rightIcon={<ArrowRight className="w-4 h-4" />}
               >
-                Authenticate Session
+                {availableRoles && selectedRole ? `Authenticate as ${selectedRole}` : 'Authenticate Session'}
               </Button>
             </form>
 
