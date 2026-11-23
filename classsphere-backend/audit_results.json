@@ -1,0 +1,782 @@
+{
+  "version": "PostgreSQL 16.16, compiled by Visual C++ build 1944, 64-bit",
+  "server_version": "16.16",
+  "extensions": [
+    {
+      "extname": "btree_gist",
+      "extversion": "1.7"
+    },
+    {
+      "extname": "pgcrypto",
+      "extversion": "1.3"
+    },
+    {
+      "extname": "plpgsql",
+      "extversion": "1.0"
+    },
+    {
+      "extname": "uuid-ossp",
+      "extversion": "1.1"
+    }
+  ],
+  "roles": [
+    {
+      "rolname": "classsphere_app",
+      "rolsuper": false,
+      "rolinherit": false,
+      "rolcreaterole": false,
+      "rolcreatedb": false,
+      "rolcanlogin": true,
+      "rolbypassrls": false
+    },
+    {
+      "rolname": "classsphere_migrator",
+      "rolsuper": true,
+      "rolinherit": true,
+      "rolcreaterole": false,
+      "rolcreatedb": false,
+      "rolcanlogin": true,
+      "rolbypassrls": true
+    },
+    {
+      "rolname": "postgres",
+      "rolsuper": true,
+      "rolinherit": true,
+      "rolcreaterole": true,
+      "rolcreatedb": true,
+      "rolcanlogin": true,
+      "rolbypassrls": true
+    }
+  ],
+  "tables_audit": [
+    {
+      "table_name": "institutions",
+      "exists": true,
+      "owner": "classsphere_migrator",
+      "rls_enabled": true,
+      "force_rls": true,
+      "row_count": 2,
+      "app_privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": true
+      }
+    },
+    {
+      "table_name": "departments",
+      "exists": true,
+      "owner": "classsphere_migrator",
+      "rls_enabled": true,
+      "force_rls": true,
+      "row_count": 3,
+      "app_privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": true
+      }
+    },
+    {
+      "table_name": "users",
+      "exists": true,
+      "owner": "classsphere_migrator",
+      "rls_enabled": true,
+      "force_rls": true,
+      "row_count": 99,
+      "app_privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": true
+      }
+    },
+    {
+      "table_name": "user_roles",
+      "exists": true,
+      "owner": "classsphere_migrator",
+      "rls_enabled": true,
+      "force_rls": true,
+      "row_count": 99,
+      "app_privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": true
+      }
+    },
+    {
+      "table_name": "academic_batches",
+      "exists": true,
+      "owner": "classsphere_migrator",
+      "rls_enabled": true,
+      "force_rls": true,
+      "row_count": 1,
+      "app_privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": true
+      }
+    },
+    {
+      "table_name": "sections",
+      "exists": true,
+      "owner": "classsphere_migrator",
+      "rls_enabled": true,
+      "force_rls": true,
+      "row_count": 2,
+      "app_privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": true
+      }
+    },
+    {
+      "table_name": "student_profiles",
+      "exists": true,
+      "owner": "classsphere_migrator",
+      "rls_enabled": true,
+      "force_rls": true,
+      "row_count": 93,
+      "app_privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": true
+      }
+    },
+    {
+      "table_name": "faculty_profiles",
+      "exists": true,
+      "owner": "classsphere_migrator",
+      "rls_enabled": true,
+      "force_rls": true,
+      "row_count": 5,
+      "app_privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": true
+      }
+    },
+    {
+      "table_name": "classrooms",
+      "exists": true,
+      "owner": "classsphere_migrator",
+      "rls_enabled": true,
+      "force_rls": true,
+      "row_count": 6,
+      "app_privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": true
+      }
+    },
+    {
+      "table_name": "subjects",
+      "exists": true,
+      "owner": "classsphere_migrator",
+      "rls_enabled": true,
+      "force_rls": true,
+      "row_count": 5,
+      "app_privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": true
+      }
+    },
+    {
+      "table_name": "faculty_subject_allocations",
+      "exists": true,
+      "owner": "classsphere_migrator",
+      "rls_enabled": true,
+      "force_rls": true,
+      "row_count": 0,
+      "app_privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": true
+      }
+    },
+    {
+      "table_name": "timetable_versions",
+      "exists": true,
+      "owner": "classsphere_migrator",
+      "rls_enabled": true,
+      "force_rls": true,
+      "row_count": 1,
+      "app_privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": true
+      }
+    },
+    {
+      "table_name": "timetable_slots",
+      "exists": true,
+      "owner": "classsphere_migrator",
+      "rls_enabled": true,
+      "force_rls": true,
+      "row_count": 15,
+      "app_privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": true
+      }
+    },
+    {
+      "table_name": "class_sessions",
+      "exists": true,
+      "owner": "classsphere_migrator",
+      "rls_enabled": true,
+      "force_rls": true,
+      "row_count": 6,
+      "app_privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": true
+      }
+    },
+    {
+      "table_name": "attendance_sessions",
+      "exists": true,
+      "owner": "classsphere_migrator",
+      "rls_enabled": true,
+      "force_rls": true,
+      "row_count": 6,
+      "app_privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": true
+      }
+    },
+    {
+      "table_name": "attendance_records",
+      "exists": true,
+      "owner": "classsphere_migrator",
+      "rls_enabled": true,
+      "force_rls": true,
+      "row_count": 276,
+      "app_privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": true
+      }
+    },
+    {
+      "table_name": "attendance_verification_audits",
+      "exists": true,
+      "owner": "classsphere_migrator",
+      "rls_enabled": true,
+      "force_rls": true,
+      "row_count": 0,
+      "app_privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": false,
+        "DELETE": false
+      }
+    },
+    {
+      "table_name": "attendance_disputes",
+      "exists": true,
+      "owner": "classsphere_migrator",
+      "rls_enabled": true,
+      "force_rls": true,
+      "row_count": 1,
+      "app_privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": true
+      }
+    },
+    {
+      "table_name": "activity_events",
+      "exists": true,
+      "owner": "classsphere_migrator",
+      "rls_enabled": true,
+      "force_rls": true,
+      "row_count": 41,
+      "app_privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": false,
+        "DELETE": false
+      }
+    },
+    {
+      "table_name": "alerts",
+      "exists": true,
+      "owner": "classsphere_migrator",
+      "rls_enabled": true,
+      "force_rls": true,
+      "row_count": 1,
+      "app_privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": true
+      }
+    },
+    {
+      "table_name": "alert_transition_history",
+      "exists": true,
+      "owner": "classsphere_migrator",
+      "rls_enabled": true,
+      "force_rls": true,
+      "row_count": 1,
+      "app_privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": false,
+        "DELETE": false
+      }
+    },
+    {
+      "table_name": "sos_incidents",
+      "exists": true,
+      "owner": "classsphere_migrator",
+      "rls_enabled": true,
+      "force_rls": true,
+      "row_count": 0,
+      "app_privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": true
+      }
+    },
+    {
+      "table_name": "sos_escalation_history",
+      "exists": true,
+      "owner": "classsphere_migrator",
+      "rls_enabled": true,
+      "force_rls": true,
+      "row_count": 0,
+      "app_privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": false,
+        "DELETE": false
+      }
+    },
+    {
+      "table_name": "administrative_audit_ledger",
+      "exists": true,
+      "owner": "classsphere_migrator",
+      "rls_enabled": true,
+      "force_rls": true,
+      "row_count": 1,
+      "app_privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": false,
+        "DELETE": false
+      }
+    },
+    {
+      "table_name": "notifications",
+      "exists": true,
+      "owner": "classsphere_migrator",
+      "rls_enabled": true,
+      "force_rls": true,
+      "row_count": 0,
+      "app_privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": true
+      }
+    },
+    {
+      "table_name": "idempotency_records",
+      "exists": true,
+      "owner": "classsphere_migrator",
+      "rls_enabled": true,
+      "force_rls": true,
+      "row_count": 0,
+      "app_privileges": {
+        "SELECT": true,
+        "INSERT": true,
+        "UPDATE": true,
+        "DELETE": true
+      }
+    }
+  ],
+  "unexpected_tables": [],
+  "total_canonical_count": 26,
+  "existing_canonical_count": 26,
+  "policies": [
+    {
+      "tablename": "academic_batches",
+      "policyname": "policy_academic_batches_dept",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "classsphere_app"
+      ],
+      "cmd": "ALL",
+      "qual": "(department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid)",
+      "with_check": "(department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid)"
+    },
+    {
+      "tablename": "activity_events",
+      "policyname": "policy_activity_events_dept",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "classsphere_app"
+      ],
+      "cmd": "ALL",
+      "qual": "(department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid)",
+      "with_check": "(department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid)"
+    },
+    {
+      "tablename": "administrative_audit_ledger",
+      "policyname": "policy_administrative_audit_ledger_dept",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "classsphere_app"
+      ],
+      "cmd": "ALL",
+      "qual": "(department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid)",
+      "with_check": "(department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid)"
+    },
+    {
+      "tablename": "alert_transition_history",
+      "policyname": "policy_alert_history_dept",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "classsphere_app"
+      ],
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM alerts a\n  WHERE ((a.id = alert_transition_history.alert_id) AND (a.department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid))))",
+      "with_check": null
+    },
+    {
+      "tablename": "alerts",
+      "policyname": "policy_alerts_dept",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "classsphere_app"
+      ],
+      "cmd": "ALL",
+      "qual": "(department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid)",
+      "with_check": "(department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid)"
+    },
+    {
+      "tablename": "attendance_disputes",
+      "policyname": "policy_disputes_dept",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "classsphere_app"
+      ],
+      "cmd": "ALL",
+      "qual": "((department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid) AND ((student_id = (NULLIF(current_setting('app.current_student_profile_id'::text, true), ''::text))::uuid) OR (current_setting('app.current_user_role'::text, true) = ANY (ARRAY['FACULTY'::text, 'HOD'::text, 'ADMIN'::text]))))",
+      "with_check": "(department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid)"
+    },
+    {
+      "tablename": "attendance_records",
+      "policyname": "policy_attendance_records_dept",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "classsphere_app"
+      ],
+      "cmd": "ALL",
+      "qual": "((EXISTS ( SELECT 1\n   FROM attendance_sessions att_s\n  WHERE ((att_s.id = attendance_records.attendance_session_id) AND (att_s.department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid)))) AND ((student_id = (NULLIF(current_setting('app.current_student_profile_id'::text, true), ''::text))::uuid) OR (current_setting('app.current_user_role'::text, true) = ANY (ARRAY['FACULTY'::text, 'HOD'::text, 'ADMIN'::text]))))",
+      "with_check": "((EXISTS ( SELECT 1\n   FROM attendance_sessions att_s\n  WHERE ((att_s.id = attendance_records.attendance_session_id) AND (att_s.department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid)))) AND (current_setting('app.current_user_role'::text, true) = ANY (ARRAY['FACULTY'::text, 'HOD'::text, 'ADMIN'::text])))"
+    },
+    {
+      "tablename": "attendance_sessions",
+      "policyname": "policy_attendance_sessions_dept",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "classsphere_app"
+      ],
+      "cmd": "ALL",
+      "qual": "(department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid)",
+      "with_check": "(department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid)"
+    },
+    {
+      "tablename": "attendance_verification_audits",
+      "policyname": "policy_att_audits_dept",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "classsphere_app"
+      ],
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM (attendance_records rec\n     JOIN attendance_sessions s ON ((rec.attendance_session_id = s.id)))\n  WHERE ((rec.id = attendance_verification_audits.attendance_record_id) AND (s.department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid))))",
+      "with_check": "(EXISTS ( SELECT 1\n   FROM (attendance_records rec\n     JOIN attendance_sessions s ON ((rec.attendance_session_id = s.id)))\n  WHERE ((rec.id = attendance_verification_audits.attendance_record_id) AND (s.department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid))))"
+    },
+    {
+      "tablename": "class_sessions",
+      "policyname": "policy_class_sessions_dept",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "classsphere_app"
+      ],
+      "cmd": "ALL",
+      "qual": "(department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid)",
+      "with_check": "(department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid)"
+    },
+    {
+      "tablename": "classrooms",
+      "policyname": "policy_classrooms_dept",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "classsphere_app"
+      ],
+      "cmd": "ALL",
+      "qual": "(department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid)",
+      "with_check": "(department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid)"
+    },
+    {
+      "tablename": "departments",
+      "policyname": "policy_departments_tenant",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "classsphere_app"
+      ],
+      "cmd": "ALL",
+      "qual": "(institution_id = (NULLIF(current_setting('app.current_tenant_id'::text, true), ''::text))::uuid)",
+      "with_check": "(institution_id = (NULLIF(current_setting('app.current_tenant_id'::text, true), ''::text))::uuid)"
+    },
+    {
+      "tablename": "faculty_profiles",
+      "policyname": "policy_faculty_profiles_dept",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "classsphere_app"
+      ],
+      "cmd": "ALL",
+      "qual": "(department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid)",
+      "with_check": "(department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid)"
+    },
+    {
+      "tablename": "faculty_subject_allocations",
+      "policyname": "policy_faculty_subject_allocations_dept",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "classsphere_app"
+      ],
+      "cmd": "ALL",
+      "qual": "(department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid)",
+      "with_check": "(department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid)"
+    },
+    {
+      "tablename": "idempotency_records",
+      "policyname": "policy_idempotency_user",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "classsphere_app"
+      ],
+      "cmd": "ALL",
+      "qual": "(user_id = (NULLIF(current_setting('app.current_user_id'::text, true), ''::text))::uuid)",
+      "with_check": "(user_id = (NULLIF(current_setting('app.current_user_id'::text, true), ''::text))::uuid)"
+    },
+    {
+      "tablename": "institutions",
+      "policyname": "policy_institutions_tenant",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "classsphere_app"
+      ],
+      "cmd": "ALL",
+      "qual": "(id = (NULLIF(current_setting('app.current_tenant_id'::text, true), ''::text))::uuid)",
+      "with_check": "(id = (NULLIF(current_setting('app.current_tenant_id'::text, true), ''::text))::uuid)"
+    },
+    {
+      "tablename": "notifications",
+      "policyname": "policy_notifications_user",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "classsphere_app"
+      ],
+      "cmd": "ALL",
+      "qual": "(recipient_user_id = (NULLIF(current_setting('app.current_user_id'::text, true), ''::text))::uuid)",
+      "with_check": "(recipient_user_id = (NULLIF(current_setting('app.current_user_id'::text, true), ''::text))::uuid)"
+    },
+    {
+      "tablename": "sections",
+      "policyname": "policy_sections_dept",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "classsphere_app"
+      ],
+      "cmd": "ALL",
+      "qual": "(department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid)",
+      "with_check": "(department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid)"
+    },
+    {
+      "tablename": "sos_escalation_history",
+      "policyname": "policy_sos_history_tenant",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "classsphere_app"
+      ],
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM sos_incidents s\n  WHERE ((s.id = sos_escalation_history.sos_incident_id) AND (s.institution_id = (NULLIF(current_setting('app.current_tenant_id'::text, true), ''::text))::uuid))))",
+      "with_check": null
+    },
+    {
+      "tablename": "sos_incidents",
+      "policyname": "policy_sos_incidents_tenant",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "classsphere_app"
+      ],
+      "cmd": "ALL",
+      "qual": "(institution_id = (NULLIF(current_setting('app.current_tenant_id'::text, true), ''::text))::uuid)",
+      "with_check": "(institution_id = (NULLIF(current_setting('app.current_tenant_id'::text, true), ''::text))::uuid)"
+    },
+    {
+      "tablename": "student_profiles",
+      "policyname": "policy_student_profiles_dept",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "classsphere_app"
+      ],
+      "cmd": "ALL",
+      "qual": "((department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid) AND ((user_id = (NULLIF(current_setting('app.current_user_id'::text, true), ''::text))::uuid) OR (current_setting('app.current_user_role'::text, true) = ANY (ARRAY['FACULTY'::text, 'HOD'::text, 'ADMIN'::text]))))",
+      "with_check": "((department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid) AND (current_setting('app.current_user_role'::text, true) = ANY (ARRAY['HOD'::text, 'ADMIN'::text])))"
+    },
+    {
+      "tablename": "subjects",
+      "policyname": "policy_subjects_dept",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "classsphere_app"
+      ],
+      "cmd": "ALL",
+      "qual": "(department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid)",
+      "with_check": "(department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid)"
+    },
+    {
+      "tablename": "timetable_slots",
+      "policyname": "policy_timetable_slots_dept",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "classsphere_app"
+      ],
+      "cmd": "ALL",
+      "qual": "(department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid)",
+      "with_check": "(department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid)"
+    },
+    {
+      "tablename": "timetable_versions",
+      "policyname": "policy_timetable_versions_dept",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "classsphere_app"
+      ],
+      "cmd": "ALL",
+      "qual": "(department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid)",
+      "with_check": "(department_id = (NULLIF(current_setting('app.current_department_id'::text, true), ''::text))::uuid)"
+    },
+    {
+      "tablename": "user_roles",
+      "policyname": "policy_user_roles_tenant",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "classsphere_app"
+      ],
+      "cmd": "ALL",
+      "qual": "(EXISTS ( SELECT 1\n   FROM users u\n  WHERE ((u.id = user_roles.user_id) AND (u.institution_id = (NULLIF(current_setting('app.current_tenant_id'::text, true), ''::text))::uuid))))",
+      "with_check": null
+    },
+    {
+      "tablename": "users",
+      "policyname": "policy_users_tenant",
+      "permissive": "PERMISSIVE",
+      "roles": [
+        "classsphere_app"
+      ],
+      "cmd": "ALL",
+      "qual": "(institution_id = (NULLIF(current_setting('app.current_tenant_id'::text, true), ''::text))::uuid)",
+      "with_check": "(institution_id = (NULLIF(current_setting('app.current_tenant_id'::text, true), ''::text))::uuid)"
+    }
+  ],
+  "triggers": [
+    {
+      "table_name": "activity_events",
+      "trigger_name": "lock_event_demo_fixtures",
+      "event_manipulation": "UPDATE",
+      "action_timing": "BEFORE",
+      "action_statement": "EXECUTE FUNCTION fn_lock_demo_fixtures()"
+    },
+    {
+      "table_name": "class_sessions",
+      "trigger_name": "lock_session_demo_fixtures",
+      "event_manipulation": "UPDATE",
+      "action_timing": "BEFORE",
+      "action_statement": "EXECUTE FUNCTION fn_lock_demo_fixtures()"
+    },
+    {
+      "table_name": "users",
+      "trigger_name": "lock_user_demo_fixtures",
+      "event_manipulation": "UPDATE",
+      "action_timing": "BEFORE",
+      "action_statement": "EXECUTE FUNCTION fn_lock_demo_fixtures()"
+    }
+  ],
+  "demo_fixtures": {
+    "unique_students": 93,
+    "section_counts": {
+      "CSE-A": 47,
+      "CSE-B": 46
+    },
+    "slots_count": 15,
+    "sessions_count": 6,
+    "attendance": {
+      "total_instances": 276,
+      "present": 253,
+      "late": 13,
+      "unverified": 10,
+      "present_rate_pct": 91.7,
+      "exact_present_rate": 91.66666666666666
+    },
+    "telemetry": {
+      "total_events": 41,
+      "by_type": {
+        "OUT_OF_SEAT": 4,
+        "PHONE": 26,
+        "TALKING": 11
+      }
+    }
+  },
+  "disputes": [
+    {
+      "id": "c2a180ab-0d77-43a3-a56f-3f8d87fec4e3",
+      "status": "SUBMITTED",
+      "student_reason": "I was seated in the second row near Desk-R2-C3 and present throughout the session.",
+      "dispute_evidence_metadata": {
+        "claimed_desk": "R2-C3",
+        "device_timestamp": "2026-11-20T10:15:00Z"
+      }
+    }
+  ],
+  "ledger_blocks": [
+    {
+      "block_index": 1,
+      "previous_hash": "0000000000000000000000000000000000000000000000000000000000000000",
+      "payload_hash": "325ef3e1cc71be764d5392277de206314bd6bd96167eaacc4be701087dff91d7",
+      "ledger_hash": "f747954d4349e8f0cd2a338b5a37ed022c51651faa47d83389cb81146470ffb9",
+      "report_metadata": {
+        "term": "Fall 2026",
+        "benchmark": 91.7,
+        "instances": 276,
+        "endorsed_by": "Dr. Alan Turing"
+      }
+    }
+  ],
+  "sos_incidents": []
+}

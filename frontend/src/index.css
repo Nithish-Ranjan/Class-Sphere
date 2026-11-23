@@ -1,0 +1,84 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: dark;
+  }
+
+  html {
+    background-color: #0B1117;
+    color: #F2F6F7;
+    font-family: 'Geist', system-ui, -apple-system, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: #0B1117;
+    color: #F2F6F7;
+    min-height: 100vh;
+    margin: 0;
+    padding: 0;
+  }
+
+  /* Monospace utilities */
+  code, kbd, samp, pre, .font-mono {
+    font-family: 'Geist Mono', ui-monospace, monospace;
+    font-feature-settings: 'tnum' 1, 'calt' 0;
+  }
+
+  input, select, textarea, button {
+    font-family: inherit;
+  }
+}
+
+/* Institutional custom dark scrollbar */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: #0B1117;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #1A2933;
+  border-radius: 3px;
+  border: 1px solid rgba(207, 225, 231, 0.08);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #243644;
+}
+
+/* Accessibility: Accessible focus rings */
+.focus-ring {
+  outline: none;
+  transition: box-shadow 0.15s ease, border-color 0.15s ease;
+}
+
+.focus-ring:focus-visible {
+  outline: none;
+  border-color: #36B5A5;
+  box-shadow: 0 0 0 2px rgba(54, 181, 165, 0.35);
+}
+
+/* Fallback for browsers without backdrop-filter */
+@supports not (backdrop-filter: blur(20px)) {
+  .frosted-fallback {
+    background-color: #121D26 !important;
+  }
+}
+
+/* Respect user's reduced-motion preference */
+@media (prefers-reduced-motion: reduce) {
+  *, ::before, ::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
