@@ -133,3 +133,115 @@ async def test_get_me_unauthenticated_rejected(async_client):
     """GET /api/v1/auth/me without authorization header returns HTTP 403 / 401."""
     response = await async_client.get("/api/v1/auth/me")
     assert response.status_code in (401, 403)
+
+@pytest.mark.asyncio
+async def test_login_missing_tenant_rejected(async_client, test_tenant):
+    """POST /api/v1/auth/login without institution_id or institution_code fails closed."""
+    payload = {
+        "email_or_id": test_tenant["faculty_email"],
+        "password": test_tenant["test_password"],
+    }
+    response = await async_client.post("/api/v1/auth/login", json=payload)
+    assert response.status_code in (401, 422)
+
+@pytest.mark.asyncio
+async def test_login_via_student_roll_number(async_client, test_tenant):
+    """POST /api/v1/auth/login using student roll number resolves account and returns profile."""
+    payload = {
+        "email_or_id": "TS-01",
+        "password": test_tenant["test_password"],
+        "institution_id": str(test_tenant["institution_id"]),
+    }
+    response = await async_client.post("/api/v1/auth/login", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert "access_token" in data
+    assert "user" in data
+    user_data = data["user"]
+    assert user_data["email"] == test_tenant["student_email"]
+    assert user_data["institutional_id"] in ("TS-01", "ENR-TS-01")
+    assert user_data["role"] == "STUDENT"
+    assert user_data["is_phone_verified"] is False
+    assert user_data["is_demo"] is False
+
+@pytest.mark.asyncio
+async def test_login_via_student_enrollment_number(async_client, test_tenant):
+    """POST /api/v1/auth/login using student enrollment number resolves account."""
+    payload = {
+        "email_or_id": "ENR-TS-01",
+        "password": test_tenant["test_password"],
+        "institution_id": str(test_tenant["institution_id"]),
+    }
+    response = await async_client.post("/api/v1/auth/login", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["user"]["email"] == test_tenant["student_email"]
+
+@pytest.mark.asyncio
+async def test_login_via_faculty_employee_code(async_client, test_tenant):
+    """POST /api/v1/auth/login using faculty employee code resolves account and returns profile."""
+    payload = {
+        "email_or_id": "TF-001",
+        "password": test_tenant["test_password"],
+        "institution_id": str(test_tenant["institution_id"]),
+    }
+    response = await async_client.post("/api/v1/auth/login", json=payload)
+    assert response.status_code == 200
+    data = response.json()
+    assert data["user"]["email"] == test_tenant["faculty_email"]
+    assert data["user"]["institutional_id"] == "TF-001"
+    assert data["user"]["role"] == "FACULTY"
+
+@pytest.mark.asyncio
+async def test_login_selected_role_authorized(async_client, test_tenant):
+    """POST /api/v1/auth/login with valid selected_role succeeds."""
+    payload = {
+        "email_or_id": test_tenant["faculty_email"],
+        "password": test_tenant["test_password"],
+        "institution_id": str(test_tenant["institution_id"]),
+        "selected_role": "FACULTY",
+    }
+    response = await async_client.post("/api/v1/auth/login", json=payload)
+    assert response.status_code == 200
+    assert response.json()["user"]["role"] == "FACULTY"
+
+@pytest.mark.asyncio
+async def test_login_selected_role_unauthorized_rejected(async_client, test_tenant):
+    """POST /api/v1/auth/login with unauthorized selected_role rejects privilege escalation."""
+    payload = {
+        "email_or_id": test_tenant["faculty_email"],
+        "password": test_tenant["test_password"],
+        "institution_id": str(test_tenant["institution_id"]),
+        "selected_role": "ADMIN",
+    }
+    response = await async_client.post("/api/v1/auth/login", json=payload)
+    assert response.status_code == 401
+    assert response.json()["error"]["code"] == "ROLE_NOT_AUTHORIZED"
+
+@pytest.mark.asyncio
+async def test_login_response_enriched_profile_serialization(async_client, test_tenant):
+    """Verifies that login response contains complete enriched profile matching schema."""
+    payload = {
+        "email_or_id": test_tenant["student_email"],
+        "password": test_tenant["test_password"],
+        "institution_id": str(test_tenant["institution_id"]),
+    }
+    response = await async_client.post("/api/v1/auth/login", json=payload)
+    assert response.status_code == 200
+    user = response.json()["user"]
+    assert "id" in user
+    assert "email" in user
+    assert "institutional_id" in user
+    assert "full_name" in user
+    assert "role" in user
+    assert "roles" in user
+    assert isinstance(user["roles"], list)
+    assert "institution_id" in user
+    assert "department_id" in user
+    assert "department" in user
+    assert "section" in user
+    assert user["is_active"] is True
+    assert user["is_phone_verified"] is False
+    assert user["is_demo"] is False
+
+

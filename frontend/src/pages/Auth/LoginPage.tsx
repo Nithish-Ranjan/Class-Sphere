@@ -51,9 +51,14 @@ export const LoginPage: React.FC = () => {
       else if (user.role === 'FACULTY') navigate('/faculty/overview');
       else if (user.role === 'HOD') navigate('/hod/overview');
       else navigate('/student/overview');
-    } catch {
+    } catch (err: any) {
+      const serverMessage =
+        err.response?.data?.error?.message ||
+        err.response?.data?.detail ||
+        (typeof err.response?.data?.error === 'string' ? err.response?.data?.error : null);
       setErrorMessage(
-        'Upstream authentication service is not connected. For local preview, please use the Institutional Sandbox Personas below.'
+        serverMessage ||
+          'Upstream authentication service is not connected. For local preview, please use the Institutional Sandbox Personas below.'
       );
     } finally {
       setIsLoading(false);

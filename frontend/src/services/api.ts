@@ -12,8 +12,76 @@ import {
   NotificationItem,
 } from '../types';
 
+export const CLASSSPHERE_KEYS = {
+  ACCESS_TOKEN: 'classsphere_access_token',
+  REFRESH_TOKEN: 'classsphere_refresh_token',
+  USER: 'classsphere_user',
+  STORAGE_MODE: 'classsphere_storage_mode',
+} as const;
+
+export function getStoredAccessToken(): string | null {
+  return localStorage.getItem(CLASSSPHERE_KEYS.ACCESS_TOKEN) || sessionStorage.getItem(CLASSSPHERE_KEYS.ACCESS_TOKEN);
+}
+
+export function getStoredRefreshToken(): string | null {
+  return localStorage.getItem(CLASSSPHERE_KEYS.REFRESH_TOKEN) || sessionStorage.getItem(CLASSSPHERE_KEYS.REFRESH_TOKEN);
+}
+
+export function getStoredUser(): User | null {
+  const raw = localStorage.getItem(CLASSSPHERE_KEYS.USER) || sessionStorage.getItem(CLASSSPHERE_KEYS.USER);
+  if (!raw) return null;
+  try {
+    return JSON.parse(raw);
+  } catch {
+    return null;
+  }
+}
+
+export function storeAuthData(
+  accessToken: string,
+  refreshToken: string,
+  user: User,
+  rememberMe: boolean = false
+): void {
+  const target = rememberMe ? localStorage : sessionStorage;
+  const other = rememberMe ? sessionStorage : localStorage;
+
+  // Clear from opposite storage mechanism
+  other.removeItem(CLASSSPHERE_KEYS.ACCESS_TOKEN);
+  other.removeItem(CLASSSPHERE_KEYS.REFRESH_TOKEN);
+  other.removeItem(CLASSSPHERE_KEYS.USER);
+  other.removeItem(CLASSSPHERE_KEYS.STORAGE_MODE);
+
+  // Set in target storage
+  target.setItem(CLASSSPHERE_KEYS.ACCESS_TOKEN, accessToken);
+  target.setItem(CLASSSPHERE_KEYS.REFRESH_TOKEN, refreshToken);
+  target.setItem(CLASSSPHERE_KEYS.USER, JSON.stringify(user));
+  target.setItem(CLASSSPHERE_KEYS.STORAGE_MODE, rememberMe ? 'local' : 'session');
+}
+
+export function updateStoredUser(user: User): void {
+  if (localStorage.getItem(CLASSSPHERE_KEYS.ACCESS_TOKEN)) {
+    localStorage.setItem(CLASSSPHERE_KEYS.USER, JSON.stringify(user));
+  } else if (sessionStorage.getItem(CLASSSPHERE_KEYS.ACCESS_TOKEN)) {
+    sessionStorage.setItem(CLASSSPHERE_KEYS.USER, JSON.stringify(user));
+  }
+}
+
+export function clearAuthStorage(): void {
+  // STRICT SAFEGUARD: Only wipe ClassSphere auth keys; do not invoke storage.clear()
+  localStorage.removeItem(CLASSSPHERE_KEYS.ACCESS_TOKEN);
+  localStorage.removeItem(CLASSSPHERE_KEYS.REFRESH_TOKEN);
+  localStorage.removeItem(CLASSSPHERE_KEYS.USER);
+  localStorage.removeItem(CLASSSPHERE_KEYS.STORAGE_MODE);
+
+  sessionStorage.removeItem(CLASSSPHERE_KEYS.ACCESS_TOKEN);
+  sessionStorage.removeItem(CLASSSPHERE_KEYS.REFRESH_TOKEN);
+  sessionStorage.removeItem(CLASSSPHERE_KEYS.USER);
+  sessionStorage.removeItem(CLASSSPHERE_KEYS.STORAGE_MODE);
+}
+
 export const api = axios.create({
-  baseURL: '/api',
+  baseURL: (import.meta as any).env?.VITE_API_BASE_URL || '/api/v1',
   headers: {
     'Content-Type': 'application/json',
   },
@@ -21,7 +89,7 @@ export const api = axios.create({
 
 // Request interceptor to attach JWT access token
 api.interceptors.request.use((config) => {
-  const token = localStorage.getItem('classsphere_access_token');
+  const token = getStoredAccessToken();
   if (token && config.headers) {
     config.headers.Authorization = `Bearer ${token}`;
   }
@@ -35,45 +103,81 @@ api.interceptors.response.use(
     const originalRequest = error.config;
     if (error.response?.status === 401 && !originalRequest._retry) {
       originalRequest._retry = true;
-      const refreshToken = localStorage.getItem('classsphere_refresh_token');
+      const refreshToken = getStoredRefreshToken();
       if (refreshToken) {
         try {
-          const res = await axios.post('/api/auth/refresh', { refresh_token: refreshToken });
-          localStorage.setItem('classsphere_access_token', res.data.access_token);
-          localStorage.setItem('classsphere_refresh_token', res.data.refresh_token);
-          originalRequest.headers.Authorization = `Bearer ${res.data.access_token}`;
+          const res = await axios.post<AuthResponse>(
+            `${api.defaults.baseURL}/auth/refresh`,
+            { refresh_token: refreshToken }
+          );
+          const newAccess = res.data.access_token;
+          const newRefresh = res.data.refresh_token;
+          const isLocal = !!localStorage.getItem(CLASSSPHERE_KEYS.ACCESS_TOKEN);
+          const target = isLocal ? localStorage : sessionStorage;
+          target.setItem(CLASSSPHERE_KEYS.ACCESS_TOKEN, newAccess);
+          target.setItem(CLASSSPHERE_KEYS.REFRESH_TOKEN, newRefresh);
+          if (res.data.user) {
+            target.setItem(CLASSSPHERE_KEYS.USER, JSON.stringify(res.data.user));
+          }
+          if (originalRequest.headers) {
+            originalRequest.headers.Authorization = `Bearer ${newAccess}`;
+          }
           return api(originalRequest);
-        } catch (refreshErr) {
-          localStorage.removeItem('classsphere_access_token');
-          localStorage.removeItem('classsphere_refresh_token');
-          localStorage.removeItem('classsphere_user');
+        } catch {
+          clearAuthStorage();
           window.location.href = '/login';
         }
+      } else {
+        clearAuthStorage();
       }
     }
     return Promise.reject(error);
   }
 );
 
+export interface LoginPayload {
+  email_or_id: string;
+  password: string;
+  remember_me?: boolean;
+  institution_code?: string;
+  institution_id?: string;
+  selected_role?: string;
+}
+
 // Auth endpoints
 export const authApi = {
-  login: async (email_or_id: string, password: string, remember_me = false) => {
-    const res = await api.post<AuthResponse>('/auth/login', { email_or_id, password, remember_me });
+  login: async (
+    email_or_id: string,
+    password: string,
+    remember_me = false,
+    institution_code = 'INST-DEMO',
+    selected_role?: string
+  ) => {
+    const payload: LoginPayload = {
+      email_or_id,
+      password,
+      remember_me,
+      institution_code,
+      selected_role,
+    };
+    const res = await api.post<AuthResponse>('/auth/login', payload);
     return res.data;
   },
   getMe: async () => {
     const res = await api.get<User>('/auth/me');
     return res.data;
   },
+  refreshToken: async (refresh_token: string) => {
+    const res = await api.post<AuthResponse>('/auth/refresh', { refresh_token });
+    return res.data;
+  },
   logout: async () => {
     try {
       await api.post('/auth/logout');
     } catch {
-      // Ignore if offline
+      // Ignore network errors on logout
     } finally {
-      localStorage.removeItem('classsphere_access_token');
-      localStorage.removeItem('classsphere_refresh_token');
-      localStorage.removeItem('classsphere_user');
+      clearAuthStorage();
     }
   },
 };

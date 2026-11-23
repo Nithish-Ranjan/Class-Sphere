@@ -1,11 +1,14 @@
 export type Role = 'STUDENT' | 'FACULTY' | 'HOD' | 'ADMIN';
 
 export interface User {
-  id: number;
+  id: string | number;
   email: string;
   institutional_id: string;
   full_name: string;
   role: Role;
+  roles?: Role[];
+  institution_id?: string;
+  department_id?: string;
   department?: string;
   section?: string;
   phone_number?: string;
@@ -19,6 +22,7 @@ export interface AuthResponse {
   access_token: string;
   refresh_token: string;
   token_type: string;
+  expires_in?: number;
   user: User;
 }
 

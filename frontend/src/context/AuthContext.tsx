@@ -1,6 +1,14 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { User, Role } from '../types';
-import { authApi } from '../services/api';
+import {
+  authApi,
+  getStoredAccessToken,
+  getStoredUser,
+  storeAuthData,
+  updateStoredUser,
+  clearAuthStorage,
+  CLASSSPHERE_KEYS,
+} from '../services/api';
 
 export const DEMO_PERSONAS: Record<'student' | 'faculty' | 'hod', User> = {
   student: {
@@ -44,7 +52,12 @@ interface AuthContextType {
   role: Role | null;
   isAuthenticated: boolean;
   loading: boolean;
-  loginWithCredentials: (email_or_id: string, password: string, remember_me?: boolean) => Promise<User>;
+  loginWithCredentials: (
+    email_or_id: string,
+    password: string,
+    remember_me?: boolean,
+    selected_role?: string
+  ) => Promise<User>;
   loginAsDemoPersona: (personaKey: 'student' | 'faculty' | 'hod') => void;
   logout: () => Promise<void>;
 }
@@ -58,22 +71,14 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const params = new URLSearchParams(window.location.search);
       const demoParam = params.get('demo') as 'student' | 'faculty' | 'hod' | null;
       if (demoParam && DEMO_PERSONAS[demoParam]) {
-        localStorage.setItem('classsphere_user', JSON.stringify(DEMO_PERSONAS[demoParam]));
+        localStorage.setItem(CLASSSPHERE_KEYS.USER, JSON.stringify(DEMO_PERSONAS[demoParam]));
         return DEMO_PERSONAS[demoParam];
       }
     } catch {
       // Ignore in non-browser env
     }
 
-    const saved = localStorage.getItem('classsphere_user');
-    if (saved) {
-      try {
-        return JSON.parse(saved);
-      } catch {
-        return null;
-      }
-    }
-    return null;
+    return getStoredUser();
   });
   const [loading, setLoading] = useState<boolean>(true);
 
@@ -84,19 +89,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       return;
     }
 
-    const token = localStorage.getItem('classsphere_access_token');
+    const token = getStoredAccessToken();
     if (token) {
       authApi
         .getMe()
         .then((userData) => {
           setUser(userData);
-          localStorage.setItem('classsphere_user', JSON.stringify(userData));
+          updateStoredUser(userData);
         })
         .catch(() => {
           setUser(null);
-          localStorage.removeItem('classsphere_user');
-          localStorage.removeItem('classsphere_access_token');
-          localStorage.removeItem('classsphere_refresh_token');
+          clearAuthStorage();
         })
         .finally(() => setLoading(false));
     } else {
@@ -104,21 +107,29 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     }
   }, []);
 
-  const loginWithCredentials = async (email_or_id: string, password: string, remember_me = false): Promise<User> => {
-    const data = await authApi.login(email_or_id, password, remember_me);
-    localStorage.setItem('classsphere_access_token', data.access_token);
-    localStorage.setItem('classsphere_refresh_token', data.refresh_token);
-    localStorage.setItem('classsphere_user', JSON.stringify(data.user));
+  const loginWithCredentials = async (
+    email_or_id: string,
+    password: string,
+    remember_me = false,
+    selected_role?: string
+  ): Promise<User> => {
+    const data = await authApi.login(
+      email_or_id,
+      password,
+      remember_me,
+      'INST-DEMO',
+      selected_role
+    );
+    storeAuthData(data.access_token, data.refresh_token, data.user, remember_me);
     setUser(data.user);
     return data.user;
   };
 
   const loginAsDemoPersona = (personaKey: 'student' | 'faculty' | 'hod') => {
     const persona = DEMO_PERSONAS[personaKey];
-    localStorage.setItem('classsphere_user', JSON.stringify(persona));
     // Clear any real JWT tokens to ensure demo mode is honest
-    localStorage.removeItem('classsphere_access_token');
-    localStorage.removeItem('classsphere_refresh_token');
+    clearAuthStorage();
+    localStorage.setItem(CLASSSPHERE_KEYS.USER, JSON.stringify(persona));
     setUser(persona);
   };
 
@@ -130,9 +141,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         // Ignore offline error
       }
     }
-    localStorage.removeItem('classsphere_user');
-    localStorage.removeItem('classsphere_access_token');
-    localStorage.removeItem('classsphere_refresh_token');
+    clearAuthStorage();
     setUser(null);
   };
 

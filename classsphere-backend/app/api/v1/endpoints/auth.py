@@ -23,10 +23,12 @@ async def login(credentials: LoginRequest):
     and refresh token (7d). Protects against account enumeration via uniform error responses.
     """
     return await auth_service.authenticate_user(
-        email=credentials.email,
+        identifier=credentials.email_or_id or credentials.email,
         password=credentials.password,
         institution_id=credentials.institution_id,
         institution_code=credentials.institution_code,
+        selected_role=credentials.selected_role,
+        remember_me=credentials.remember_me,
     )
 
 @router.post("/refresh", response_model=TokenResponse, status_code=status.HTTP_200_OK, summary="Refresh Access Token")
@@ -55,12 +57,8 @@ async def get_me(current_user: AuthenticatedUser = Depends(get_current_active_us
     Returns the authenticated user's safe identity profile.
     Never exposes password hashes or security credentials.
     """
-    return UserProfileResponse(
-        id=current_user.id,
-        email=current_user.email,
-        full_name=current_user.full_name,
-        role=current_user.role,
+    return await auth_service.get_user_profile(
+        user_id=current_user.id,
         institution_id=current_user.institution_id,
-        department_id=current_user.department_id,
-        is_active=current_user.is_active,
+        active_role=current_user.role,
     )
