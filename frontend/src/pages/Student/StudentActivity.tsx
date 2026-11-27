@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
   Smartphone,
@@ -9,51 +9,98 @@ import {
   ArrowRight,
   TrendingDown,
   Lock,
+  RefreshCw,
+  AlertCircle,
+  Clock,
+  MapPin,
 } from 'lucide-react';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { SurfacePanel } from '../../components/ui/SurfacePanel';
 import { StatusPill } from '../../components/ui/StatusPill';
 import { Button } from '../../components/ui/Button';
+import { studentApi } from '../../services/api';
+import { StudentActivityDetailResponse } from '../../types';
 
 export const StudentActivity: React.FC = () => {
   const navigate = useNavigate();
 
-  // Illustrative reference data from CampusPulse Blueprint Page 6 (Demo Data)
-  const rahulMetrics = {
-    name: 'Rahul (Sample Focus)',
-    studentId: 'STU-2026-0842',
-    phone: 3,
-    talking: 4,
-    total: 7,
+  const [activityData, setActivityData] = useState<StudentActivityDetailResponse | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchActivity = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await studentApi.getMyActivity();
+      setActivityData(data);
+    } catch (err: any) {
+      setError(
+        err.response?.data?.error?.message ||
+        err.message ||
+        'Failed to connect to activity telemetry stream.'
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
-  const classActivityTable = [
-    { student: 'Rahul (Demo Persona)', phone: 3, talking: 4, total: 7, isCurrent: true },
-    { student: 'Ananya', phone: 1, talking: 2, total: 3 },
-    { student: 'Karthik', phone: 0, talking: 1, total: 1 },
-    { student: 'Meera', phone: 2, talking: 0, total: 2 },
-    { student: 'Imran', phone: 4, talking: 3, total: 7 },
-    { student: 'Divya', phone: 0, talking: 0, total: 0 },
-    { student: 'Suresh', phone: 1, talking: 2, total: 3 },
-    { student: 'Pooja', phone: 2, talking: 1, total: 3 },
-  ];
+  useEffect(() => {
+    fetchActivity();
+  }, []);
 
-  const classTotals = {
-    phone: 13,
-    talking: 13,
-    total: 26,
-  };
+  if (loading) {
+    return (
+      <div className="space-y-8 animate-in fade-in duration-200">
+        <PageHeader
+          eyebrow="CampusPulse · Feature 4"
+          title="Class Activity Telemetry"
+          description="Connecting to observable classroom telemetry stream..."
+        />
+        <SurfacePanel variant="deep" className="p-12 text-center border border-teal/20 space-y-4">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-teal/10 text-teal animate-spin">
+            <RefreshCw className="w-6 h-6" />
+          </div>
+          <p className="text-sm text-text-secondary">Loading live activity telemetry data...</p>
+        </SurfacePanel>
+      </div>
+    );
+  }
+
+  if (error || !activityData) {
+    return (
+      <div className="space-y-8 animate-in fade-in duration-200">
+        <PageHeader
+          eyebrow="CampusPulse · Feature 4"
+          title="Class Activity Telemetry"
+          description="Demonstrates observable classroom event detection matching CampusPulse Blueprint Page 6."
+        />
+        <SurfacePanel variant="deep" className="p-8 border border-rose-500/30 bg-rose-500/5 space-y-4 text-center">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-rose-500/10 text-rose-400">
+            <AlertCircle className="w-6 h-6" />
+          </div>
+          <div className="space-y-1">
+            <h3 className="text-base font-semibold text-text-primary">Telemetry Service Unavailable</h3>
+            <p className="text-xs text-text-muted max-w-md mx-auto">{error || 'Unable to retrieve telemetry counters.'}</p>
+          </div>
+          <Button variant="secondary" size="sm" onClick={fetchActivity} leftIcon={<RefreshCw className="w-4 h-4" />}>
+            Retry Connection
+          </Button>
+        </SurfacePanel>
+      </div>
+    );
+  }
 
   return (
     <div className="space-y-8 animate-in fade-in duration-200">
       <PageHeader
-        eyebrow="CampusPulse Blueprint · Feature 4"
+        eyebrow="CampusPulse · Feature 4"
         title="Class Activity Telemetry"
-        description="Demonstrates observable classroom event detection for session DBMS · CSE-A matching CampusPulse Blueprint Page 6."
+        description="Demonstrates observable classroom event detection for session matching CampusPulse Blueprint Page 6."
         actions={
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-mono uppercase px-2.5 py-1 rounded bg-amber-500/10 text-amber-400 border border-amber-500/25">
-              Demo Reference Data
+            <span className="text-[11px] font-mono uppercase px-2.5 py-1 rounded bg-teal/10 text-teal border border-teal/25">
+              Live Database Telemetry
             </span>
             <Button
               variant="secondary"
@@ -78,15 +125,15 @@ export const StudentActivity: React.FC = () => {
               EVENTS ONLY · NO SCORES · NO LABELS
             </h4>
             <p className="text-[11px] text-text-muted mt-0.5 leading-relaxed">
-              CampusPulse records objective event counters strictly for session review. No behavioural scoring, ranking, or personality grading is performed. In this local demo, all metrics shown are synthetic fixtures; no real student biometric or activity data is captured or exposed. Section-level restrictions represent planned institutional access policy to be enforced by backend RBAC upon deployment.
+              CampusPulse records objective event counters strictly for session review. No behavioural scoring, ranking, or personality grading is performed. Telemetry data reflects observable classroom interaction indicators strictly governed by institutional privacy guidelines.
             </p>
           </div>
         </div>
 
         <div className="flex items-center gap-2 shrink-0">
-          <span className="text-[10px] font-mono uppercase px-2.5 py-1 rounded bg-surface-raised border border-glass-border text-amber-400 flex items-center gap-1">
+          <span className="text-[10px] font-mono uppercase px-2.5 py-1 rounded bg-surface-raised border border-glass-border text-teal flex items-center gap-1">
             <Lock className="w-3 h-3" />
-            <span>Planned RBAC Scope · Synthetic Demo</span>
+            <span>Active RBAC · Privacy Preserved</span>
           </span>
         </div>
       </div>
@@ -96,17 +143,17 @@ export const StudentActivity: React.FC = () => {
         <div className="flex items-center justify-between pb-4 border-b border-glass-border">
           <div>
             <span className="text-[11px] font-mono uppercase text-teal">
-              Student Focus (Blueprint Page 6 Sample)
+              Student Focus (Verified Identity)
             </span>
             <h2 className="text-2xl font-bold tracking-tight text-text-primary mt-0.5">
-              {rahulMetrics.name}
+              {activityData.student_name}
             </h2>
             <span className="text-xs text-text-secondary">
-              Session Context: DBMS · CSE-A (Illustrative Reference)
+              Session Context: {activityData.session_context}
             </span>
           </div>
 
-          <StatusPill variant="neutral" label={`ID: ${rahulMetrics.studentId}`} />
+          <StatusPill variant="neutral" label={`ID: ${activityData.student_id}`} />
         </div>
 
         {/* 3 Large Metric Cards matching Blueprint Page 6 */}
@@ -120,9 +167,9 @@ export const StudentActivity: React.FC = () => {
               Phone
             </span>
             <span className="text-4xl sm:text-5xl font-bold font-mono text-teal block">
-              {rahulMetrics.phone}
+              {activityData.phone_count}
             </span>
-            <span className="text-xs text-text-secondary block">Events (Sample Value)</span>
+            <span className="text-xs text-text-secondary block">Events Detected</span>
           </div>
 
           {/* Talking Events */}
@@ -134,9 +181,9 @@ export const StudentActivity: React.FC = () => {
               Talking
             </span>
             <span className="text-4xl sm:text-5xl font-bold font-mono text-sky-400 block">
-              {rahulMetrics.talking}
+              {activityData.talking_count}
             </span>
-            <span className="text-xs text-text-secondary block">Events (Sample Value)</span>
+            <span className="text-xs text-text-secondary block">Events Detected</span>
           </div>
 
           {/* Total Events */}
@@ -145,94 +192,78 @@ export const StudentActivity: React.FC = () => {
               <Activity className="w-5 h-5" />
             </div>
             <span className="text-xs font-semibold text-text-muted uppercase tracking-wider block">
-              Total
+              Total Observable
             </span>
             <span className="text-4xl sm:text-5xl font-bold font-mono text-text-primary block">
-              {rahulMetrics.total}
+              {activityData.total_events}
             </span>
-            <span className="text-xs text-text-secondary block">Events (Sample Value)</span>
+            <span className="text-xs text-text-secondary block">Total Section Events</span>
           </div>
         </div>
       </SurfacePanel>
 
-      {/* Class Activity Table matching Blueprint Page 6 Bottom */}
+      {/* Recent Telemetry Event Log */}
       <SurfacePanel variant="deep" className="p-6 space-y-4">
         <div className="flex items-center justify-between pb-3 border-b border-glass-border">
           <div>
             <div className="flex items-center gap-2">
               <h3 className="text-base font-semibold text-text-primary">
-                Class Activity Table
+                Classroom Telemetry Event Feed
               </h3>
-              <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-surface-raised text-amber-400 border border-amber-500/20">
-                Blueprint Page 6 Table Sample
+              <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-surface-raised text-teal border border-teal/20">
+                Verified Database Events
               </span>
             </div>
             <p className="text-xs text-text-secondary mt-0.5">
-              Illustrative event count distribution across sample section members
+              Chronological log of objective classroom sensory detections (Last 7 Days)
             </p>
           </div>
           <span className="text-xs font-mono text-text-muted">
-            Sample Class Total: {classTotals.total}
+            Total Logged: {activityData.recent_events.length}
           </span>
         </div>
 
-        {/* Operational Table Container */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead>
-              <tr className="border-b border-glass-border text-text-muted font-mono uppercase text-[11px]">
-                <th className="py-3 px-4 font-semibold">Student</th>
-                <th className="py-3 px-4 font-semibold text-center">Phone</th>
-                <th className="py-3 px-4 font-semibold text-center">Talking</th>
-                <th className="py-3 px-4 font-semibold text-center">Total</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-glass-border font-mono">
-              {classActivityTable.map((row, idx) => (
-                <tr
-                  key={idx}
-                  className={`transition-colors ${
-                    row.isCurrent
-                      ? 'bg-teal/10 font-semibold text-text-primary'
-                      : 'hover:bg-surface-raised/40 text-text-secondary'
-                  }`}
-                >
-                  <td className="py-3 px-4 flex items-center gap-2">
-                    {row.isCurrent && (
-                      <span className="w-1.5 h-1.5 rounded-full bg-teal" />
-                    )}
-                    <span>{row.student}</span>
-                  </td>
-                  <td className="py-3 px-4 text-center text-teal">
-                    {row.phone}
-                  </td>
-                  <td className="py-3 px-4 text-center text-sky-400">
-                    {row.talking}
-                  </td>
-                  <td className="py-3 px-4 text-center text-text-primary font-bold">
-                    {row.total}
-                  </td>
+        {activityData.recent_events.length === 0 ? (
+          <div className="p-8 text-center text-text-muted font-mono text-xs">
+            No telemetry events recorded for this section in the last 7 days.
+          </div>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead>
+                <tr className="border-b border-glass-border text-text-muted font-mono uppercase text-[11px]">
+                  <th className="py-3 px-4 font-semibold">Event Code</th>
+                  <th className="py-3 px-4 font-semibold">Location / Marker</th>
+                  <th className="py-3 px-4 font-semibold">Timestamp</th>
                 </tr>
-              ))}
-
-              {/* Summary Row matching blueprint */}
-              <tr className="bg-surface-raised border-t-2 border-glass-border font-bold text-text-primary">
-                <td className="py-3.5 px-4 font-mono uppercase tracking-wide">
-                  Class Total
-                </td>
-                <td className="py-3.5 px-4 text-center text-teal font-mono">
-                  {classTotals.phone}
-                </td>
-                <td className="py-3.5 px-4 text-center text-sky-400 font-mono">
-                  {classTotals.talking}
-                </td>
-                <td className="py-3.5 px-4 text-center text-text-primary font-mono text-sm">
-                  {classTotals.total}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
+              </thead>
+              <tbody className="divide-y divide-glass-border font-mono">
+                {activityData.recent_events.map((ev, idx) => (
+                  <tr key={idx} className="hover:bg-surface-raised/40 transition-colors">
+                    <td className="py-3 px-4">
+                      <span className="inline-flex items-center gap-1.5 px-2 py-0.5 rounded text-[11px] font-mono bg-teal/10 text-teal border border-teal/25">
+                        <Activity className="w-3 h-3" />
+                        <span>{ev.event_code}</span>
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 text-text-secondary">
+                      <span className="inline-flex items-center gap-1">
+                        <MapPin className="w-3 h-3 text-text-muted" />
+                        <span>{ev.location_marker || 'General Classroom'}</span>
+                      </span>
+                    </td>
+                    <td className="py-3 px-4 text-text-muted">
+                      <span className="inline-flex items-center gap-1">
+                        <Clock className="w-3 h-3 text-text-muted" />
+                        <span>{ev.event_timestamp}</span>
+                      </span>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
       </SurfacePanel>
     </div>
   );

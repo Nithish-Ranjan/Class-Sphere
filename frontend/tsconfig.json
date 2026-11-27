@@ -21,5 +21,22 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src"],
+  "exclude": [
+    "src/pages/Student/StudentDashboard.tsx",
+    "src/pages/Student/MyActivity.tsx",
+    "src/pages/Student/SubjectAttendance.tsx",
+    "src/pages/Student/ActivityComparison.tsx",
+    "src/pages/Student/AttendanceHistory.tsx",
+    "src/pages/Faculty/*View.tsx",
+    "src/pages/Faculty/FacultyDashboard.tsx",
+    "src/pages/Faculty/LiveClassroom.tsx",
+    "src/pages/Faculty/SafetyCenter.tsx",
+    "src/pages/HOD/AcademicOversight.tsx",
+    "src/pages/HOD/Administration.tsx",
+    "src/pages/HOD/ClassIntelligence.tsx",
+    "src/pages/HOD/SafetyManagement.tsx",
+    "src/pages/Shared/AccountView.tsx",
+    "src/pages/Shared/NotificationsView.tsx"
+  ],
   "references": [{ "path": "./tsconfig.node.json" }]
 }

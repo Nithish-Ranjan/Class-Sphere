@@ -15,10 +15,17 @@ import {
   Building2,
   Clock,
   Sparkles,
+  Bell,
+  CheckCheck,
+  X,
+  GraduationCap,
+  RefreshCw,
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useNav } from '../../context/NavContext';
 import { RoleBadge } from '../ui/RoleBadge';
+import { notificationApi, studentApi } from '../../services/api';
+import { StudentNotificationItem, StudentProfileDetailResponse } from '../../types';
 import clsx from 'clsx';
 
 export const DesktopTopNav: React.FC = () => {
@@ -42,15 +49,72 @@ export const DesktopTopNav: React.FC = () => {
   const navContainerRef = useRef<HTMLDivElement>(null);
   const profileButtonRef = useRef<HTMLButtonElement>(null);
 
+  // Notifications State
+  const [showNotifications, setShowNotifications] = useState(false);
+  const [notifications, setNotifications] = useState<StudentNotificationItem[]>([]);
+  const [unreadCount, setUnreadCount] = useState<number>(0);
+  const notifButtonRef = useRef<HTMLButtonElement>(null);
+
+  // Student Profile Modal State
+  const [showProfileModal, setShowProfileModal] = useState(false);
+  const [studentProfile, setStudentProfile] = useState<StudentProfileDetailResponse | null>(null);
+  const [loadingProfile, setLoadingProfile] = useState(false);
+
+  const fetchNotifications = async () => {
+    try {
+      const data = await notificationApi.getNotifications(20);
+      setNotifications(data.notifications || []);
+      setUnreadCount(data.unread_count || 0);
+    } catch {
+      // Non-fatal if offline
+    }
+  };
+
+  useEffect(() => {
+    fetchNotifications();
+    const interval = setInterval(fetchNotifications, 15000);
+    return () => clearInterval(interval);
+  }, []);
+
+  const handleMarkAsRead = async (id: string, e: React.MouseEvent) => {
+    e.stopPropagation();
+    try {
+      await notificationApi.markAsRead(id);
+      setNotifications((prev) =>
+        prev.map((n) => (n.id === id ? { ...n, is_read: true } : n))
+      );
+      setUnreadCount((prev) => Math.max(0, prev - 1));
+    } catch {
+      // Ignore error
+    }
+  };
+
+  const handleOpenProfileModal = async () => {
+    setShowProfileMenu(false);
+    setShowProfileModal(true);
+    if (role === 'STUDENT' && !studentProfile) {
+      try {
+        setLoadingProfile(true);
+        const data = await studentApi.getProfile();
+        setStudentProfile(data);
+      } catch {
+        // Fallback
+      } finally {
+        setLoadingProfile(false);
+      }
+    }
+  };
+
   // Sync open dropdown state with NavContext to prevent hiding
   useEffect(() => {
-    setIsDropdownOpen(!!activeDropdown || showProfileMenu);
-  }, [activeDropdown, showProfileMenu, setIsDropdownOpen]);
+    setIsDropdownOpen(!!activeDropdown || showProfileMenu || showNotifications);
+  }, [activeDropdown, showProfileMenu, showNotifications, setIsDropdownOpen]);
 
   // Close menus on route change
   useEffect(() => {
     setActiveDropdown(null);
     setShowProfileMenu(false);
+    setShowNotifications(false);
   }, [location.pathname]);
 
   const handleLogout = async () => {
@@ -544,6 +608,85 @@ export const DesktopTopNav: React.FC = () => {
 
           {/* Right: Controls (Pin Toggle, Profile Dropdown) */}
           <div className="flex items-center gap-2 shrink-0">
+            {/* Notifications Popover */}
+            <div className="relative">
+              <button
+                ref={notifButtonRef}
+                onClick={() => {
+                  setShowNotifications((prev) => !prev);
+                  setShowProfileMenu(false);
+                }}
+                className={clsx(
+                  'p-2 rounded-xl border text-xs font-medium transition-all duration-150 focus-ring min-w-[36px] min-h-[36px] flex items-center justify-center relative cursor-pointer',
+                  showNotifications
+                    ? 'bg-teal/15 text-teal border-teal/40'
+                    : 'bg-surface-raised text-text-secondary hover:text-text-primary border-glass-border'
+                )}
+                aria-label="Notifications"
+                aria-expanded={showNotifications}
+              >
+                <Bell className="w-4 h-4" />
+                {unreadCount > 0 && (
+                  <span className="absolute -top-1 -right-1 px-1.5 py-0.2 rounded-full text-[9px] font-mono font-bold bg-rose-500 text-white shadow-sm animate-pulse">
+                    {unreadCount > 9 ? '9+' : unreadCount}
+                  </span>
+                )}
+              </button>
+
+              {showNotifications && (
+                <div
+                  className="absolute right-0 mt-2 w-80 rounded-2xl bg-surface-deep border border-glass-border shadow-glass-dropdown p-3 z-50 animate-in fade-in zoom-in-95 duration-150 space-y-2"
+                  role="menu"
+                >
+                  <div className="flex items-center justify-between pb-2 border-b border-glass-border">
+                    <div className="flex items-center gap-1.5">
+                      <Bell className="w-3.5 h-3.5 text-teal" />
+                      <span className="text-xs font-bold text-text-primary">Notifications</span>
+                    </div>
+                    <span className="text-[10px] font-mono text-text-muted">
+                      {unreadCount} unread
+                    </span>
+                  </div>
+
+                  {notifications.length === 0 ? (
+                    <div className="py-6 text-center text-text-muted text-xs font-mono">
+                      No notifications yet
+                    </div>
+                  ) : (
+                    <div className="max-h-64 overflow-y-auto space-y-1.5 divide-y divide-glass-border/40">
+                      {notifications.map((notif) => (
+                        <div
+                          key={notif.id}
+                          onClick={(e) => handleMarkAsRead(notif.id, e)}
+                          className={clsx(
+                            'p-2.5 rounded-xl transition-colors cursor-pointer text-left space-y-1',
+                            notif.is_read
+                              ? 'hover:bg-surface-raised/40 opacity-70'
+                              : 'bg-surface-raised border border-teal/20 hover:border-teal/40'
+                          )}
+                        >
+                          <div className="flex items-center justify-between">
+                            <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-teal/10 text-teal border border-teal/20">
+                              {notif.category}
+                            </span>
+                            {!notif.is_read && (
+                              <span className="w-2 h-2 rounded-full bg-teal shrink-0" />
+                            )}
+                          </div>
+                          <p className="text-xs font-semibold text-text-primary leading-tight">
+                            {notif.title}
+                          </p>
+                          <p className="text-[11px] text-text-secondary leading-snug line-clamp-2">
+                            {notif.message}
+                          </p>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
             {/* Accessible Pin Navigation Toggle */}
             <button
               onClick={togglePin}
@@ -610,6 +753,17 @@ export const DesktopTopNav: React.FC = () => {
                     Press <kbd className="px-1 py-0.5 bg-surface-raised rounded text-text-secondary font-mono">Alt+N</kbd> to toggle nav
                   </div>
 
+                  {role === 'STUDENT' && (
+                    <button
+                      onClick={handleOpenProfileModal}
+                      className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-text-primary hover:bg-surface-raised transition-colors focus-ring mb-1"
+                      role="menuitem"
+                    >
+                      <GraduationCap className="w-3.5 h-3.5 text-teal" />
+                      <span>Academic Profile</span>
+                    </button>
+                  )}
+
                   <button
                     onClick={handleLogout}
                     className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors focus-ring"
@@ -624,6 +778,93 @@ export const DesktopTopNav: React.FC = () => {
           </div>
         </nav>
       </header>
+
+      {/* Student Academic Profile Modal */}
+      {showProfileModal && (
+        <div
+          className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm animate-in fade-in duration-150"
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby="profile-dialog-title"
+        >
+          <div className="w-full max-w-md rounded-2xl bg-surface-deep border border-glass-border shadow-2xl p-6 space-y-5 animate-in zoom-in-95 duration-150">
+            <div className="flex items-center justify-between pb-3 border-b border-glass-border">
+              <div className="flex items-center gap-2.5">
+                <div className="w-9 h-9 rounded-xl bg-teal/15 text-teal flex items-center justify-center border border-teal/30">
+                  <GraduationCap className="w-5 h-5" />
+                </div>
+                <div>
+                  <h3 id="profile-dialog-title" className="text-sm font-bold text-text-primary">
+                    Student Academic Profile
+                  </h3>
+                  <p className="text-[11px] text-text-muted">Verified institutional student records</p>
+                </div>
+              </div>
+              <button
+                onClick={() => setShowProfileModal(false)}
+                className="p-1 rounded-lg text-text-muted hover:text-text-primary hover:bg-surface-raised transition-colors focus-ring cursor-pointer"
+                aria-label="Close profile dialog"
+              >
+                <X className="w-4 h-4" />
+              </button>
+            </div>
+
+            {loadingProfile ? (
+              <div className="py-8 text-center text-teal animate-spin flex justify-center">
+                <RefreshCw className="w-6 h-6" />
+              </div>
+            ) : studentProfile ? (
+              <div className="space-y-4">
+                <div className="p-4 rounded-xl bg-surface-raised border border-glass-border space-y-2">
+                  <p className="text-base font-bold text-text-primary">{studentProfile.full_name}</p>
+                  <p className="text-xs text-text-secondary font-mono">{studentProfile.email}</p>
+                  <div className="flex items-center gap-2 pt-1">
+                    <span className="px-2 py-0.5 rounded text-[10px] font-mono uppercase bg-teal/10 text-teal border border-teal/25">
+                      Status: {studentProfile.academic_status}
+                    </span>
+                    <span className="px-2 py-0.5 rounded text-[10px] font-mono text-text-muted bg-surface-deep border border-glass-border">
+                      Roll: {studentProfile.roll_number}
+                    </span>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-2 gap-3 text-xs">
+                  <div className="p-3 rounded-xl bg-surface-raised border border-glass-border">
+                    <span className="text-[10px] text-text-muted uppercase font-mono block">Enrollment ID</span>
+                    <span className="font-semibold text-text-primary font-mono">{studentProfile.enrollment_number}</span>
+                  </div>
+                  <div className="p-3 rounded-xl bg-surface-raised border border-glass-border">
+                    <span className="text-[10px] text-text-muted uppercase font-mono block">Department</span>
+                    <span className="font-semibold text-text-primary">{studentProfile.department_name}</span>
+                  </div>
+                  <div className="p-3 rounded-xl bg-surface-raised border border-glass-border">
+                    <span className="text-[10px] text-text-muted uppercase font-mono block">Section</span>
+                    <span className="font-semibold text-text-primary font-mono">{studentProfile.section_name}</span>
+                  </div>
+                  <div className="p-3 rounded-xl bg-surface-raised border border-glass-border">
+                    <span className="text-[10px] text-text-muted uppercase font-mono block">Batch</span>
+                    <span className="font-semibold text-text-primary">{studentProfile.batch_name}</span>
+                  </div>
+                </div>
+
+                <div className="p-3.5 rounded-xl bg-teal/5 border border-teal/20 flex items-center justify-between">
+                  <div>
+                    <span className="text-xs font-semibold text-text-primary block">Cumulative Attendance</span>
+                    <span className="text-[10px] text-text-muted">Verified across all enrolled subjects</span>
+                  </div>
+                  <span className="text-xl font-bold font-mono text-teal">
+                    {studentProfile.total_attendance_percentage}%
+                  </span>
+                </div>
+              </div>
+            ) : (
+              <div className="p-4 rounded-xl bg-surface-raised border border-glass-border text-center text-xs text-text-muted">
+                {user?.full_name} · {user?.email}
+              </div>
+            )}
+          </div>
+        </div>
+      )}
     </>
   );
 };

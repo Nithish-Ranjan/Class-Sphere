@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink, useNavigate } from 'react-router-dom';
 import {
   Calendar,
@@ -13,6 +13,9 @@ import {
   Activity,
   AlertCircle,
   TrendingDown,
+  TrendingUp,
+  Minus,
+  RefreshCw,
   User,
   GraduationCap,
 } from 'lucide-react';
@@ -21,73 +24,113 @@ import { PageHeader } from '../../components/ui/PageHeader';
 import { SurfacePanel } from '../../components/ui/SurfacePanel';
 import { StatusPill } from '../../components/ui/StatusPill';
 import { Button } from '../../components/ui/Button';
+import { studentApi } from '../../services/api';
+import { StudentDashboardResponse } from '../../types';
 
 export const StudentOverview: React.FC = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  // Illustrative Persona Data (Demo Fixture)
-  const student = {
-    name: user?.full_name || 'Rahul Sharma',
-    id: user?.institutional_id || 'STU-2026-0842',
-    section: 'CSE-A',
-    department: 'Computer Science & Engineering',
-    term: 'Semester 6',
+  const [dashboard, setDashboard] = useState<StudentDashboardResponse | null>(null);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  const fetchDashboard = async () => {
+    try {
+      setLoading(true);
+      setError(null);
+      const data = await studentApi.getDashboard();
+      setDashboard(data);
+    } catch (err: any) {
+      setError(
+        err.response?.data?.error?.message ||
+        err.message ||
+        'Failed to connect to student academic telemetry services.'
+      );
+    } finally {
+      setLoading(false);
+    }
   };
 
-  // Illustrative Schedule & Session Data (Demo Fixture)
-  const currentClass = {
-    subject: 'Database Management Systems (DBMS)',
-    code: 'CS301',
-    timing: '10:00 – 11:00 AM',
-    duration: '1 Hour',
-    room: 'Room 204 (Hardware Lab Block)',
-    faculty: 'Dr. S. Kumar',
-    attendanceTaken: true,
-    topic: 'Relational Normalization: 3NF & BCNF Fundamentals',
-  };
+  useEffect(() => {
+    fetchDashboard();
+  }, []);
 
-  // Illustrative Subject Attendance Percentages (Direct Blueprint Page 9 Reference Samples)
-  const subjectAttendanceList = [
-    { subject: 'DBMS', code: 'CS301', pct: 92 },
-    { subject: 'CN', code: 'CS302', pct: 88 },
-    { subject: 'JAVA', code: 'CS303', pct: 84 },
-    { subject: 'OS', code: 'CS304', pct: 79 },
-    { subject: 'MATHS', code: 'MA301', pct: 73 },
-  ];
+  if (loading) {
+    return (
+      <div className="space-y-8 animate-in fade-in duration-200">
+        <PageHeader
+          eyebrow="Student Console"
+          title="Student Academic Overview"
+          description="Connecting to institutional student telemetry and real-time class schedule..."
+        />
+        <SurfacePanel variant="deep" className="p-12 text-center border border-teal/20 space-y-4">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-teal/10 text-teal animate-spin">
+            <RefreshCw className="w-6 h-6" />
+          </div>
+          <p className="text-sm text-text-secondary">Loading live student academic dashboard...</p>
+        </SurfacePanel>
+      </div>
+    );
+  }
 
-  // Illustrative Event Counters (Direct Blueprint Page 7 Reference Samples)
-  const weeklyActivity = {
-    phone: { lastWeek: 8, thisWeek: 6, trend: 'DECREASED' },
-    talking: { lastWeek: 6, thisWeek: 4, trend: 'DECREASED' },
-  };
+  if (error || !dashboard) {
+    return (
+      <div className="space-y-8 animate-in fade-in duration-200">
+        <PageHeader
+          eyebrow="Student Console"
+          title="Student Academic Overview"
+          description="Personal student dashboard interface demonstrating lecture schedule, subject attendance, and activity telemetry."
+        />
+        <SurfacePanel variant="deep" className="p-8 border border-rose-500/30 bg-rose-500/5 space-y-4 text-center">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-rose-500/10 text-rose-400">
+            <AlertCircle className="w-6 h-6" />
+          </div>
+          <div className="space-y-1">
+            <h3 className="text-base font-semibold text-text-primary">Unable to Load Academic Dashboard</h3>
+            <p className="text-xs text-text-muted max-w-md mx-auto">{error || 'An unexpected error occurred.'}</p>
+          </div>
+          <Button variant="secondary" size="sm" onClick={fetchDashboard} leftIcon={<RefreshCw className="w-4 h-4" />}>
+            Retry Connection
+          </Button>
+        </SurfacePanel>
+      </div>
+    );
+  }
 
-  const todayTimeline = [
-    { time: '10:00 AM', subject: 'DBMS', room: 'Room 204', status: 'Completed (Demo)' },
-    { time: '11:00 AM', subject: 'CN', room: 'Room 307', status: 'Completed (Demo)' },
-    { time: '12:00 PM', subject: 'JAVA', room: 'Room 204', status: 'Active (Demo)', current: true },
-    { time: '02:00 PM', subject: 'OS', room: 'Room 301', status: 'Scheduled' },
-    { time: '03:00 PM', subject: 'MATHS', room: 'Room 105', status: 'Scheduled' },
-  ];
+  const { student, current_class, overall_attendance, subject_attendance, weekly_activity, today_schedule } = dashboard;
 
   return (
     <div className="space-y-8 animate-in fade-in duration-200">
-      {/* Page Header with Explicit Demo Data Indicator */}
+      {/* Page Header with Verified Identity */}
       <PageHeader
-        eyebrow="Student Console · Section CSE-A"
+        eyebrow={`Student Console · Section ${student.section_name} · ${student.department_name}`}
         title="Student Academic Overview"
-        description="Personal student dashboard interface demonstrating lecture schedule, subject attendance bars, observable activity telemetry, and emergency access."
+        description="Personal student dashboard interface providing real-time lecture schedule, subject-wise attendance telemetry, and emergency assistance."
         actions={
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-mono uppercase px-2.5 py-1 rounded bg-amber-500/10 text-amber-400 border border-amber-500/25">
-              Demo Data Fixture
+            <span className="text-[11px] font-mono uppercase px-2.5 py-1 rounded bg-teal/10 text-teal border border-teal/25">
+              {student.academic_status}
             </span>
             <span className="text-xs font-mono text-text-muted px-2.5 py-1 rounded bg-surface-deep border border-glass-border">
-              {student.id}
+              {student.roll_number}
             </span>
           </div>
         }
       />
+
+      {/* Overall Attendance Alert Banner if Low Attendance */}
+      {overall_attendance.is_low_attendance && (
+        <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/25 flex items-start gap-3">
+          <AlertTriangle className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+          <div className="space-y-1">
+            <h4 className="text-sm font-semibold text-amber-300">Attendance Advisory: Below Minimum Threshold</h4>
+            <p className="text-xs text-amber-200/80 leading-relaxed">
+              Your overall attendance is currently {overall_attendance.percentage}% ({overall_attendance.attended_sessions} of {overall_attendance.total_sessions} sessions attended). Institutional guidelines require minimum 75% attendance for examination eligibility.
+            </p>
+          </div>
+        </div>
+      )}
 
       {/* Primary Hero Region: Current / Next Class Focus */}
       <SurfacePanel
@@ -98,46 +141,61 @@ export const StudentOverview: React.FC = () => {
           <div className="space-y-3 max-w-2xl">
             <div className="flex flex-wrap items-center gap-2">
               <span className="text-[11px] font-mono uppercase tracking-wider px-2 py-0.5 rounded bg-teal/15 text-teal border border-teal/30">
-                Sample Scheduled Session
+                {current_class ? current_class.status : 'No Session Today'}
               </span>
-              <StatusPill
-                variant="present"
-                label="ATTENDANCE: TAKEN ✓ (SAMPLE)"
-              />
-              <span className="text-xs text-text-muted">
-                {currentClass.duration} Session
-              </span>
+              {current_class && (
+                <StatusPill
+                  variant={current_class.attendance_taken ? 'present' : 'neutral'}
+                  label={current_class.attendance_taken ? 'ATTENDANCE: TAKEN ✓' : 'ATTENDANCE: PENDING'}
+                />
+              )}
+              {current_class && (
+                <span className="text-xs text-text-muted">
+                  {current_class.duration} Session
+                </span>
+              )}
             </div>
 
-            <div>
-              <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-text-primary">
-                {currentClass.subject}
-              </h2>
-              <p className="text-xs sm:text-sm text-text-secondary mt-1 flex items-center gap-2">
-                <span>{currentClass.topic}</span>
-              </p>
-            </div>
+            {current_class ? (
+              <>
+                <div>
+                  <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-text-primary">
+                    {current_class.subject_name} ({current_class.subject_code})
+                  </h2>
+                  <p className="text-xs sm:text-sm text-text-secondary mt-1 flex items-center gap-2">
+                    <span>{current_class.topic || 'Curricular Module'}</span>
+                  </p>
+                </div>
 
-            <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2 text-xs">
-              <div className="p-2.5 rounded-lg bg-surface-raised border border-glass-border">
-                <span className="text-[11px] text-text-muted block">Scheduled Time</span>
-                <span className="font-semibold text-text-primary mt-0.5 block">
-                  {currentClass.timing}
-                </span>
+                <div className="grid grid-cols-2 sm:grid-cols-3 gap-3 pt-2 text-xs">
+                  <div className="p-2.5 rounded-lg bg-surface-raised border border-glass-border">
+                    <span className="text-[11px] text-text-muted block">Scheduled Time</span>
+                    <span className="font-semibold text-text-primary mt-0.5 block">
+                      {current_class.timing}
+                    </span>
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-surface-raised border border-glass-border">
+                    <span className="text-[11px] text-text-muted block">Room & Building</span>
+                    <span className="font-semibold text-text-primary mt-0.5 block truncate">
+                      {current_class.room}
+                    </span>
+                  </div>
+                  <div className="p-2.5 rounded-lg bg-surface-raised border border-glass-border col-span-2 sm:col-span-1">
+                    <span className="text-[11px] text-text-muted block">Faculty in Charge</span>
+                    <span className="font-semibold text-text-primary mt-0.5 block">
+                      {current_class.faculty_name}
+                    </span>
+                  </div>
+                </div>
+              </>
+            ) : (
+              <div className="py-4 space-y-1">
+                <h2 className="text-xl font-semibold text-text-primary">No Scheduled Lectures Today</h2>
+                <p className="text-xs text-text-secondary">
+                  Your section schedule contains no active timetable slots for today. Check upcoming days in the timetable console.
+                </p>
               </div>
-              <div className="p-2.5 rounded-lg bg-surface-raised border border-glass-border">
-                <span className="text-[11px] text-text-muted block">Room & Section</span>
-                <span className="font-semibold text-text-primary mt-0.5 block truncate">
-                  {currentClass.room}
-                </span>
-              </div>
-              <div className="p-2.5 rounded-lg bg-surface-raised border border-glass-border col-span-2 sm:col-span-1">
-                <span className="text-[11px] text-text-muted block">Faculty in Charge</span>
-                <span className="font-semibold text-text-primary mt-0.5 block">
-                  {currentClass.faculty}
-                </span>
-              </div>
-            </div>
+            )}
           </div>
 
           {/* Quick Action Button to Class Companion */}
@@ -163,20 +221,20 @@ export const StudentOverview: React.FC = () => {
 
       {/* Two Column Grid: Subject Attendance & Weekly Activity Summary */}
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        {/* Left Column: Subject-Wise Attendance Reference Samples */}
+        {/* Left Column: Real Subject-Wise Attendance Breakdown */}
         <SurfacePanel variant="deep" className="p-6 space-y-6">
           <div className="flex items-center justify-between pb-3 border-b border-glass-border">
             <div>
               <div className="flex items-center gap-2">
                 <h3 className="text-base font-semibold text-text-primary">
-                  Subject Attendance Reference
+                  Subject Attendance Breakdown
                 </h3>
-                <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-surface-raised text-amber-400 border border-amber-500/20">
-                  Demo Data
+                <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-surface-raised text-teal border border-teal/20">
+                  {overall_attendance.percentage}% Overall
                 </span>
               </div>
               <p className="text-xs text-text-secondary mt-0.5">
-                Illustrative sample values directly from CampusPulse Blueprint Page 9
+                Real-time lecture attendance records verified by department ledger
               </p>
             </div>
             <NavLink
@@ -188,33 +246,50 @@ export const StudentOverview: React.FC = () => {
           </div>
 
           <div className="space-y-4">
-            {subjectAttendanceList.map((item) => (
-              <div key={item.code} className="space-y-1.5">
-                <div className="flex items-center justify-between text-xs">
-                  <div className="flex items-center gap-2">
-                    <span className="font-semibold text-text-primary">{item.subject}</span>
-                    <span className="text-[11px] font-mono text-text-muted">
-                      ({item.code})
-                    </span>
+            {subject_attendance.length === 0 ? (
+              <p className="text-xs text-text-muted py-4 text-center">
+                No subjects currently assigned to this academic section.
+              </p>
+            ) : (
+              subject_attendance.map((item) => (
+                <div key={item.code} className="space-y-1.5">
+                  <div className="flex items-center justify-between text-xs">
+                    <div className="flex items-center gap-2">
+                      <span className="font-semibold text-text-primary">{item.name}</span>
+                      <span className="text-[11px] font-mono text-text-muted">
+                        ({item.code})
+                      </span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                      <span className="text-[11px] text-text-muted font-mono">
+                        {item.attended_sessions}/{item.total_sessions} sessions
+                      </span>
+                      <span
+                        className={`font-mono font-semibold text-xs ${
+                          item.is_low_attendance ? 'text-amber-400' : 'text-text-primary'
+                        }`}
+                      >
+                        {item.percentage}%
+                      </span>
+                    </div>
                   </div>
-                  <span className="font-mono font-semibold text-xs text-text-primary">
-                    {item.pct}% (Blueprint Sample)
-                  </span>
-                </div>
 
-                {/* Progress Bar representing Blueprint Percentage */}
-                <div className="w-full h-2 rounded-full bg-surface-raised overflow-hidden border border-glass-border">
-                  <div
-                    className="h-full rounded-full bg-teal transition-all duration-500"
-                    style={{ width: `${item.pct}%` }}
-                  />
+                  {/* Progress Bar representing Percentage */}
+                  <div className="w-full h-2 rounded-full bg-surface-raised overflow-hidden border border-glass-border">
+                    <div
+                      className={`h-full rounded-full transition-all duration-500 ${
+                        item.is_low_attendance ? 'bg-amber-400' : 'bg-teal'
+                      }`}
+                      style={{ width: `${Math.min(100, Math.max(0, item.percentage))}%` }}
+                    />
+                  </div>
                 </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
 
           <div className="pt-2 text-xs text-text-muted text-[11px] leading-relaxed">
-            Note: Figures represent illustrative reference percentages from the product specification. Live production calculations will connect to institutional attendance records upon backend deployment.
+            Note: Minimum 75% subject attendance is required per university accreditation rules. Low attendance displays in amber.
           </div>
         </SurfacePanel>
 
@@ -231,7 +306,7 @@ export const StudentOverview: React.FC = () => {
                 </span>
               </div>
               <p className="text-xs text-text-secondary mt-0.5">
-                Illustrative reference samples from Blueprint Page 7
+                Objective classroom telemetry counters for self-reflection
               </p>
             </div>
 
@@ -251,16 +326,24 @@ export const StudentOverview: React.FC = () => {
                   <Smartphone className="w-3.5 h-3.5 text-teal" />
                   <span>Phone Events</span>
                 </span>
-                <span className="text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
-                  ↓ DECREASED
+                <span
+                  className={`text-[10px] font-semibold px-1.5 py-0.5 rounded border ${
+                    weekly_activity.phone.trend === 'DECREASED'
+                      ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20'
+                      : weekly_activity.phone.trend === 'INCREASED'
+                      ? 'text-amber-400 bg-amber-500/10 border-amber-500/20'
+                      : 'text-text-muted bg-surface-deep border-glass-border'
+                  }`}
+                >
+                  {weekly_activity.phone.trend === 'DECREASED' ? '↓ DECREASED' : weekly_activity.phone.trend === 'INCREASED' ? '↑ INCREASED' : '→ STABLE'}
                 </span>
               </div>
               <div className="flex items-baseline gap-2">
                 <span className="text-3xl font-bold font-mono text-text-primary">
-                  {weeklyActivity.phone.thisWeek}
+                  {weekly_activity.phone.this_week}
                 </span>
                 <span className="text-xs text-text-muted">
-                  vs {weeklyActivity.phone.lastWeek} last week
+                  vs {weekly_activity.phone.last_week} last week
                 </span>
               </div>
             </div>
@@ -271,16 +354,24 @@ export const StudentOverview: React.FC = () => {
                   <MessageSquare className="w-3.5 h-3.5 text-teal" />
                   <span>Talking Events</span>
                 </span>
-                <span className="text-[10px] font-semibold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
-                  ↓ DECREASED
+                <span
+                  className={`text-[10px] font-semibold px-1.5 py-0.5 rounded border ${
+                    weekly_activity.talking.trend === 'DECREASED'
+                      ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20'
+                      : weekly_activity.talking.trend === 'INCREASED'
+                      ? 'text-amber-400 bg-amber-500/10 border-amber-500/20'
+                      : 'text-text-muted bg-surface-deep border-glass-border'
+                  }`}
+                >
+                  {weekly_activity.talking.trend === 'DECREASED' ? '↓ DECREASED' : weekly_activity.talking.trend === 'INCREASED' ? '↑ INCREASED' : '→ STABLE'}
                 </span>
               </div>
               <div className="flex items-baseline gap-2">
                 <span className="text-3xl font-bold font-mono text-text-primary">
-                  {weeklyActivity.talking.thisWeek}
+                  {weekly_activity.talking.this_week}
                 </span>
                 <span className="text-xs text-text-muted">
-                  vs {weeklyActivity.talking.lastWeek} last week
+                  vs {weekly_activity.talking.last_week} last week
                 </span>
               </div>
             </div>
@@ -292,13 +383,13 @@ export const StudentOverview: React.FC = () => {
               Events Only · No Scores · No Labels
             </span>
             <p className="text-[11px] text-text-muted leading-relaxed">
-              Classroom activity telemetry is restricted strictly to objective event counters (phone and talking events) for lecture reflection. No personality scoring, attentiveness grading, or individual profiling is generated. No real student biometric or activity data is exposed; values are synthetic fixtures.
+              Classroom activity telemetry is restricted strictly to objective aggregate event counters for lecture reflection. No personality scoring, attentiveness grading, or individual profiling is generated.
             </p>
           </div>
 
           <div className="flex items-center justify-between text-xs pt-1">
             <span className="text-text-muted text-[11px]">
-              Access scope: Planned Section CSE-A RBAC scope (Demo fixture)
+              Access scope: Section {student.section_name} verified principal
             </span>
             <NavLink
               to="/student/activity"
@@ -317,42 +408,52 @@ export const StudentOverview: React.FC = () => {
           <div className="flex items-center justify-between pb-3 border-b border-glass-border">
             <div>
               <h3 className="text-base font-semibold text-text-primary">
-                Today's Illustrative Schedule Agenda
+                Today's Schedule Agenda
               </h3>
               <p className="text-xs text-text-secondary">
-                Sample lecture progression for CSE-A
+                Timetable lecture progression for Section {student.section_name}
               </p>
             </div>
-            <span className="text-[10px] font-mono text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
-              Demo Fixture
+            <span className="text-[10px] font-mono text-teal bg-teal/10 px-2 py-0.5 rounded border border-teal/20">
+              Live Timetable
             </span>
           </div>
 
           <div className="divide-y divide-glass-border">
-            {todayTimeline.map((item, idx) => (
-              <div
-                key={idx}
-                className="py-3 flex items-center justify-between text-xs gap-3"
-              >
-                <div className="flex items-center gap-3">
-                  <span className="font-mono text-text-muted text-[11px] w-16">
-                    {item.time}
-                  </span>
+            {today_schedule.length === 0 ? (
+              <p className="text-xs text-text-muted py-6 text-center">
+                No classes scheduled on today's timetable.
+              </p>
+            ) : (
+              today_schedule.map((item) => (
+                <div
+                  key={item.slot_id}
+                  className="py-3 flex items-center justify-between text-xs gap-3"
+                >
+                  <div className="flex items-center gap-3">
+                    <span className="font-mono text-text-muted text-[11px] w-24">
+                      {item.time_display}
+                    </span>
+                    <div>
+                      <span className="font-semibold text-text-primary">
+                        {item.subject_name} ({item.subject_code})
+                      </span>
+                      <span className="text-[11px] text-text-muted block">
+                        {item.room} · {item.faculty_name}
+                      </span>
+                    </div>
+                  </div>
+
                   <div>
-                    <span className="font-semibold text-text-primary">
-                      {item.subject}
-                    </span>
-                    <span className="text-[11px] text-text-muted block">
-                      {item.room}
-                    </span>
+                    <StatusPill
+                      variant={item.is_current ? 'present' : item.status === 'Completed' ? 'neutral' : 'neutral'}
+                      label={item.status}
+                      pulse={item.is_current}
+                    />
                   </div>
                 </div>
-
-                <div>
-                  <StatusPill variant={item.current ? 'present' : 'neutral'} label={item.status} pulse={item.current} />
-                </div>
-              </div>
-            ))}
+              ))
+            )}
           </div>
         </SurfacePanel>
 
@@ -371,11 +472,11 @@ export const StudentOverview: React.FC = () => {
                   Emergency SOS Console
                 </h3>
                 <span className="text-[10px] font-mono uppercase px-1.5 py-0.5 rounded bg-rose-500/15 text-rose-300 border border-rose-500/30">
-                  Demo
+                  Direct Dispatch
                 </span>
               </div>
               <p className="text-xs text-text-secondary mt-1 leading-relaxed">
-                Interactive demonstration of the Blueprint Page 14 rapid assistance decision tree (fall incidents and acute safety alerts).
+                Rapid emergency assistance decision tree for fall incidents and acute campus safety alerts.
               </p>
             </div>
           </div>
@@ -390,7 +491,7 @@ export const StudentOverview: React.FC = () => {
               Open Emergency SOS Console
             </Button>
             <p className="text-[11px] text-center text-text-muted">
-              Simulated demonstration console · Backend dispatch is offline
+              Connects directly to campus security escalation protocols
             </p>
           </div>
         </SurfacePanel>

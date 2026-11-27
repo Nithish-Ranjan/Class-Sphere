@@ -129,6 +129,14 @@ export const App: React.FC = () => {
             }
           />
           <Route
+            path="/student/attendance/history"
+            element={
+              <ProtectedRoute allowedRoles={['STUDENT']}>
+                <StudentAttendance />
+              </ProtectedRoute>
+            }
+          />
+          <Route
             path="/student/attendance/subject-wise"
             element={
               <ProtectedRoute allowedRoles={['STUDENT']}>
