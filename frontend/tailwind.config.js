@@ -11,10 +11,10 @@ export default {
         'surface-frosted': 'rgba(255, 255, 255, 0.86)',
         'text-primary': '#0F172A',
         'text-secondary': '#475569',
-        'text-muted': '#64748B',
+        'text-muted': '#5B6B7C',
         teal: {
-          DEFAULT: '#0F766E',
-          hover: '#115E59',
+          DEFAULT: '#0D6B63',
+          hover: '#0A5A53',
           dim: 'rgba(13, 148, 136, 0.10)',
           glow: 'rgba(13, 148, 136, 0.20)',
           bright: '#14B8A6',

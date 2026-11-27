@@ -76,7 +76,7 @@ export const StudentActivity: React.FC = () => {
           description="Demonstrates observable classroom event detection matching CampusPulse Blueprint Page 6."
         />
         <SurfacePanel variant="deep" className="p-8 border border-rose-500/30 bg-rose-500/5 space-y-4 text-center">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-rose-500/10 text-rose-600">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-rose-500/10 text-rose-700">
             <AlertCircle className="w-6 h-6" />
           </div>
           <div className="space-y-1">
@@ -174,13 +174,13 @@ export const StudentActivity: React.FC = () => {
 
           {/* Talking Events */}
           <div className="p-6 rounded-2xl bg-surface-raised border border-glass-border text-center space-y-2">
-            <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-600 flex items-center justify-center mx-auto">
+            <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-700 flex items-center justify-center mx-auto">
               <MessageSquare className="w-5 h-5" />
             </div>
             <span className="text-xs font-semibold text-text-muted uppercase tracking-wider block">
               Talking
             </span>
-            <span className="text-4xl sm:text-5xl font-bold font-mono text-sky-600 block">
+            <span className="text-4xl sm:text-5xl font-bold font-mono text-sky-700 block">
               {activityData.talking_count}
             </span>
             <span className="text-xs text-text-secondary block">Events Detected</span>
@@ -188,7 +188,7 @@ export const StudentActivity: React.FC = () => {
 
           {/* Total Events */}
           <div className="p-6 rounded-2xl bg-surface-raised border border-glass-border text-center space-y-2">
-            <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-600 flex items-center justify-center mx-auto">
+            <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-700 flex items-center justify-center mx-auto">
               <Activity className="w-5 h-5" />
             </div>
             <span className="text-xs font-semibold text-text-muted uppercase tracking-wider block">

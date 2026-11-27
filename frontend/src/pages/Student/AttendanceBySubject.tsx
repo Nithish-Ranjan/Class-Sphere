@@ -92,7 +92,7 @@ export const AttendanceBySubject: React.FC = () => {
         />
         <div className="max-w-2xl mx-auto py-8">
           <SurfacePanel variant="deep" className="p-8 border border-rose-500/30 bg-rose-500/5 rounded-3xl space-y-4 text-center">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-rose-500/10 text-rose-600">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-rose-500/10 text-rose-700">
               <AlertCircle className="w-6 h-6" />
             </div>
             <div className="space-y-1">
@@ -206,7 +206,7 @@ export const AttendanceBySubject: React.FC = () => {
                           {sub.subject_name}
                         </span>
                         {sub.is_low_attendance && (
-                          <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 border border-amber-500/25 flex items-center gap-1">
+                          <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-amber-500/10 text-amber-800 border border-amber-500/25 flex items-center gap-1">
                             <AlertTriangle className="w-3 h-3" />
                             Below 75%
                           </span>
@@ -225,7 +225,7 @@ export const AttendanceBySubject: React.FC = () => {
                           {sub.attended_sessions} Attended
                         </span>
                         <span>•</span>
-                        <span className={sub.absent_sessions > 0 ? 'text-rose-600' : 'text-text-muted'}>
+                        <span className={sub.absent_sessions > 0 ? 'text-rose-700' : 'text-text-muted'}>
                           {sub.absent_sessions} Absent
                         </span>
                         <span>•</span>
@@ -237,7 +237,7 @@ export const AttendanceBySubject: React.FC = () => {
                     <div className="text-right shrink-0">
                       <span
                         className={`text-lg font-bold font-mono ${
-                          sub.is_low_attendance ? 'text-amber-600' : 'text-teal'
+                          sub.is_low_attendance ? 'text-amber-800' : 'text-teal'
                         }`}
                       >
                         {sub.attendance_percentage.toFixed(1)}%
@@ -315,7 +315,7 @@ export const AttendanceBySubject: React.FC = () => {
                     <span
                       className={`font-mono font-bold text-xs mb-1.5 transition-colors ${
                         sub.is_low_attendance
-                          ? 'text-amber-600 group-hover:text-amber-700'
+                          ? 'text-amber-800 group-hover:text-amber-800'
                           : 'text-teal group-hover:text-teal-300'
                       }`}
                     >

@@ -385,7 +385,7 @@ export const StudentAttendance: React.FC = () => {
                 if (isSelected) {
                   if (st === 'ALL') colorClasses = 'bg-teal text-white font-semibold shadow-sm border-teal';
                   else if (st === 'PRESENT') colorClasses = 'bg-emerald-500/20 text-emerald-700 font-semibold border-emerald-500/40';
-                  else if (st === 'LATE') colorClasses = 'bg-amber-500/20 text-amber-700 font-semibold border-amber-500/40';
+                  else if (st === 'LATE') colorClasses = 'bg-amber-500/20 text-amber-800 font-semibold border-amber-500/40';
                   else if (st === 'ABSENT') colorClasses = 'bg-rose-500/20 text-rose-700 font-semibold border-rose-500/40';
                   else if (st === 'UNVERIFIED') colorClasses = 'bg-slate-500/30 text-slate-200 font-semibold border-slate-500/50';
                 }
@@ -427,7 +427,7 @@ export const StudentAttendance: React.FC = () => {
               variant="deep"
               className="p-8 border border-rose-500/30 bg-rose-500/5 rounded-3xl space-y-4 text-center"
             >
-              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-rose-500/10 text-rose-600">
+              <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-rose-500/10 text-rose-700">
                 <AlertCircle className="w-6 h-6" />
               </div>
               <div className="space-y-1">
@@ -579,7 +579,7 @@ export const StudentAttendance: React.FC = () => {
                             )}
 
                             {rec.manual_override && (
-                              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono bg-blue-500/15 text-blue-600 border border-blue-500/30 block w-fit">
+                              <span className="inline-flex items-center gap-1 px-1.5 py-0.5 rounded text-[10px] font-mono bg-blue-500/15 text-blue-700 border border-blue-500/30 block w-fit">
                                 <FileCheck2 className="w-3 h-3" />
                                 <span>Faculty Override</span>
                               </span>
@@ -590,14 +590,14 @@ export const StudentAttendance: React.FC = () => {
                         {/* Dispute Status / Eligibility */}
                         <td className="py-3.5 px-4">
                           {rec.dispute_id ? (
-                            <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded text-[11px] font-mono bg-amber-500/15 text-amber-700 border border-amber-500/30">
+                            <span className="inline-flex items-center gap-1.5 px-2 py-1 rounded text-[11px] font-mono bg-amber-500/15 text-amber-800 border border-amber-500/30">
                               <AlertTriangle className="w-3.5 h-3.5" />
                               <span>Dispute: {rec.dispute_status || 'FILED'}</span>
                             </span>
                           ) : rec.can_dispute ? (
                             <button
                               onClick={() => handleOpenDispute(rec)}
-                              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-amber-500/15 text-amber-700 hover:bg-amber-500/25 border border-amber-500/30 transition-colors focus-ring cursor-pointer"
+                              className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs font-medium bg-amber-500/15 text-amber-800 hover:bg-amber-500/25 border border-amber-500/30 transition-colors focus-ring cursor-pointer"
                               title="Submit attendance dispute for faculty review"
                             >
                               <AlertTriangle className="w-3.5 h-3.5" />
@@ -663,7 +663,7 @@ export const StudentAttendance: React.FC = () => {
           {/* Mandatory Technical Honesty Banner */}
           <div className="p-4 rounded-2xl bg-surface-deep border border-amber-500/25 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
             <div className="flex items-center gap-3">
-              <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 flex items-center justify-center shrink-0">
+              <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-800 flex items-center justify-center shrink-0">
                 <Radio className="w-5 h-5 animate-pulse" />
               </div>
               <div>
@@ -676,7 +676,7 @@ export const StudentAttendance: React.FC = () => {
               </div>
             </div>
 
-            <span className="text-[10px] font-mono uppercase px-2.5 py-1 rounded bg-amber-500/15 text-amber-700 border border-amber-500/30 shrink-0">
+            <span className="text-[10px] font-mono uppercase px-2.5 py-1 rounded bg-amber-500/15 text-amber-800 border border-amber-500/30 shrink-0">
               Biometric Engine Offline
             </span>
           </div>
@@ -732,9 +732,9 @@ export const StudentAttendance: React.FC = () => {
                 <span className="text-[10px] text-teal block">Cosine Vector Similarity</span>
               </div>
               <div className="p-3.5 rounded-xl bg-surface-raised border border-glass-border text-center space-y-1">
-                <span className="text-[10px] font-mono text-amber-600 block">4. Commit State</span>
+                <span className="text-[10px] font-mono text-amber-800 block">4. Commit State</span>
                 <span className="font-semibold text-text-primary">Faculty Review Decision</span>
-                <span className="text-[10px] text-amber-600 block">Manual Confirm / Dispute</span>
+                <span className="text-[10px] text-amber-800 block">Manual Confirm / Dispute</span>
               </div>
             </div>
           </SurfacePanel>
@@ -742,7 +742,7 @@ export const StudentAttendance: React.FC = () => {
           {/* Dispute Integration Notice */}
           <SurfacePanel variant="deep" className="p-6 border border-glass-border space-y-3">
             <div className="flex items-center gap-2">
-              <Clock className="w-4 h-4 text-amber-600" />
+              <Clock className="w-4 h-4 text-amber-800" />
               <h4 className="text-sm font-semibold text-text-primary">
                 Dispute & Attendance Review Submissions
               </h4>
@@ -766,7 +766,7 @@ export const StudentAttendance: React.FC = () => {
             {/* Modal Header */}
             <div className="px-6 py-4 border-b border-glass-border flex items-center justify-between">
               <div className="flex items-center gap-2.5">
-                <div className="w-8 h-8 rounded-lg bg-amber-500/15 text-amber-600 flex items-center justify-center border border-amber-500/30">
+                <div className="w-8 h-8 rounded-lg bg-amber-500/15 text-amber-800 flex items-center justify-center border border-amber-500/30">
                   <AlertTriangle className="w-4 h-4" />
                 </div>
                 <div>
@@ -804,7 +804,7 @@ export const StudentAttendance: React.FC = () => {
                 </div>
                 <div>
                   <span className="text-[10px] text-text-muted uppercase font-mono block">Current Status</span>
-                  <span className="font-semibold text-rose-600 font-mono">{disputeRecord.status}</span>
+                  <span className="font-semibold text-rose-700 font-mono">{disputeRecord.status}</span>
                 </div>
                 <div>
                   <span className="text-[10px] text-text-muted uppercase font-mono block">Time / Room</span>
@@ -816,7 +816,7 @@ export const StudentAttendance: React.FC = () => {
 
               {/* Error Callout */}
               {disputeError && (
-                <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center gap-2.5 text-xs text-rose-600">
+                <div className="p-3 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center gap-2.5 text-xs text-rose-700">
                   <AlertCircle className="w-4 h-4 shrink-0" />
                   <span>{disputeError}</span>
                 </div>
@@ -825,7 +825,7 @@ export const StudentAttendance: React.FC = () => {
               {/* Reason Input */}
               <div className="space-y-1.5">
                 <label htmlFor="dispute-reason" className="block text-xs font-medium text-text-primary">
-                  Reason for Dispute <span className="text-rose-600">*</span>
+                  Reason for Dispute <span className="text-rose-700">*</span>
                 </label>
                 <textarea
                   id="dispute-reason"

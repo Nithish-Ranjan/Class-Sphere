@@ -47,7 +47,7 @@ export const StatusBadge: React.FC<StatusBadgeProps> = ({
     },
     LATE: {
       bg: 'bg-amber-50',
-      text: 'text-amber-700',
+      text: 'text-amber-800',
       border: 'border-amber-200',
       dot: 'bg-amber-500',
     },

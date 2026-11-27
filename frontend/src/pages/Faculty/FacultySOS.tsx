@@ -64,7 +64,7 @@ export const FacultySOS: React.FC = () => {
 
       <div className="p-4 rounded-2xl bg-surface-deep border border-rose-500/25 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-700 flex items-center justify-center shrink-0">
             <ShieldAlert className="w-4 h-4" />
           </div>
           <div>
@@ -114,11 +114,11 @@ export const FacultySOS: React.FC = () => {
           <SurfacePanel variant="deep" className="p-6 sm:p-8 space-y-6 border border-rose-500/30 shadow-glass-dropdown">
             <div className="flex items-center justify-between pb-4 border-b border-glass-border gap-3">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-600 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-700 flex items-center justify-center">
                   <Siren className={`w-5 h-5 ${current.status === 'RESOLVED' ? '' : 'animate-pulse'}`} />
                 </div>
                 <div>
-                  <span className="text-[11px] font-mono uppercase text-rose-600 block font-semibold">
+                  <span className="text-[11px] font-mono uppercase text-rose-700 block font-semibold">
                     {current.source} · {current.severity}
                   </span>
                   <h3 className="text-lg font-bold text-text-primary mt-0.5">{current.title}</h3>
@@ -143,7 +143,7 @@ export const FacultySOS: React.FC = () => {
               </div>
               <div className="flex justify-between gap-3">
                 <span className="text-text-muted">Location</span>
-                <span className="text-amber-600 flex items-center gap-1">
+                <span className="text-amber-800 flex items-center gap-1">
                   <MapPin className="w-3.5 h-3.5" />
                   {current.room_number ?? 'unknown'}
                 </span>
@@ -194,7 +194,7 @@ export const FacultySOS: React.FC = () => {
                   </>
                 )}
                 {current.status === 'RESOLVED' && (
-                  <span className="text-xs font-mono text-emerald-600 flex items-center gap-1">
+                  <span className="text-xs font-mono text-emerald-700 flex items-center gap-1">
                     <CheckCircle2 className="w-3.5 h-3.5" /> Closed
                   </span>
                 )}
@@ -239,7 +239,7 @@ export const FacultySOS: React.FC = () => {
         )}
 
         <div className="p-4 rounded-2xl bg-surface-deep border border-glass-border flex items-center gap-2 text-xs text-text-secondary">
-          <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
+          <AlertTriangle className="w-4 h-4 text-amber-800 shrink-0" />
           <span>Institutional emergency phone numbers are configured per deployment; this console only records incidents.</span>
         </div>
       </div>

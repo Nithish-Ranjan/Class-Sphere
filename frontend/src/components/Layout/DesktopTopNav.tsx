@@ -197,7 +197,7 @@ export const DesktopTopNav: React.FC = () => {
             to="/student/sos"
             className={({ isActive }) =>
               clsx(
-                'px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 focus-ring text-rose-600 hover:text-rose-700 hover:bg-rose-500/10',
+                'px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 focus-ring text-rose-700 hover:text-rose-700 hover:bg-rose-500/10',
                 isActive && 'bg-rose-500/15 border border-rose-500/30'
               )
             }
@@ -336,7 +336,7 @@ export const DesktopTopNav: React.FC = () => {
             to="/faculty/sos"
             className={({ isActive }) =>
               clsx(
-                'px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 focus-ring text-rose-600 hover:text-rose-700 hover:bg-rose-500/10',
+                'px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 focus-ring text-rose-700 hover:text-rose-700 hover:bg-rose-500/10',
                 isActive && 'bg-rose-500/15 border border-rose-500/30'
               )
             }
@@ -508,7 +508,7 @@ export const DesktopTopNav: React.FC = () => {
             to="/hod/sos"
             className={({ isActive }) =>
               clsx(
-                'px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 focus-ring text-rose-600 hover:text-rose-700 hover:bg-rose-500/10',
+                'px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 focus-ring text-rose-700 hover:text-rose-700 hover:bg-rose-500/10',
                 isActive && 'bg-rose-500/15 border border-rose-500/30'
               )
             }
@@ -766,7 +766,7 @@ export const DesktopTopNav: React.FC = () => {
 
                   <button
                     onClick={handleLogout}
-                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-rose-600 hover:text-rose-700 hover:bg-rose-500/10 transition-colors focus-ring"
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-rose-700 hover:text-rose-700 hover:bg-rose-500/10 transition-colors focus-ring"
                     role="menuitem"
                   >
                     <LogOut className="w-3.5 h-3.5" />

@@ -224,7 +224,7 @@ export const LoginPage: React.FC = () => {
                 role="alert"
                 className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-700 text-xs flex items-start gap-2.5 animate-in fade-in duration-150"
               >
-                <Info className="w-4 h-4 shrink-0 mt-0.5 text-rose-600" />
+                <Info className="w-4 h-4 shrink-0 mt-0.5 text-rose-700" />
                 <span className="leading-relaxed">{errorMessage}</span>
               </div>
             )}
@@ -384,7 +384,7 @@ export const LoginPage: React.FC = () => {
                       </p>
                     </div>
                   </div>
-                  <span className="text-xs text-teal font-medium">Launch Demo →</span>
+                  <span className="shrink-0 whitespace-nowrap text-xs text-teal font-medium">Launch Demo →</span>
                 </button>
 
                 {/* Faculty Persona */}
@@ -394,7 +394,7 @@ export const LoginPage: React.FC = () => {
                   className="w-full p-2.5 rounded-xl bg-surface-raised hover:bg-surface-raised/80 border border-glass-border flex items-center justify-between transition-colors focus-ring text-left"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-600 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-700 flex items-center justify-center">
                       <BookOpen className="w-4 h-4" />
                     </div>
                     <div>
@@ -406,7 +406,7 @@ export const LoginPage: React.FC = () => {
                       </p>
                     </div>
                   </div>
-                  <span className="text-xs text-sky-600 font-medium">Launch Demo →</span>
+                  <span className="shrink-0 whitespace-nowrap text-xs text-sky-700 font-medium">Launch Demo →</span>
                 </button>
 
                 {/* HOD Persona */}
@@ -416,7 +416,7 @@ export const LoginPage: React.FC = () => {
                   className="w-full p-2.5 rounded-xl bg-surface-raised hover:bg-surface-raised/80 border border-glass-border flex items-center justify-between transition-colors focus-ring text-left"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-600 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-800 flex items-center justify-center">
                       <Building className="w-4 h-4" />
                     </div>
                     <div>
@@ -428,7 +428,7 @@ export const LoginPage: React.FC = () => {
                       </p>
                     </div>
                   </div>
-                  <span className="text-xs text-amber-600 font-medium">Launch Demo →</span>
+                  <span className="shrink-0 whitespace-nowrap text-xs text-amber-800 font-medium">Launch Demo →</span>
                 </button>
               </div>
             </div>

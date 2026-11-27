@@ -105,9 +105,9 @@ export const ClassActivity: React.FC = () => {
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
             {[
               { label: 'Phone', value: totals.phone, icon: <Smartphone className="w-4 h-4" />, tone: 'text-teal bg-teal/10 border-teal/20' },
-              { label: 'Talking', value: totals.talking, icon: <MessageSquare className="w-4 h-4" />, tone: 'text-sky-600 bg-sky-500/10 border-sky-500/20' },
-              { label: 'Other events', value: totals.other, icon: <DoorOpen className="w-4 h-4" />, tone: 'text-amber-600 bg-amber-500/10 border-amber-500/20' },
-              { label: 'Total', value: totals.total, icon: <Activity className="w-4 h-4" />, tone: 'text-purple-600 bg-purple-500/10 border-purple-500/20' },
+              { label: 'Talking', value: totals.talking, icon: <MessageSquare className="w-4 h-4" />, tone: 'text-sky-700 bg-sky-500/10 border-sky-500/20' },
+              { label: 'Other events', value: totals.other, icon: <DoorOpen className="w-4 h-4" />, tone: 'text-amber-800 bg-amber-500/10 border-amber-500/20' },
+              { label: 'Total', value: totals.total, icon: <Activity className="w-4 h-4" />, tone: 'text-purple-700 bg-purple-500/10 border-purple-500/20' },
             ].map((metric) => (
               <SurfacePanel key={metric.label} variant="deep" className="p-5 text-center space-y-1.5 border border-glass-border">
                 <div className={`w-9 h-9 rounded-xl border flex items-center justify-center mx-auto ${metric.tone}`}>
@@ -163,8 +163,8 @@ export const ClassActivity: React.FC = () => {
                         </td>
                         <td className="py-3 px-4 text-text-muted">{row.desk_marker}</td>
                         <td className="py-3 px-4 text-center text-teal">{row.phone_event_count}</td>
-                        <td className="py-3 px-4 text-center text-sky-600">{row.talking_event_count}</td>
-                        <td className="py-3 px-4 text-center text-amber-600">{row.other_event_count}</td>
+                        <td className="py-3 px-4 text-center text-sky-700">{row.talking_event_count}</td>
+                        <td className="py-3 px-4 text-center text-amber-800">{row.other_event_count}</td>
                         <td className="py-3 px-4 text-center text-text-primary font-bold">{row.total_recorded_events}</td>
                       </tr>
                     ))}
@@ -173,8 +173,8 @@ export const ClassActivity: React.FC = () => {
                         Class total
                       </td>
                       <td className="py-3.5 px-4 text-center text-teal font-mono">{totals.phone}</td>
-                      <td className="py-3.5 px-4 text-center text-sky-600 font-mono">{totals.talking}</td>
-                      <td className="py-3.5 px-4 text-center text-amber-600 font-mono">{totals.other}</td>
+                      <td className="py-3.5 px-4 text-center text-sky-700 font-mono">{totals.talking}</td>
+                      <td className="py-3.5 px-4 text-center text-amber-800 font-mono">{totals.other}</td>
                       <td className="py-3.5 px-4 text-center text-text-primary font-mono text-sm">{totals.total}</td>
                     </tr>
                   </tbody>

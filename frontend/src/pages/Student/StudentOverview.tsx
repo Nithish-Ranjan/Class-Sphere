@@ -83,7 +83,7 @@ export const StudentOverview: React.FC = () => {
           description="Personal student dashboard interface demonstrating lecture schedule, subject attendance, and activity telemetry."
         />
         <SurfacePanel variant="deep" className="p-8 border border-rose-500/30 bg-rose-500/5 space-y-4 text-center">
-          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-rose-500/10 text-rose-600">
+          <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-rose-500/10 text-rose-700">
             <AlertCircle className="w-6 h-6" />
           </div>
           <div className="space-y-1">
@@ -122,9 +122,9 @@ export const StudentOverview: React.FC = () => {
       {/* Overall Attendance Alert Banner if Low Attendance */}
       {overall_attendance.is_low_attendance && (
         <div className="p-4 rounded-xl bg-amber-500/10 border border-amber-500/25 flex items-start gap-3">
-          <AlertTriangle className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
+          <AlertTriangle className="w-5 h-5 text-amber-800 shrink-0 mt-0.5" />
           <div className="space-y-1">
-            <h4 className="text-sm font-semibold text-amber-700">Attendance Advisory: Below Minimum Threshold</h4>
+            <h4 className="text-sm font-semibold text-amber-800">Attendance Advisory: Below Minimum Threshold</h4>
             <p className="text-xs text-amber-200/80 leading-relaxed">
               Your overall attendance is currently {overall_attendance.percentage}% ({overall_attendance.attended_sessions} of {overall_attendance.total_sessions} sessions attended). Institutional guidelines require minimum 75% attendance for examination eligibility.
             </p>
@@ -266,7 +266,7 @@ export const StudentOverview: React.FC = () => {
                       </span>
                       <span
                         className={`font-mono font-semibold text-xs ${
-                          item.is_low_attendance ? 'text-amber-600' : 'text-text-primary'
+                          item.is_low_attendance ? 'text-amber-800' : 'text-text-primary'
                         }`}
                       >
                         {item.percentage}%
@@ -329,9 +329,9 @@ export const StudentOverview: React.FC = () => {
                 <span
                   className={`text-[10px] font-semibold px-1.5 py-0.5 rounded border ${
                     weekly_activity.phone.trend === 'DECREASED'
-                      ? 'text-emerald-600 bg-emerald-500/10 border-emerald-500/20'
+                      ? 'text-emerald-700 bg-emerald-500/10 border-emerald-500/20'
                       : weekly_activity.phone.trend === 'INCREASED'
-                      ? 'text-amber-600 bg-amber-500/10 border-amber-500/20'
+                      ? 'text-amber-800 bg-amber-500/10 border-amber-500/20'
                       : 'text-text-muted bg-surface-deep border-glass-border'
                   }`}
                 >
@@ -357,9 +357,9 @@ export const StudentOverview: React.FC = () => {
                 <span
                   className={`text-[10px] font-semibold px-1.5 py-0.5 rounded border ${
                     weekly_activity.talking.trend === 'DECREASED'
-                      ? 'text-emerald-600 bg-emerald-500/10 border-emerald-500/20'
+                      ? 'text-emerald-700 bg-emerald-500/10 border-emerald-500/20'
                       : weekly_activity.talking.trend === 'INCREASED'
-                      ? 'text-amber-600 bg-amber-500/10 border-amber-500/20'
+                      ? 'text-amber-800 bg-amber-500/10 border-amber-500/20'
                       : 'text-text-muted bg-surface-deep border-glass-border'
                   }`}
                 >
@@ -463,7 +463,7 @@ export const StudentOverview: React.FC = () => {
           className="p-6 border border-rose-500/20 bg-rose-500/5 flex flex-col justify-between space-y-4"
         >
           <div className="space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-600 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-700 flex items-center justify-center">
               <AlertCircle className="w-5 h-5" />
             </div>
             <div>

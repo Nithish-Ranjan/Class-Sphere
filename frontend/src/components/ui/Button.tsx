@@ -26,13 +26,13 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
   ) => {
     const variantStyles = {
       primary:
-        'bg-teal hover:bg-teal-hover text-white font-semibold shadow-sm focus-ring disabled:bg-teal/40 disabled:text-white/70',
+        'bg-teal hover:bg-teal-hover text-white font-semibold shadow-sm focus-ring',
       secondary:
-        'bg-surface-raised hover:bg-surface-raised/80 text-text-primary border border-glass-border focus-ring disabled:opacity-50',
+        'bg-surface-raised hover:bg-surface-raised/80 text-text-primary border border-glass-border focus-ring',
       ghost:
-        'bg-transparent hover:bg-surface-raised/60 text-text-secondary hover:text-text-primary focus-ring disabled:opacity-40',
+        'bg-transparent hover:bg-surface-raised/60 text-text-secondary hover:text-text-primary focus-ring',
       danger:
-        'bg-semantic-danger hover:bg-red-600 text-white font-medium focus-ring disabled:opacity-50',
+        'bg-semantic-danger hover:bg-red-600 text-white font-medium focus-ring',
     }[variant];
 
     const sizeStyles = {
@@ -47,6 +47,8 @@ export const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
         disabled={disabled || isLoading}
         className={clsx(
           'inline-flex items-center justify-center select-none font-medium transition-all duration-150 active:scale-[0.98]',
+          // Disabled reads as plainly inactive, not as a washed-out version of the action colour
+          'disabled:cursor-not-allowed disabled:bg-slate-200 disabled:text-slate-600 disabled:border-transparent disabled:shadow-none disabled:active:scale-100',
           sizeStyles,
           variantStyles,
           className

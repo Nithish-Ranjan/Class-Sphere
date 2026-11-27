@@ -88,7 +88,7 @@ export const HODAlerts: React.FC = () => {
                       alert.severity === 'CRITICAL' || alert.severity === 'HIGH'
                         ? 'bg-rose-500/20 text-rose-700 border border-rose-500/35'
                         : alert.severity === 'MEDIUM'
-                        ? 'bg-amber-500/20 text-amber-700 border border-amber-500/35'
+                        ? 'bg-amber-500/20 text-amber-800 border border-amber-500/35'
                         : 'bg-surface-raised text-text-muted border border-glass-border'
                     }`}
                   >
@@ -105,7 +105,7 @@ export const HODAlerts: React.FC = () => {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
                 <div className="text-xs text-text-secondary space-y-1">
                   <p className="flex items-center gap-1.5">
-                    <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
+                    <AlertTriangle className="w-3.5 h-3.5 text-amber-800" />
                     {alert.incident_type.replace(/_/g, ' ')}
                   </p>
                   <div className="flex flex-wrap items-center gap-3 text-[11px] font-mono text-text-muted">
@@ -131,7 +131,7 @@ export const HODAlerts: React.FC = () => {
                     </Button>
                   )}
                   {alert.status === 'RESOLVED' && (
-                    <span className="text-[11px] font-mono text-emerald-600 flex items-center gap-1">
+                    <span className="text-[11px] font-mono text-emerald-700 flex items-center gap-1">
                       <ShieldAlert className="w-3 h-3" /> closed
                     </span>
                   )}

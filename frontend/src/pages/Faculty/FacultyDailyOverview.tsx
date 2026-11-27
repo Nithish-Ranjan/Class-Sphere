@@ -71,7 +71,7 @@ export const FacultyDailyOverview: React.FC = () => {
                   {span} · {classes.length} session{classes.length === 1 ? '' : 's'}
                 </span>
               </div>
-              <span className="font-mono text-sm font-bold text-emerald-600 px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30">
+              <span className="font-mono text-sm font-bold text-emerald-700 px-3 py-1.5 rounded-xl bg-emerald-500/15 border border-emerald-500/30">
                 {completed}/{classes.length} DONE
               </span>
             </div>
@@ -86,9 +86,9 @@ export const FacultyDailyOverview: React.FC = () => {
                       cls.status === 'IN_PROGRESS'
                         ? 'text-teal'
                         : cls.status === 'CANCELLED'
-                        ? 'text-rose-600'
+                        ? 'text-rose-700'
                         : cls.status === 'COMPLETED'
-                        ? 'text-emerald-600'
+                        ? 'text-emerald-700'
                         : 'text-text-muted'
                     }`}
                   >
@@ -113,11 +113,11 @@ export const FacultyDailyOverview: React.FC = () => {
                     <span className="text-[10px] uppercase text-text-muted mt-1 block">Phone</span>
                   </div>
                   <div className="p-3 rounded-xl bg-surface-deep border border-glass-border">
-                    <span className="text-2xl font-bold text-sky-600 block">{activityTotals.talking}</span>
+                    <span className="text-2xl font-bold text-sky-700 block">{activityTotals.talking}</span>
                     <span className="text-[10px] uppercase text-text-muted mt-1 block">Talking</span>
                   </div>
                   <div className="p-3 rounded-xl bg-surface-deep border border-glass-border">
-                    <span className="text-2xl font-bold text-amber-600 block">{activityTotals.out}</span>
+                    <span className="text-2xl font-bold text-amber-800 block">{activityTotals.out}</span>
                     <span className="text-[10px] uppercase text-text-muted mt-1 block">Out</span>
                   </div>
                 </div>
@@ -131,7 +131,7 @@ export const FacultyDailyOverview: React.FC = () => {
                   <button
                     type="button"
                     onClick={() => navigate('/faculty/alerts')}
-                    className="text-[10px] font-mono text-amber-600 hover:underline focus-ring"
+                    className="text-[10px] font-mono text-amber-800 hover:underline focus-ring"
                   >
                     Review →
                   </button>
@@ -156,7 +156,7 @@ export const FacultyDailyOverview: React.FC = () => {
                           className={`px-2 py-0.5 rounded text-[10px] font-bold shrink-0 ${
                             alert.severity === 'CRITICAL' || alert.severity === 'HIGH'
                               ? 'bg-rose-500/15 text-rose-700 border border-rose-500/30'
-                              : 'bg-amber-500/15 text-amber-700 border border-amber-500/30'
+                              : 'bg-amber-500/15 text-amber-800 border border-amber-500/30'
                           }`}
                         >
                           {alert.severity}
@@ -195,11 +195,11 @@ export const FacultyDailyOverview: React.FC = () => {
                     {item.attendance_taken ? (
                       <>
                         <div className="flex items-center justify-between text-base font-bold pt-1">
-                          <span className="text-emerald-600">{item.present_count}</span>
+                          <span className="text-emerald-700">{item.present_count}</span>
                           <span className="text-text-muted">/</span>
-                          <span className="text-amber-600">{item.late_count}</span>
+                          <span className="text-amber-800">{item.late_count}</span>
                           <span className="text-text-muted">/</span>
-                          <span className="text-rose-600">{item.unverified_count}</span>
+                          <span className="text-rose-700">{item.unverified_count}</span>
                         </div>
 
                         <div className="w-full h-1.5 rounded-full bg-surface-deep overflow-hidden flex">

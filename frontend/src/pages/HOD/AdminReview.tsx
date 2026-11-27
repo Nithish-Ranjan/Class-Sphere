@@ -50,7 +50,7 @@ export const AdminReview: React.FC = () => {
             </SurfacePanel>
             <SurfacePanel variant="deep" className="p-5 space-y-1 border border-glass-border">
               <span className="text-[11px] font-semibold text-text-muted uppercase tracking-wider block">Integrity</span>
-              <span className={`text-2xl font-bold font-mono block ${data.chain_valid ? 'text-emerald-600' : 'text-rose-600'}`}>
+              <span className={`text-2xl font-bold font-mono block ${data.chain_valid ? 'text-emerald-700' : 'text-rose-700'}`}>
                 {data.chain_valid ? 'VERIFIED' : 'FAILED'}
               </span>
               <span className="text-[11px] text-text-secondary block flex items-center gap-1">

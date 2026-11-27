@@ -144,22 +144,22 @@ export const StudentSOS: React.FC = () => {
         );
       case 'ACKNOWLEDGED':
         return (
-          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-700 border border-amber-500/30">
-            <Clock className="w-3 h-3 text-amber-600" />
+          <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-amber-500/15 text-amber-800 border border-amber-500/30">
+            <Clock className="w-3 h-3 text-amber-800" />
             ACKNOWLEDGED (Staff Reviewing)
           </span>
         );
       case 'ESCALATION_REQUESTED':
         return (
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-orange-500/15 text-orange-700 border border-orange-500/30">
-            <Building className="w-3 h-3 text-orange-600" />
+            <Building className="w-3 h-3 text-orange-700" />
             ESCALATION REQUESTED
           </span>
         );
       case 'EXTERNAL_HANDOFF_PENDING':
         return (
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-purple-500/15 text-purple-700 border border-purple-500/30">
-            <Clock className="w-3 h-3 text-purple-600" />
+            <Clock className="w-3 h-3 text-purple-700" />
             EXTERNAL HANDOFF PENDING
           </span>
         );
@@ -173,7 +173,7 @@ export const StudentSOS: React.FC = () => {
       case 'CAMPUS_RESOLVED':
         return (
           <span className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-emerald-500/15 text-emerald-700 border border-emerald-500/30">
-            <CheckCircle2 className="w-3 h-3 text-emerald-600" />
+            <CheckCircle2 className="w-3 h-3 text-emerald-700" />
             CAMPUS RESOLVED
           </span>
         );
@@ -213,7 +213,7 @@ export const StudentSOS: React.FC = () => {
       {/* Safety & Transparency Notice */}
       <div className="p-4 rounded-2xl bg-surface-deep border border-rose-500/30 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-glass">
         <div className="flex items-start sm:items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-600 flex items-center justify-center shrink-0 mt-0.5 sm:mt-0">
+          <div className="w-9 h-9 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-700 flex items-center justify-center shrink-0 mt-0.5 sm:mt-0">
             <ShieldAlert className="w-5 h-5" />
           </div>
           <div>
@@ -238,7 +238,7 @@ export const StudentSOS: React.FC = () => {
         >
           <div className="flex items-start justify-between gap-4">
             <div className="flex items-center gap-3">
-              <div className="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-600 flex items-center justify-center shrink-0">
+              <div className="w-10 h-10 rounded-xl bg-emerald-500/15 border border-emerald-500/30 text-emerald-700 flex items-center justify-center shrink-0">
                 <CheckCircle2 className="w-6 h-6" />
               </div>
               <div>
@@ -269,7 +269,7 @@ export const StudentSOS: React.FC = () => {
             </div>
             <div>
               <span className="text-[10px] font-mono uppercase text-text-muted block">Severity</span>
-              <span className={`font-semibold ${submittedIncident.severity === 'CRITICAL' ? 'text-rose-600' : 'text-amber-600'}`}>
+              <span className={`font-semibold ${submittedIncident.severity === 'CRITICAL' ? 'text-rose-700' : 'text-amber-800'}`}>
                 {submittedIncident.severity}
               </span>
             </div>
@@ -307,7 +307,7 @@ export const StudentSOS: React.FC = () => {
               }`}
             >
               <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-600 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-700 flex items-center justify-center">
                   <AlertTriangle className="w-5 h-5" />
                 </div>
                 <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-rose-500/15 text-rose-700 border border-rose-500/30">
@@ -315,7 +315,7 @@ export const StudentSOS: React.FC = () => {
                 </span>
               </div>
               <div>
-                <span className="text-sm font-bold uppercase tracking-wider text-rose-600 block">
+                <span className="text-sm font-bold uppercase tracking-wider text-rose-700 block">
                   SOMEONE FELL
                 </span>
                 <span className="text-xs text-text-secondary mt-1 block">
@@ -338,15 +338,15 @@ export const StudentSOS: React.FC = () => {
               }`}
             >
               <div className="flex items-center justify-between">
-                <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-600 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/25 text-amber-800 flex items-center justify-center">
                   <ShieldAlert className="w-5 h-5" />
                 </div>
-                <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-amber-500/15 text-amber-700 border border-amber-500/30">
+                <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-amber-500/15 text-amber-800 border border-amber-500/30">
                   High
                 </span>
               </div>
               <div>
-                <span className="text-sm font-bold uppercase tracking-wider text-amber-600 block">
+                <span className="text-sm font-bold uppercase tracking-wider text-amber-800 block">
                   SOMETHING HAPPENED
                 </span>
                 <span className="text-xs text-text-secondary mt-1 block">
@@ -361,7 +361,7 @@ export const StudentSOS: React.FC = () => {
             <label className="text-xs font-semibold text-text-primary flex items-center justify-between">
               <span className="flex items-center gap-1.5">
                 <MapPin className="w-3.5 h-3.5 text-teal" />
-                Location Description <span className="text-rose-600">*</span>
+                Location Description <span className="text-rose-700">*</span>
               </span>
               <span className="text-[11px] text-text-muted">Minimum 3 characters</span>
             </label>
@@ -423,7 +423,7 @@ export const StudentSOS: React.FC = () => {
           {/* Error Banner */}
           {submitError && (
             <div className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/30 flex items-center gap-2.5 text-xs text-rose-700">
-              <AlertCircle className="w-4 h-4 shrink-0 text-rose-600" />
+              <AlertCircle className="w-4 h-4 shrink-0 text-rose-700" />
               <span>{submitError}</span>
             </div>
           )}
@@ -484,7 +484,7 @@ export const StudentSOS: React.FC = () => {
         {/* API Error State */}
         {!loading && fetchError && (
           <SurfacePanel variant="deep" className="p-8 border border-rose-500/30 bg-rose-500/5 rounded-2xl space-y-3 text-center">
-            <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-rose-500/10 text-rose-600">
+            <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-rose-500/10 text-rose-700">
               <AlertCircle className="w-5 h-5" />
             </div>
             <div className="space-y-1">
@@ -501,7 +501,7 @@ export const StudentSOS: React.FC = () => {
         {!loading && !fetchError && incidents.length === 0 && (
           <SurfacePanel variant="deep" className="p-10 text-center rounded-2xl border border-glass-border space-y-3">
             <div className="inline-flex items-center justify-center w-10 h-10 rounded-full bg-surface-raised border border-glass-border text-text-muted">
-              <CheckCircle2 className="w-5 h-5 text-emerald-600" />
+              <CheckCircle2 className="w-5 h-5 text-emerald-700" />
             </div>
             <div className="space-y-1">
               <h4 className="text-sm font-semibold text-text-primary">No Incident Reports on File</h4>
@@ -517,7 +517,7 @@ export const StudentSOS: React.FC = () => {
           <div className="space-y-4">
             <div className="flex items-center gap-2">
               <span className="w-2 h-2 rounded-full bg-rose-500 animate-pulse" />
-              <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-rose-600">
+              <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-rose-700">
                 Active Incidents ({activeIncidents.length})
               </h4>
             </div>
@@ -536,7 +536,7 @@ export const StudentSOS: React.FC = () => {
                   >
                     <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 pb-3 border-b border-glass-border">
                       <div className="flex items-center gap-2.5">
-                        <div className="w-8 h-8 rounded-lg bg-rose-500/10 border border-rose-500/25 text-rose-600 flex items-center justify-center shrink-0">
+                        <div className="w-8 h-8 rounded-lg bg-rose-500/10 border border-rose-500/25 text-rose-700 flex items-center justify-center shrink-0">
                           <AlertTriangle className="w-4 h-4" />
                         </div>
                         <div>
@@ -550,7 +550,7 @@ export const StudentSOS: React.FC = () => {
                             <span className={`text-[10px] font-mono uppercase px-2 py-0.5 rounded ${
                               incident.severity === 'CRITICAL'
                                 ? 'bg-rose-500/20 text-rose-700 border border-rose-500/30'
-                                : 'bg-amber-500/20 text-amber-700 border border-amber-500/30'
+                                : 'bg-amber-500/20 text-amber-800 border border-amber-500/30'
                             }`}>
                               {incident.severity}
                             </span>
@@ -598,8 +598,8 @@ export const StudentSOS: React.FC = () => {
         {!loading && !fetchError && resolvedIncidents.length > 0 && (
           <div className="space-y-4 pt-4 border-t border-glass-border">
             <div className="flex items-center gap-2">
-              <CheckCircle2 className="w-4 h-4 text-emerald-600" />
-              <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-600">
+              <CheckCircle2 className="w-4 h-4 text-emerald-700" />
+              <h4 className="text-xs font-mono font-bold uppercase tracking-wider text-emerald-700">
                 Resolved Incident History ({resolvedIncidents.length})
               </h4>
             </div>

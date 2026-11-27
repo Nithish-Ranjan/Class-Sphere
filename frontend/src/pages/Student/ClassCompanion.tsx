@@ -88,7 +88,7 @@ export const ClassCompanion: React.FC = () => {
         />
         <div className="max-w-2xl mx-auto">
           <SurfacePanel variant="deep" className="p-8 border border-rose-500/30 bg-rose-500/5 rounded-3xl space-y-4 text-center">
-            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-rose-500/10 text-rose-600">
+            <div className="inline-flex items-center justify-center w-12 h-12 rounded-full bg-rose-500/10 text-rose-700">
               <AlertCircle className="w-6 h-6" />
             </div>
             <div className="space-y-1">
@@ -117,9 +117,9 @@ export const ClassCompanion: React.FC = () => {
             <span
               className={`text-[11px] font-mono uppercase px-2.5 py-1 rounded border ${
                 class_state === 'ONGOING'
-                  ? 'bg-emerald-500/15 text-emerald-600 border-emerald-500/30 animate-pulse'
+                  ? 'bg-emerald-500/15 text-emerald-700 border-emerald-500/30 animate-pulse'
                   : class_state === 'UPCOMING'
-                  ? 'bg-sky-500/15 text-sky-600 border-sky-500/30'
+                  ? 'bg-sky-500/15 text-sky-700 border-sky-500/30'
                   : 'bg-surface-raised text-text-muted border-glass-border'
               }`}
             >
@@ -192,7 +192,7 @@ export const ClassCompanion: React.FC = () => {
                     Session Date: {class_details.session_date}
                   </span>
                 </div>
-                <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-600 flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-700 flex items-center justify-center shrink-0">
                   <Clock className="w-5 h-5" />
                 </div>
               </div>
@@ -205,12 +205,12 @@ export const ClassCompanion: React.FC = () => {
                   </span>
                   <div className="mt-2 flex items-center gap-2">
                     {class_details.attendance_taken ? (
-                      <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-500/15 text-emerald-600 border border-emerald-500/30 text-sm font-semibold font-mono">
+                      <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-emerald-500/15 text-emerald-700 border border-emerald-500/30 text-sm font-semibold font-mono">
                         <CheckCircle2 className="w-4 h-4" />
                         <span>TAKEN ✓ ({class_details.my_attendance_status || 'RECORDED'})</span>
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-500/15 text-amber-600 border border-amber-500/30 text-sm font-semibold font-mono">
+                      <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-500/15 text-amber-800 border border-amber-500/30 text-sm font-semibold font-mono">
                         <AlertCircle className="w-4 h-4" />
                         <span>NOT TAKEN</span>
                       </span>

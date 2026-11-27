@@ -110,9 +110,9 @@ export const StudentView: React.FC = () => {
                       </td>
                       <td className="py-3 px-3 font-mono text-text-muted">{student.section_name}</td>
                       <td className="py-3 px-3 text-center font-mono">{student.classes_conducted}</td>
-                      <td className="py-3 px-3 text-center font-mono text-emerald-600">{student.classes_attended}</td>
-                      <td className="py-3 px-3 text-center font-mono text-rose-600">{student.classes_missed}</td>
-                      <td className="py-3 px-3 text-center font-mono text-amber-600">{student.classes_unverified}</td>
+                      <td className="py-3 px-3 text-center font-mono text-emerald-700">{student.classes_attended}</td>
+                      <td className="py-3 px-3 text-center font-mono text-rose-700">{student.classes_missed}</td>
+                      <td className="py-3 px-3 text-center font-mono text-amber-800">{student.classes_unverified}</td>
                       <td className="py-3 px-3 text-right">
                         <div className="flex items-center justify-end gap-2">
                           <span className="font-mono font-semibold text-text-primary">

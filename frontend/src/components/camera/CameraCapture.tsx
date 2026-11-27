@@ -172,7 +172,7 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
               <span>Local Canvas Frame Captured</span>
             </div>
             <div className="absolute bottom-3 left-3 right-3 p-2.5 rounded-lg bg-surface-deep/95 border border-amber-500/30 backdrop-blur-sm text-[11px] text-text-secondary flex items-center justify-between">
-              <span className="font-mono text-amber-700">Biometric Vector Match: NOT CONNECTED</span>
+              <span className="font-mono text-amber-800">Biometric Vector Match: NOT CONNECTED</span>
               <span className="text-[10px] text-text-muted">Local preview only</span>
             </div>
           </div>
@@ -211,7 +211,7 @@ export const CameraCapture: React.FC<CameraCaptureProps> = ({
         {/* State 5: Permission Denied or Device Unavailable */}
         {(cameraState === 'denied' || cameraState === 'unavailable' || cameraState === 'error') && (
           <div className="text-center p-6 space-y-3 max-w-md">
-            <div className="w-12 h-12 rounded-full bg-rose-500/10 border border-rose-500/20 flex items-center justify-center mx-auto text-rose-600">
+            <div className="w-12 h-12 rounded-full bg-rose-500/10 border border-rose-500/20 flex items-center justify-center mx-auto text-rose-700">
               <CameraOff className="w-6 h-6" />
             </div>
             <div>

@@ -124,7 +124,7 @@ export const FacultyAttendance: React.FC = () => {
 
       <div className="p-4 rounded-2xl bg-surface-deep border border-amber-500/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-800 flex items-center justify-center shrink-0">
             <Camera className="w-4 h-4" />
           </div>
           <div>
@@ -180,7 +180,7 @@ export const FacultyAttendance: React.FC = () => {
                   pulse={session.status === 'ACTIVE'}
                 />
                 {finalized ? (
-                  <span className="text-[11px] font-mono text-emerald-600 flex items-center gap-1">
+                  <span className="text-[11px] font-mono text-emerald-700 flex items-center gap-1">
                     <Lock className="w-3 h-3" /> locked
                   </span>
                 ) : (
@@ -193,9 +193,9 @@ export const FacultyAttendance: React.FC = () => {
 
             <div className="grid grid-cols-2 sm:grid-cols-5 gap-3 text-center">
               {[
-                { label: 'Present', value: session.present_count, tone: 'text-emerald-600' },
-                { label: 'Late', value: session.late_count, tone: 'text-amber-600' },
-                { label: 'Unverified', value: session.unverified_count, tone: 'text-rose-600' },
+                { label: 'Present', value: session.present_count, tone: 'text-emerald-700' },
+                { label: 'Late', value: session.late_count, tone: 'text-amber-800' },
+                { label: 'Unverified', value: session.unverified_count, tone: 'text-rose-700' },
                 { label: 'Absent', value: session.absent_count, tone: 'text-text-muted' },
                 { label: 'Detected faces', value: session.detected_faces_count, tone: 'text-teal' },
               ].map((item) => (
@@ -254,7 +254,7 @@ export const FacultyAttendance: React.FC = () => {
                             <div className="flex items-center gap-2">
                               <StatusPill variant={statusVariant(record.status)} label={record.status} />
                               {record.manual_override && (
-                                <span className="text-[10px] font-mono text-amber-700">manual</span>
+                                <span className="text-[10px] font-mono text-amber-800">manual</span>
                               )}
                             </div>
                           </td>
@@ -340,7 +340,7 @@ export const FacultyAttendance: React.FC = () => {
           {confirmFinalize && (
             <SurfacePanel variant="deep" className="p-6 border border-rose-500/30 bg-rose-500/5 space-y-3">
               <div className="flex items-center gap-2">
-                <AlertCircle className="w-4 h-4 text-rose-600" />
+                <AlertCircle className="w-4 h-4 text-rose-700" />
                 <h4 className="text-sm font-bold text-text-primary">Finalize this session?</h4>
               </div>
               <p className="text-xs text-text-secondary">

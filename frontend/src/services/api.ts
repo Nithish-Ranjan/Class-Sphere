@@ -142,20 +142,6 @@ api.interceptors.response.use(
 export type AttendanceStatus = 'PRESENT' | 'LATE' | 'UNVERIFIED' | 'ABSENT';
 export type AttendanceRisk = 'ON_TRACK' | 'AT_RISK' | 'CRITICAL';
 
-export interface SubjectAttendanceItem {
-  subject_id: string;
-  subject_code: string;
-  subject_name: string;
-  faculty_name: string;
-  credits: number;
-  classes_conducted: number;
-  classes_attended: number;
-  classes_missed: number;
-  classes_unverified: number;
-  attendance_percentage: number;
-  status: AttendanceRisk;
-}
-
 export interface ScheduleItem {
   id: string;
   session_id: string;
@@ -177,98 +163,6 @@ export interface ScheduleItem {
   total_enrolled: number;
   activity_event_count: number;
   my_attendance_status?: AttendanceStatus | null;
-}
-
-export interface ActivityCounters {
-  last_week: number;
-  this_week: number;
-  trend: 'INCREASED' | 'DECREASED' | 'UNCHANGED';
-}
-
-export interface StudentDashboardData {
-  student: {
-    id: string;
-    user_id: string;
-    full_name: string;
-    roll_number: string;
-    enrollment_number: string;
-    section: string;
-    department_id: string;
-    desk_marker: string;
-  };
-  today: string;
-  current_class: ScheduleItem | null;
-  schedule: ScheduleItem[];
-  subject_attendance: SubjectAttendanceItem[];
-  overall_attendance: {
-    classes_conducted: number;
-    classes_attended: number;
-    classes_missed: number;
-    attendance_percentage: number;
-    status: AttendanceRisk;
-  };
-  weekly_activity: {
-    desk_marker: string;
-    phone: ActivityCounters;
-    talking: ActivityCounters;
-    out_of_seat: { last_week: number; this_week: number };
-  };
-  notifications_unread: number;
-  alerts: IncidentItem[];
-}
-
-export interface ClassCompanionData {
-  active: boolean;
-  today?: string;
-  message?: string;
-  session_id?: string;
-  subject_name?: string;
-  subject_code?: string;
-  room_number?: string;
-  faculty_name?: string;
-  scheduled_time?: string;
-  scheduled_end?: string;
-  status?: string;
-  attendance_taken?: boolean;
-  present_count?: number;
-  total_enrolled?: number;
-  my_attendance_status?: AttendanceStatus | null;
-  my_confidence_score?: number | null;
-  my_marked_at?: string | null;
-  schedule?: ScheduleItem[];
-}
-
-export interface ActivityComparisonData {
-  period_label: string;
-  current_week_phone: number;
-  previous_week_phone: number;
-  current_week_talking: number;
-  previous_week_talking: number;
-  phone_status: 'INCREASED' | 'DECREASED' | 'UNCHANGED';
-  talking_status: 'INCREASED' | 'DECREASED' | 'UNCHANGED';
-  desk_marker: string;
-  scope_note: string;
-}
-
-export interface StudentActivityData {
-  desk_marker: string;
-  counts: Record<string, number>;
-  total_recorded_events: number;
-  events: {
-    id: string;
-    class_session_id: string;
-    event_code: string;
-    event_type: string;
-    timestamp: string;
-    location_marker: string | null;
-    subject_name: string | null;
-    review_status: string;
-  }[];
-  weekly: {
-    phone: ActivityCounters;
-    talking: ActivityCounters;
-    out_of_seat: { last_week: number; this_week: number };
-  };
 }
 
 export interface AttendanceRecordItem {

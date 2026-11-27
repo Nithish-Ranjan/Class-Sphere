@@ -61,7 +61,7 @@ export const FacultyAlerts: React.FC = () => {
 
       <div className="p-4 rounded-2xl bg-surface-deep border border-glass-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-3">
-          <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 flex items-center justify-center shrink-0">
+          <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-800 flex items-center justify-center shrink-0">
             <Radio className="w-4 h-4" />
           </div>
           <div>
@@ -127,7 +127,7 @@ export const FacultyAlerts: React.FC = () => {
                       item.severity === 'CRITICAL' || item.severity === 'HIGH'
                         ? 'bg-rose-500/20 text-rose-700 border border-rose-500/35'
                         : item.severity === 'MEDIUM'
-                        ? 'bg-amber-500/20 text-amber-700 border border-amber-500/35'
+                        ? 'bg-amber-500/20 text-amber-800 border border-amber-500/35'
                         : 'bg-surface-raised text-text-muted border border-glass-border'
                     }`}
                   >
@@ -145,7 +145,7 @@ export const FacultyAlerts: React.FC = () => {
               <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
                 <div className="space-y-1.5 max-w-xl text-xs">
                   <span className="font-semibold text-text-primary flex items-center gap-1.5">
-                    <AlertTriangle className="w-3.5 h-3.5 text-amber-600" />
+                    <AlertTriangle className="w-3.5 h-3.5 text-amber-800" />
                     {item.incident_type.replace(/_/g, ' ')}
                   </span>
                   <p className="text-text-secondary leading-relaxed">
@@ -186,7 +186,7 @@ export const FacultyAlerts: React.FC = () => {
                     </Button>
                   )}
                   {item.status === 'RESOLVED' && (
-                    <span className="text-xs font-mono text-emerald-600 flex items-center gap-1">
+                    <span className="text-xs font-mono text-emerald-700 flex items-center gap-1">
                       <CheckCircle2 className="w-3.5 h-3.5" /> Closed
                     </span>
                   )}

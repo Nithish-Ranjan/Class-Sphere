@@ -43,11 +43,11 @@ export const StatusPill: React.FC<StatusPillProps> = ({
   );
   const variantStyles: Record<StatusVariant, { pill: string; dot: string }> = {
     present: {
-      pill: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
+      pill: 'bg-emerald-500/10 text-emerald-700 border-emerald-500/20',
       dot: 'bg-emerald-400',
     },
     late: {
-      pill: 'bg-amber-500/10 text-amber-600 border-amber-500/20',
+      pill: 'bg-amber-500/10 text-amber-800 border-amber-500/20',
       dot: 'bg-amber-400',
     },
     unverified: {
@@ -55,23 +55,23 @@ export const StatusPill: React.FC<StatusPillProps> = ({
       dot: 'bg-slate-400',
     },
     absent: {
-      pill: 'bg-rose-500/10 text-rose-600 border-rose-500/20',
+      pill: 'bg-rose-500/10 text-rose-700 border-rose-500/20',
       dot: 'bg-rose-400',
     },
     success: {
-      pill: 'bg-emerald-500/10 text-emerald-600 border-emerald-500/20',
+      pill: 'bg-emerald-500/10 text-emerald-700 border-emerald-500/20',
       dot: 'bg-emerald-400',
     },
     warning: {
-      pill: 'bg-amber-500/10 text-amber-600 border-amber-500/20',
+      pill: 'bg-amber-500/10 text-amber-800 border-amber-500/20',
       dot: 'bg-amber-400',
     },
     danger: {
-      pill: 'bg-rose-500/10 text-rose-600 border-rose-500/20',
+      pill: 'bg-rose-500/10 text-rose-700 border-rose-500/20',
       dot: 'bg-rose-400',
     },
     info: {
-      pill: 'bg-sky-500/10 text-sky-600 border-sky-500/20',
+      pill: 'bg-sky-500/10 text-sky-700 border-sky-500/20',
       dot: 'bg-sky-400',
     },
     neutral: {

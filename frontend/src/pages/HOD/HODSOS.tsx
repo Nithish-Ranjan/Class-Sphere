@@ -105,7 +105,7 @@ export const HODSOS: React.FC = () => {
               <SurfacePanel variant="deep" className="p-6 space-y-4 border border-rose-500/25">
                 <div className="flex items-start justify-between gap-3 pb-3 border-b border-glass-border">
                   <div className="flex items-start gap-3">
-                    <div className="w-9 h-9 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-600 flex items-center justify-center shrink-0">
+                    <div className="w-9 h-9 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-700 flex items-center justify-center shrink-0">
                       <Siren className="w-4 h-4" />
                     </div>
                     <div>
@@ -161,7 +161,7 @@ export const HODSOS: React.FC = () => {
                     </>
                   )}
                   {current.status === 'RESOLVED' && (
-                    <span className="text-xs font-mono text-emerald-600 flex items-center gap-1">
+                    <span className="text-xs font-mono text-emerald-700 flex items-center gap-1">
                       <CheckCircle2 className="w-3.5 h-3.5" /> closed
                     </span>
                   )}
