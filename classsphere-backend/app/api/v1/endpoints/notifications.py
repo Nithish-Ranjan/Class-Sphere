@@ -1,9 +1,9 @@
 """
 Notification inbox endpoints (per-user, RLS enforced by ``app.current_user_id``).
 """
-from typing import Any, Dict, List
+from typing import Any, Dict
 
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, Query
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.core.dependencies import AuthenticatedUser, get_current_active_user, get_authenticated_db_session
@@ -14,10 +14,11 @@ router = APIRouter(prefix="/notifications", tags=["Notifications"])
 
 @router.get("", summary="List the signed-in user's notifications")
 async def list_notifications(
+    limit: int = Query(50, ge=1, le=100),
     user: AuthenticatedUser = Depends(get_current_active_user),
     session: AsyncSession = Depends(get_authenticated_db_session),
-) -> List[Dict[str, Any]]:
-    return await portal_service.list_notifications(session, user)
+) -> Dict[str, Any]:
+    return await portal_service.list_notifications(session, user, limit=limit)
 
 
 @router.patch("/{notification_id}/read", summary="Mark one notification as read")

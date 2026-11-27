@@ -21,7 +21,7 @@ export const AttendanceHistoryView: React.FC = () => {
     studentApi
       .getAttendanceHistory()
       .then((data) => {
-        setHistory(data);
+        setHistory((data as any)?.records || data || []);
         setLoading(false);
       })
       .catch((err) => {

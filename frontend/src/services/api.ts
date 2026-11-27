@@ -1,5 +1,21 @@
 import axios from 'axios';
-import { AuthResponse, User } from '../types';
+import {
+  AuthResponse,
+  NotificationListResponse,
+  StudentActivityComparisonResponse,
+  StudentActivityDetailResponse,
+  StudentAttendanceHistoryFilters,
+  StudentAttendanceHistoryResponse,
+  StudentClassCompanionResponse,
+  StudentDashboardResponse,
+  StudentDisputeCreateRequest,
+  StudentDisputeResponse,
+  StudentProfileDetailResponse,
+  StudentSOSCreateRequest,
+  StudentSOSIncidentResponse,
+  StudentSubjectAttendance,
+  User,
+} from '../types';
 
 export const CLASSSPHERE_KEYS = {
   ACCESS_TOKEN: 'classsphere_access_token',
@@ -458,54 +474,64 @@ export const authApi = {
 /* ------------------------------------------------------------------------- */
 
 export const studentApi = {
-  getDashboard: async () => {
-    const res = await api.get<StudentDashboardData>('/students/dashboard');
+  getDashboard: async (): Promise<StudentDashboardResponse> => {
+    const res = await api.get<StudentDashboardResponse>('/students/dashboard');
     return res.data;
   },
-  getClassCompanion: async () => {
-    const res = await api.get<ClassCompanionData>('/students/class-companion');
+  getClassCompanion: async (): Promise<StudentClassCompanionResponse> => {
+    const res = await api.get<StudentClassCompanionResponse>('/students/class-companion');
     return res.data;
   },
-  getSubjectWiseAttendance: async () => {
-    const res = await api.get<SubjectAttendanceItem[]>('/students/attendance/subject-wise');
+  getSubjectWiseAttendance: async (): Promise<StudentSubjectAttendance[]> => {
+    const res = await api.get<StudentSubjectAttendance[]>('/students/attendance/subject-wise');
     return res.data;
   },
-  getAttendanceHistory: async (limit = 60) => {
-    const res = await api.get<{ total: number; records: any[] }>('/students/attendance/history', { params: { limit } });
+  getAttendanceHistory: async (
+    filters?: StudentAttendanceHistoryFilters
+  ): Promise<StudentAttendanceHistoryResponse> => {
+    const cleanedParams: Record<string, any> = {};
+    if (filters?.subject_id) cleanedParams.subject_id = filters.subject_id;
+    if (filters?.start_date) cleanedParams.start_date = filters.start_date;
+    if (filters?.end_date) cleanedParams.end_date = filters.end_date;
+    if (filters?.status) cleanedParams.status = filters.status;
+    if (filters?.page !== undefined && filters?.page !== null) cleanedParams.page = filters.page;
+    if (filters?.limit !== undefined && filters?.limit !== null) cleanedParams.limit = filters.limit;
+
+    const res = await api.get<StudentAttendanceHistoryResponse>('/students/attendance/history', {
+      params: cleanedParams,
+    });
     return res.data;
   },
-  getMyActivity: async () => {
-    const res = await api.get<StudentActivityData>('/students/activity');
+  getMyActivity: async (): Promise<StudentActivityDetailResponse> => {
+    const res = await api.get<StudentActivityDetailResponse>('/students/activity');
     return res.data;
   },
-  getActivityComparison: async () => {
-    const res = await api.get<ActivityComparisonData>('/students/activity/comparison');
+  getActivityComparison: async (): Promise<StudentActivityComparisonResponse> => {
+    const res = await api.get<StudentActivityComparisonResponse>('/students/activity/comparison');
     return res.data;
   },
-  triggerSOS: async (data: { room_number?: string; notes?: string }) => {
-    const res = await api.post<{
-      incident_id: string;
-      incident_code: string;
-      status: string;
-      severity: string;
-      reported_at: string;
-      message: string;
-    }>('/students/sos', data);
+  createSOSIncident: async (data: StudentSOSCreateRequest): Promise<StudentSOSIncidentResponse> => {
+    const res = await api.post<StudentSOSIncidentResponse>('/students/sos', data);
     return res.data;
   },
-  getMySOS: async () => {
-    const res = await api.get<
-      {
-        id: string;
-        incident_code: string;
-        status: string;
-        severity: string;
-        room_number: string | null;
-        notes: string | null;
-        reported_at: string;
-        last_update: string | null;
-      }[]
-    >('/students/sos');
+  getActiveSOSIncidents: async (limit = 20): Promise<StudentSOSIncidentResponse[]> => {
+    const res = await api.get<StudentSOSIncidentResponse[]>('/students/sos/active', {
+      params: { limit },
+    });
+    return res.data;
+  },
+  createDispute: async (data: StudentDisputeCreateRequest): Promise<StudentDisputeResponse> => {
+    const res = await api.post<StudentDisputeResponse>('/students/attendance/disputes', data);
+    return res.data;
+  },
+  getDisputes: async (limit = 50): Promise<StudentDisputeResponse[]> => {
+    const res = await api.get<StudentDisputeResponse[]>('/students/attendance/disputes', {
+      params: { limit },
+    });
+    return res.data;
+  },
+  getProfile: async (): Promise<StudentProfileDetailResponse> => {
+    const res = await api.get<StudentProfileDetailResponse>('/students/profile');
     return res.data;
   },
 };
@@ -761,8 +787,8 @@ export const incidentApi = {
 /* ------------------------------------------------------------------------- */
 
 export const notificationApi = {
-  getNotifications: async () => {
-    const res = await api.get<NotificationItem[]>('/notifications');
+  getNotifications: async (limit = 50): Promise<NotificationListResponse> => {
+    const res = await api.get<NotificationListResponse>('/notifications', { params: { limit } });
     return res.data;
   },
   markAsRead: async (id: string) => {

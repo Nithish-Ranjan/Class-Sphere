@@ -1549,7 +1549,9 @@ async def hod_timetable(session: AsyncSession, user: AuthenticatedUser) -> Dict[
 # ---------------------------------------------------------------------------
 
 
-async def list_notifications(session: AsyncSession, user: AuthenticatedUser) -> List[Dict[str, Any]]:
+async def list_notifications(
+    session: AsyncSession, user: AuthenticatedUser, limit: int = 50
+) -> Dict[str, Any]:
     rows = await _rows(
         session,
         """
@@ -1557,11 +1559,11 @@ async def list_notifications(session: AsyncSession, user: AuthenticatedUser) -> 
         FROM notifications
         WHERE recipient_user_id = :uid
         ORDER BY created_at DESC
-        LIMIT 50
+        LIMIT :limit
         """,
-        {"uid": str(user.id)},
+        {"uid": str(user.id), "limit": limit},
     )
-    return [
+    items = [
         {
             "id": str(r["id"]),
             "recipient_user_id": str(r["recipient_user_id"]),
@@ -1574,6 +1576,11 @@ async def list_notifications(session: AsyncSession, user: AuthenticatedUser) -> 
         }
         for r in rows
     ]
+    return {
+        "unread_count": sum(1 for item in items if not item["is_read"]),
+        "total_count": len(items),
+        "notifications": items,
+    }
 
 
 async def mark_notification_read(session: AsyncSession, user: AuthenticatedUser, notification_id: str) -> Dict[str, Any]:
