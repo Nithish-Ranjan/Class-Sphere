@@ -10,6 +10,8 @@ import {
   CLASSSPHERE_KEYS,
 } from '../services/api';
 
+export const DEMO_PERSONA_PASSWORD = 'ClassSphere@2026';
+
 export const DEMO_PERSONAS: Record<'student' | 'faculty' | 'hod', User> = {
   student: {
     id: 101,
@@ -59,7 +61,7 @@ interface AuthContextType {
     institution_code?: string,
     selected_role?: string
   ) => Promise<User>;
-  loginAsDemoPersona: (personaKey: 'student' | 'faculty' | 'hod') => void;
+  loginAsDemoPersona: (personaKey: 'student' | 'faculty' | 'hod') => Promise<void>;
   logout: () => Promise<void>;
 }
 
@@ -127,12 +129,21 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     return data.user;
   };
 
-  const loginAsDemoPersona = (personaKey: 'student' | 'faculty' | 'hod') => {
+  const loginAsDemoPersona = async (personaKey: 'student' | 'faculty' | 'hod') => {
     const persona = DEMO_PERSONAS[personaKey];
-    // Clear any real JWT tokens to ensure demo mode is honest
-    clearAuthStorage();
-    localStorage.setItem(CLASSSPHERE_KEYS.USER, JSON.stringify(persona));
-    setUser(persona);
+    // Sign in against the ClassSphere API so the console loads real tenant data.
+    // Only when the API is unreachable do we fall back to the offline persona,
+    // which is labelled as unaudited demo mode in the UI.
+    try {
+      const data = await authApi.login(persona.email, DEMO_PERSONA_PASSWORD, false, 'INST-DEMO');
+      storeAuthData(data.access_token, data.refresh_token, data.user, false);
+      setUser(data.user);
+      return;
+    } catch {
+      clearAuthStorage();
+      localStorage.setItem(CLASSSPHERE_KEYS.USER, JSON.stringify(persona));
+      setUser(persona);
+    }
   };
 
   const logout = async () => {

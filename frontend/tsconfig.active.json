@@ -4,6 +4,8 @@
     "src/App.tsx",
     "src/main.tsx",
     "src/context/**/*",
+    "src/hooks/**/*",
+    "src/services/**/*",
     "src/components/camera/**/*",
     "src/components/Layout/**/*",
     "src/components/ui/**/*",
@@ -38,6 +40,5 @@
     "src/pages/HOD/HODAlerts.tsx",
     "src/pages/HOD/HODSOS.tsx",
     "src/pages/HOD/AdminReview.tsx",
-    "src/pages/HOD/hodMockData.ts"
   ]
 }

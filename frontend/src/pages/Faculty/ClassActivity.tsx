@@ -1,250 +1,189 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  Smartphone,
-  MessageSquare,
-  Activity,
-  DoorOpen,
-  ShieldCheck,
-  Lock,
-  ArrowRight,
-  Info,
-} from 'lucide-react';
+import { Smartphone, MessageSquare, Activity, DoorOpen, ShieldCheck } from 'lucide-react';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { SurfacePanel } from '../../components/ui/SurfacePanel';
 import { StatusPill } from '../../components/ui/StatusPill';
 import { Button } from '../../components/ui/Button';
+import { LoadingState } from '../../components/ui/LoadingState';
+import { ErrorState } from '../../components/ui/ErrorState';
+import { EmptyState } from '../../components/ui/EmptyState';
+import { eventApi, facultyApi } from '../../services/api';
+import { useApiQuery } from '../../hooks/useApiQuery';
 
 export const ClassActivity: React.FC = () => {
   const navigate = useNavigate();
+  const { data: today } = useApiQuery(() => facultyApi.getTodayClasses(), []);
+  const [sessionId, setSessionId] = useState<string>('');
 
-  // Class focal event telemetry matching CampusPulse Blueprint Page 6 & 12
-  const classEventMetrics = {
-    subject: 'DBMS',
-    section: 'CSE-A',
-    room: 'Room 204',
-    session: '10:00 – 11:00 AM',
-    phone: 8,
-    talking: 11,
-    out: 3,
-    total: 22,
-  };
+  useEffect(() => {
+    if (!sessionId && today?.classes.length) {
+      const live = today.classes.find((c) => c.status === 'IN_PROGRESS') ?? today.classes[0];
+      setSessionId(live.session_id ?? live.id);
+    }
+  }, [today, sessionId]);
 
-  // Student table directly from CampusPulse Blueprint Page 6
-  const activityTable = [
-    { student: 'Rahul', phone: 3, talking: 4, total: 7 },
-    { student: 'Ananya', phone: 1, talking: 2, total: 3 },
-    { student: 'Karthik', phone: 0, talking: 1, total: 1 },
-    { student: 'Meera', phone: 2, talking: 0, total: 2 },
-    { student: 'Imran', phone: 4, talking: 3, total: 7 },
-    { student: 'Divya', phone: 0, talking: 0, total: 0 },
-    { student: 'Suresh', phone: 1, talking: 2, total: 3 },
-    { student: 'Pooja', phone: 2, talking: 1, total: 3 },
-  ];
+  const { data, loading, error, refetch } = useApiQuery(
+    () => eventApi.getIndividualSummary(sessionId),
+    [sessionId],
+    { enabled: !!sessionId }
+  );
 
-  const classTotals = {
-    phone: 13,
-    talking: 13,
-    total: 26,
-  };
+  const selected = today?.classes.find((c) => (c.session_id ?? c.id) === sessionId);
+  const students = data?.students ?? [];
+  const totals = students.reduce(
+    (acc, student) => ({
+      phone: acc.phone + student.phone_event_count,
+      talking: acc.talking + student.talking_event_count,
+      other: acc.other + student.other_event_count,
+      total: acc.total + student.total_recorded_events,
+    }),
+    { phone: 0, talking: 0, other: 0, total: 0 }
+  );
 
   return (
     <div className="space-y-8 animate-in fade-in duration-200">
       <PageHeader
-        eyebrow="CampusPulse Blueprint · Feature 6"
-        title="Class Activity Telemetry"
-        description="Objective classroom event detection for session DBMS · CSE-A matching CampusPulse Blueprint Page 6 and Page 12."
+        eyebrow="Faculty Console · Session"
+        title="Class Activity"
+        description="Observable classroom events attributed to desks for one session, with no scoring or labelling."
         actions={
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-mono uppercase px-2.5 py-1 rounded bg-amber-500/10 text-amber-400 border border-amber-500/25">
-              DEMO / BLUEPRINT REFERENCE
-            </span>
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => navigate('/faculty/class-dashboard')}
-            >
-              Class Dashboard →
+            <StatusPill variant="present" label="LIVE TENANT DATA" pulse />
+            <Button variant="secondary" size="sm" onClick={() => navigate('/faculty/class-log')}>
+              Class log →
             </Button>
           </div>
         }
       />
 
-      {/* Mandatory Blueprint Rule Callout Banner */}
+      {today && today.classes.length > 1 && (
+        <div className="flex items-center gap-2">
+          <label className="text-xs text-text-secondary shrink-0" htmlFor="activity-class-select">
+            Session
+          </label>
+          <select
+            id="activity-class-select"
+            value={sessionId}
+            onChange={(e) => setSessionId(e.target.value)}
+            className="w-full h-10 bg-surface-deep text-text-primary text-xs rounded-xl border border-input-border px-3 focus-ring"
+          >
+            {today.classes.map((c) => (
+              <option key={c.id} value={c.session_id ?? c.id}>
+                {c.scheduled_time} · {c.subject_code} · {c.section_name} · {c.status}
+              </option>
+            ))}
+          </select>
+        </div>
+      )}
+
       <div className="p-4 rounded-2xl bg-surface-deep border border-teal/20 flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-xl bg-teal/10 border border-teal/20 text-teal flex items-center justify-center shrink-0">
             <ShieldCheck className="w-4 h-4" />
           </div>
           <div>
-            <h4 className="font-bold text-text-primary uppercase tracking-wide">
-              EVENTS ONLY · NO SCORES · NO LABELS
-            </h4>
+            <h4 className="font-bold text-text-primary uppercase tracking-wide">Events only · no scores · no labels</h4>
             <p className="text-[11px] text-text-muted mt-0.5 leading-relaxed">
-              CampusPulse records objective event counters strictly for session reflection. Zero behavioral grading, attentiveness scoring, or personality rankings are conducted. Section-level restrictions represent planned institutional RBAC policy. All data shown are synthetic demo fixtures.
+              Counters describe sensor observations at a desk. ClassSphere never turns them into an attentiveness
+              score, rank or personality label.
             </p>
           </div>
         </div>
-
-        <div className="flex items-center gap-2 shrink-0">
-          <span className="text-[10px] font-mono uppercase px-2.5 py-1 rounded bg-surface-raised border border-glass-border text-amber-400 flex items-center gap-1">
-            <Lock className="w-3 h-3" />
-            <span>Planned RBAC Scope · Synthetic Demo</span>
+        {selected && (
+          <span className="text-[10px] font-mono uppercase px-2.5 py-1 rounded bg-surface-raised border border-glass-border text-teal shrink-0">
+            {selected.subject_code} · {selected.section_name}
           </span>
-        </div>
+        )}
       </div>
 
-      {/* 4 Large Event Metric Cards matching Blueprint Page 12: 8 Phone, 11 Talking, 3 Out */}
-      <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-        {/* Phone Events */}
-        <SurfacePanel
-          variant="deep"
-          className="p-5 text-center space-y-1.5 border border-glass-border"
-        >
-          <div className="w-9 h-9 rounded-xl bg-teal/10 border border-teal/20 text-teal flex items-center justify-center mx-auto">
-            <Smartphone className="w-4 h-4" />
-          </div>
-          <span className="text-xs font-semibold text-text-muted uppercase tracking-wider block">
-            Phone
-          </span>
-          <span className="text-3xl sm:text-4xl font-bold font-mono text-teal block">
-            {classEventMetrics.phone}
-          </span>
-          <span className="text-[11px] text-text-secondary block">
-            Events (Page 12 Sample)
-          </span>
-        </SurfacePanel>
+      {loading && <LoadingState label="Loading session events..." />}
+      {!loading && error && <ErrorState message={error} onRetry={refetch} />}
 
-        {/* Talking Events */}
-        <SurfacePanel
-          variant="deep"
-          className="p-5 text-center space-y-1.5 border border-glass-border"
-        >
-          <div className="w-9 h-9 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center mx-auto">
-            <MessageSquare className="w-4 h-4" />
+      {!loading && !error && data && (
+        <>
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
+            {[
+              { label: 'Phone', value: totals.phone, icon: <Smartphone className="w-4 h-4" />, tone: 'text-teal bg-teal/10 border-teal/20' },
+              { label: 'Talking', value: totals.talking, icon: <MessageSquare className="w-4 h-4" />, tone: 'text-sky-400 bg-sky-500/10 border-sky-500/20' },
+              { label: 'Other events', value: totals.other, icon: <DoorOpen className="w-4 h-4" />, tone: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
+              { label: 'Total', value: totals.total, icon: <Activity className="w-4 h-4" />, tone: 'text-purple-400 bg-purple-500/10 border-purple-500/20' },
+            ].map((metric) => (
+              <SurfacePanel key={metric.label} variant="deep" className="p-5 text-center space-y-1.5 border border-glass-border">
+                <div className={`w-9 h-9 rounded-xl border flex items-center justify-center mx-auto ${metric.tone}`}>
+                  {metric.icon}
+                </div>
+                <span className="text-xs font-semibold text-text-muted uppercase tracking-wider block">{metric.label}</span>
+                <span className="text-3xl sm:text-4xl font-bold font-mono text-text-primary block">{metric.value}</span>
+                <span className="text-[11px] text-text-secondary block">events</span>
+              </SurfacePanel>
+            ))}
           </div>
-          <span className="text-xs font-semibold text-text-muted uppercase tracking-wider block">
-            Talking
-          </span>
-          <span className="text-3xl sm:text-4xl font-bold font-mono text-sky-400 block">
-            {classEventMetrics.talking}
-          </span>
-          <span className="text-[11px] text-text-secondary block">
-            Events (Page 12 Sample)
-          </span>
-        </SurfacePanel>
 
-        {/* Out Events */}
-        <SurfacePanel
-          variant="deep"
-          className="p-5 text-center space-y-1.5 border border-glass-border"
-        >
-          <div className="w-9 h-9 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center mx-auto">
-            <DoorOpen className="w-4 h-4" />
-          </div>
-          <span className="text-xs font-semibold text-text-muted uppercase tracking-wider block">
-            Out
-          </span>
-          <span className="text-3xl sm:text-4xl font-bold font-mono text-amber-400 block">
-            {classEventMetrics.out}
-          </span>
-          <span className="text-[11px] text-text-secondary block">
-            Exits (Page 12 Sample)
-          </span>
-        </SurfacePanel>
-
-        {/* Total Events */}
-        <SurfacePanel
-          variant="deep"
-          className="p-5 text-center space-y-1.5 border border-glass-border"
-        >
-          <div className="w-9 h-9 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center mx-auto">
-            <Activity className="w-4 h-4" />
-          </div>
-          <span className="text-xs font-semibold text-text-muted uppercase tracking-wider block">
-            Total
-          </span>
-          <span className="text-3xl sm:text-4xl font-bold font-mono text-text-primary block">
-            {classEventMetrics.total}
-          </span>
-          <span className="text-[11px] text-text-secondary block">
-            Cumulative Events
-          </span>
-        </SurfacePanel>
-      </div>
-
-      {/* Class Activity Table matching Blueprint Page 6 */}
-      <SurfacePanel variant="deep" className="p-6 space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-glass-border">
-          <div>
-            <div className="flex items-center gap-2">
-              <h3 className="text-base font-semibold text-text-primary">
-                Class Activity Table (Blueprint Page 6 Sample)
-              </h3>
-              <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-surface-raised text-teal border border-teal/20">
-                DBMS · CSE-A
-              </span>
+          <SurfacePanel variant="deep" className="p-6 space-y-4">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-glass-border">
+              <div>
+                <div className="flex items-center gap-2">
+                  <h3 className="text-base font-semibold text-text-primary">Per-student event counts</h3>
+                  <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-surface-raised text-teal border border-teal/20">
+                    {data.covered_desks} desks with events
+                  </span>
+                </div>
+                <p className="text-xs text-text-secondary mt-0.5">
+                  {data.total_events} events recorded for this session
+                </p>
+              </div>
+              <span className="text-xs font-mono text-text-muted">Class total: {totals.total}</span>
             </div>
-            <p className="text-xs text-text-secondary mt-0.5">
-              Observable event distribution across sample section members
-            </p>
-          </div>
-          <span className="text-xs font-mono text-text-muted">
-            Sample Class Total: {classTotals.total}
-          </span>
-        </div>
 
-        {/* Table Container */}
-        <div className="overflow-x-auto">
-          <table className="w-full text-left text-xs">
-            <thead>
-              <tr className="border-b border-glass-border text-text-muted font-mono uppercase text-[11px]">
-                <th className="py-3 px-4 font-semibold">Student</th>
-                <th className="py-3 px-4 font-semibold text-center">Phone</th>
-                <th className="py-3 px-4 font-semibold text-center">Talking</th>
-                <th className="py-3 px-4 font-semibold text-center">Total</th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-glass-border font-mono">
-              {activityTable.map((row, idx) => (
-                <tr
-                  key={idx}
-                  className="hover:bg-surface-raised/40 transition-colors text-text-secondary"
-                >
-                  <td className="py-3 px-4 font-semibold text-text-primary">
-                    {row.student}
-                  </td>
-                  <td className="py-3 px-4 text-center text-teal">
-                    {row.phone}
-                  </td>
-                  <td className="py-3 px-4 text-center text-sky-400">
-                    {row.talking}
-                  </td>
-                  <td className="py-3 px-4 text-center text-text-primary font-bold">
-                    {row.total}
-                  </td>
-                </tr>
-              ))}
-
-              {/* Summary Row matching blueprint */}
-              <tr className="bg-surface-raised border-t-2 border-glass-border font-bold text-text-primary">
-                <td className="py-3.5 px-4 font-mono uppercase tracking-wide">
-                  Class Total
-                </td>
-                <td className="py-3.5 px-4 text-center text-teal font-mono">
-                  {classTotals.phone}
-                </td>
-                <td className="py-3.5 px-4 text-center text-sky-400 font-mono">
-                  {classTotals.talking}
-                </td>
-                <td className="py-3.5 px-4 text-center text-text-primary font-mono text-sm">
-                  {classTotals.total}
-                </td>
-              </tr>
-            </tbody>
-          </table>
-        </div>
-      </SurfacePanel>
+            {students.length === 0 ? (
+              <EmptyState
+                title="No events for this session"
+                description="Campus sensors have not recorded any observable event for this lecture."
+              />
+            ) : (
+              <div className="overflow-x-auto">
+                <table className="w-full text-left text-xs">
+                  <thead>
+                    <tr className="border-b border-glass-border text-text-muted font-mono uppercase text-[11px]">
+                      <th className="py-3 px-4 font-semibold">Student</th>
+                      <th className="py-3 px-4 font-semibold">Desk</th>
+                      <th className="py-3 px-4 font-semibold text-center">Phone</th>
+                      <th className="py-3 px-4 font-semibold text-center">Talking</th>
+                      <th className="py-3 px-4 font-semibold text-center">Other</th>
+                      <th className="py-3 px-4 font-semibold text-center">Total</th>
+                    </tr>
+                  </thead>
+                  <tbody className="divide-y divide-glass-border font-mono">
+                    {students.map((row) => (
+                      <tr key={row.student_id} className="hover:bg-surface-raised/40 transition-colors text-text-secondary">
+                        <td className="py-3 px-4 font-semibold text-text-primary">
+                          {row.student_name}{' '}
+                          <span className="font-normal text-[11px] text-text-muted">({row.roll_number})</span>
+                        </td>
+                        <td className="py-3 px-4 text-text-muted">{row.desk_marker}</td>
+                        <td className="py-3 px-4 text-center text-teal">{row.phone_event_count}</td>
+                        <td className="py-3 px-4 text-center text-sky-400">{row.talking_event_count}</td>
+                        <td className="py-3 px-4 text-center text-amber-400">{row.other_event_count}</td>
+                        <td className="py-3 px-4 text-center text-text-primary font-bold">{row.total_recorded_events}</td>
+                      </tr>
+                    ))}
+                    <tr className="bg-surface-raised border-t-2 border-glass-border font-bold text-text-primary">
+                      <td className="py-3.5 px-4 font-mono uppercase tracking-wide" colSpan={2}>
+                        Class total
+                      </td>
+                      <td className="py-3.5 px-4 text-center text-teal font-mono">{totals.phone}</td>
+                      <td className="py-3.5 px-4 text-center text-sky-400 font-mono">{totals.talking}</td>
+                      <td className="py-3.5 px-4 text-center text-amber-400 font-mono">{totals.other}</td>
+                      <td className="py-3.5 px-4 text-center text-text-primary font-mono text-sm">{totals.total}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+            )}
+          </SurfacePanel>
+        </>
+      )}
     </div>
   );
 };

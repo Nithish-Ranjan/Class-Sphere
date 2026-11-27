@@ -1,269 +1,201 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  AlertTriangle,
-  Bell,
-  CheckCircle2,
-  Clock,
-  ShieldCheck,
-  Filter,
-  Check,
-  RotateCcw,
-  MapPin,
-  Radio,
-} from 'lucide-react';
+import { AlertTriangle, Radio, CheckCircle2, MapPin, Clock } from 'lucide-react';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { SurfacePanel } from '../../components/ui/SurfacePanel';
 import { StatusPill } from '../../components/ui/StatusPill';
 import { Button } from '../../components/ui/Button';
+import { LoadingState } from '../../components/ui/LoadingState';
+import { ErrorState } from '../../components/ui/ErrorState';
+import { EmptyState } from '../../components/ui/EmptyState';
+import { facultyApi, incidentApi } from '../../services/api';
+import { useApiQuery } from '../../hooks/useApiQuery';
 
-interface AlertItem {
-  id: string;
-  subject: string;
-  code: string;
-  time: string;
-  room: string;
-  type: string;
-  severity: 'MEDIUM' | 'LOW';
-  description: string;
-  status: 'PENDING' | 'ACKNOWLEDGED' | 'RESOLVED';
-}
+type SeverityFilter = 'ALL' | 'CRITICAL' | 'HIGH' | 'MEDIUM' | 'LOW';
 
 export const FacultyAlerts: React.FC = () => {
   const navigate = useNavigate();
+  const { data, loading, error, refetch } = useApiQuery(() => facultyApi.getAlerts(), []);
+  const [filter, setFilter] = useState<SeverityFilter>('ALL');
+  const [pendingId, setPendingId] = useState<string | null>(null);
+  const [actionError, setActionError] = useState<string | null>(null);
 
-  const [filterSeverity, setFilterSeverity] = useState<'ALL' | 'MEDIUM' | 'LOW'>('ALL');
+  const alerts = data?.alerts ?? [];
+  const visible = filter === 'ALL' ? alerts : alerts.filter((a) => a.severity === filter);
+  const countBy = (severity: string) => alerts.filter((a) => a.severity === severity).length;
 
-  // The 3 alerts matching Blueprint Page 16 & 17
-  const [alerts, setAlerts] = useState<AlertItem[]>([
-    {
-      id: 'alt-1',
-      subject: 'Computer Networks (CN)',
-      code: 'CS302',
-      time: '11:00 AM',
-      room: 'Room 307',
-      type: 'Talking events',
-      severity: 'MEDIUM',
-      description: 'Talking event frequency reached 15 events during TCP sliding window protocol tracing.',
-      status: 'PENDING',
-    },
-    {
-      id: 'alt-2',
-      subject: 'Operating Systems (OS)',
-      code: 'CS304',
-      time: '02:00 PM',
-      room: 'Room 301',
-      type: 'Phone events',
-      severity: 'LOW',
-      description: '6 mobile phone interaction events logged in the rear bench row during paging lecture.',
-      status: 'PENDING',
-    },
-    {
-      id: 'alt-3',
-      subject: 'Database Management Systems (DBMS-B)',
-      code: 'CS301',
-      time: '04:00 PM',
-      room: 'Room 204',
-      type: 'Talking events',
-      severity: 'LOW',
-      description: 'Ambient audio exceeded normal baseline during concurrent transaction locking assignment.',
-      status: 'PENDING',
-    },
-  ]);
-
-  const handleUpdateStatus = (id: string, newStatus: 'ACKNOWLEDGED' | 'RESOLVED') => {
-    setAlerts((prev) =>
-      prev.map((a) => (a.id === id ? { ...a, status: newStatus } : a))
-    );
+  const runAction = async (action: 'acknowledge' | 'resolve', incidentId: string, source: 'ALERT' | 'SOS') => {
+    setPendingId(incidentId);
+    setActionError(null);
+    try {
+      if (action === 'acknowledge') {
+        await incidentApi.acknowledge(incidentId, undefined, source);
+      } else {
+        await incidentApi.dismiss(incidentId, undefined, source);
+      }
+      refetch();
+    } catch (err: any) {
+      setActionError(
+        err?.response?.data?.error?.message ?? 'The incident could not be updated. Try again or use the HOD console.'
+      );
+    } finally {
+      setPendingId(null);
+    }
   };
-
-  const handleResetAlerts = () => {
-    setAlerts((prev) => prev.map((a) => ({ ...a, status: 'PENDING' })));
-  };
-
-  const filteredAlerts = alerts.filter((a) => {
-    if (filterSeverity === 'ALL') return true;
-    return a.severity === filterSeverity;
-  });
 
   return (
     <div className="space-y-8 animate-in fade-in duration-200">
       <PageHeader
-        eyebrow="CampusPulse Blueprint · Feature 16 & 17"
+        eyebrow="Faculty Console · Safety"
         title="Classroom Incident Alerts"
-        description="Real-time faculty notification console highlighting observable classroom threshold alerts across assigned sessions."
+        description="Alerts and SOS signals raised in your sessions. Acknowledging or resolving writes to the incident ledger."
         actions={
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-mono uppercase px-2.5 py-1 rounded bg-amber-500/10 text-amber-400 border border-amber-500/25">
-              DEMO / BLUEPRINT REFERENCE (3 ALERTS)
-            </span>
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => navigate('/faculty/dashboard')}
-            >
-              Faculty Dashboard →
+            <StatusPill variant="present" label="LIVE TENANT DATA" pulse />
+            <Button variant="secondary" size="sm" onClick={() => navigate('/faculty/dashboard')}>
+              Faculty dashboard →
             </Button>
           </div>
         }
       />
 
-      {/* Honest Local Demo Banner */}
       <div className="p-4 rounded-2xl bg-surface-deep border border-glass-border flex flex-col sm:flex-row sm:items-center justify-between gap-3 text-xs">
         <div className="flex items-center gap-3">
           <div className="w-8 h-8 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center shrink-0">
             <Radio className="w-4 h-4" />
           </div>
           <div>
-            <h4 className="font-bold text-text-primary uppercase tracking-wide flex items-center gap-2">
-              <span>Local UI Notification Demonstration</span>
-              <span className="text-[10px] font-mono px-2 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-500/30">
-                Demo State Only
-              </span>
-            </h4>
+            <h4 className="font-bold text-text-primary uppercase tracking-wide">How alert state works</h4>
             <p className="text-[11px] text-text-muted mt-0.5">
-              Alerts correspond to the 3 reference samples in Blueprint Page 16/17 (CN Medium, OS Low, DBMS-B Low). Alert acknowledgment updates local UI state only — actual staff notifications and escalation relays are <strong>NOT YET CONNECTED</strong>.
+              Acknowledge claims the incident for review; Resolve closes it. Both stamp your account and a timestamp
+              on the incident history, and the department head sees the same record.
             </p>
           </div>
         </div>
-
-        <Button
-          variant="ghost"
-          size="sm"
-          onClick={handleResetAlerts}
-          leftIcon={<RotateCcw className="w-3.5 h-3.5" />}
-        >
-          Reset Demo State
-        </Button>
+        <span className="text-[10px] font-mono uppercase px-2.5 py-1 rounded bg-surface-raised border border-glass-border text-teal shrink-0">
+          {alerts.length} open incident{alerts.length === 1 ? '' : 's'}
+        </span>
       </div>
 
-      {/* Severity Filter Tabs */}
-      <div className="flex items-center gap-2 p-1 rounded-xl bg-surface-deep border border-glass-border w-fit">
-        <button
-          onClick={() => setFilterSeverity('ALL')}
-          className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors focus-ring ${
-            filterSeverity === 'ALL'
-              ? 'bg-teal text-canvas font-semibold shadow-sm'
-              : 'text-text-secondary hover:text-text-primary'
-          }`}
-        >
-          All Alerts (3)
-        </button>
-        <button
-          onClick={() => setFilterSeverity('MEDIUM')}
-          className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors focus-ring ${
-            filterSeverity === 'MEDIUM'
-              ? 'bg-amber-500 text-canvas font-semibold shadow-sm'
-              : 'text-text-secondary hover:text-text-primary'
-          }`}
-        >
-          Medium Severity (1)
-        </button>
-        <button
-          onClick={() => setFilterSeverity('LOW')}
-          className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors focus-ring ${
-            filterSeverity === 'LOW'
-              ? 'bg-teal text-canvas font-semibold shadow-sm'
-              : 'text-text-secondary hover:text-text-primary'
-          }`}
-        >
-          Low Severity (2)
-        </button>
-      </div>
-
-      {/* Alerts Cards Stack */}
-      <div className="space-y-4">
-        {filteredAlerts.map((item) => (
-          <SurfacePanel
-            key={item.id}
-            variant="deep"
-            className={`p-6 space-y-4 border ${
-              item.status === 'RESOLVED'
-                ? 'border-glass-border opacity-70'
-                : item.severity === 'MEDIUM'
-                ? 'border-amber-500/30 bg-amber-500/5'
-                : 'border-glass-border'
+      <div className="flex items-center gap-2 p-1 rounded-xl bg-surface-deep border border-glass-border w-fit overflow-x-auto">
+        {(['ALL', 'CRITICAL', 'HIGH', 'MEDIUM', 'LOW'] as SeverityFilter[]).map((severity) => (
+          <button
+            key={severity}
+            onClick={() => setFilter(severity)}
+            className={`px-3.5 py-1.5 rounded-lg text-xs font-medium transition-colors focus-ring whitespace-nowrap ${
+              filter === severity ? 'bg-teal text-canvas font-semibold shadow-sm' : 'text-text-secondary hover:text-text-primary'
             }`}
           >
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-glass-border">
-              <div className="flex flex-wrap items-center gap-2">
-                <span
-                  className={`text-[10px] font-mono uppercase px-2.5 py-0.5 rounded font-bold ${
-                    item.severity === 'MEDIUM'
-                      ? 'bg-amber-500/20 text-amber-300 border border-amber-500/35'
-                      : 'bg-surface-raised text-text-muted border border-glass-border'
-                  }`}
-                >
-                  {item.severity} ALERT
-                </span>
-                <span className="font-bold text-sm text-text-primary">
-                  {item.subject}
-                </span>
-                <span className="text-xs text-text-muted">·</span>
-                <span className="text-xs font-mono text-text-secondary">
-                  {item.time} · {item.room}
-                </span>
-              </div>
-
-              <StatusPill
-                variant={
-                  item.status === 'RESOLVED'
-                    ? 'present'
-                    : item.status === 'ACKNOWLEDGED'
-                    ? 'late'
-                    : 'danger'
-                }
-                label={item.status}
-              />
-            </div>
-
-            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
-              <div className="space-y-1 max-w-xl text-xs">
-                <span className="font-semibold text-text-primary block">
-                  Trigger Event: {item.type}
-                </span>
-                <p className="text-text-secondary leading-relaxed">
-                  {item.description}
-                </p>
-              </div>
-
-              {/* Action Controls */}
-              <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2 shrink-0">
-                {item.status === 'PENDING' && (
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={() => handleUpdateStatus(item.id, 'ACKNOWLEDGED')}
-                  >
-                    Acknowledge (Demo)
-                  </Button>
-                )}
-                {item.status !== 'RESOLVED' && (
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    onClick={() => handleUpdateStatus(item.id, 'RESOLVED')}
-                    leftIcon={<Check className="w-3.5 h-3.5" />}
-                  >
-                    Mark Resolved (Demo)
-                  </Button>
-                )}
-                {item.status === 'ACKNOWLEDGED' && (
-                  <span className="text-[10px] font-mono text-amber-300">
-                    Local Demo State · No staff notification sent
-                  </span>
-                )}
-                {item.status === 'RESOLVED' && (
-                  <span className="text-xs font-mono text-emerald-400 flex items-center gap-1">
-                    <CheckCircle2 className="w-3.5 h-3.5" />
-                    <span>Resolved (Local Demo)</span>
-                  </span>
-                )}
-              </div>
-            </div>
-          </SurfacePanel>
+            {severity === 'ALL' ? `All (${alerts.length})` : `${severity} (${countBy(severity)})`}
+          </button>
         ))}
       </div>
+
+      {actionError && (
+        <p role="alert" className="text-xs text-rose-300 bg-rose-500/10 border border-rose-500/25 rounded-xl p-3">
+          {actionError}
+        </p>
+      )}
+
+      {loading && <LoadingState label="Loading incidents..." />}
+      {!loading && error && <ErrorState message={error} onRetry={refetch} />}
+      {!loading && !error && visible.length === 0 && (
+        <EmptyState
+          title={alerts.length === 0 ? 'No open incidents' : 'No incidents at this severity'}
+          description={alerts.length === 0 ? 'Nothing needs your attention right now.' : 'Try another severity filter.'}
+        />
+      )}
+
+      {!loading && !error && (
+        <div className="space-y-4">
+          {visible.map((item) => (
+            <SurfacePanel
+              key={item.id}
+              variant="deep"
+              className={`p-6 space-y-4 border ${
+                item.severity === 'CRITICAL' || item.severity === 'HIGH'
+                  ? 'border-rose-500/30 bg-rose-500/5'
+                  : item.severity === 'MEDIUM'
+                  ? 'border-amber-500/30 bg-amber-500/5'
+                  : 'border-glass-border'
+              }`}
+            >
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-glass-border">
+                <div className="flex flex-wrap items-center gap-2">
+                  <span
+                    className={`text-[10px] font-mono uppercase px-2.5 py-0.5 rounded font-bold ${
+                      item.severity === 'CRITICAL' || item.severity === 'HIGH'
+                        ? 'bg-rose-500/20 text-rose-300 border border-rose-500/35'
+                        : item.severity === 'MEDIUM'
+                        ? 'bg-amber-500/20 text-amber-300 border border-amber-500/35'
+                        : 'bg-surface-raised text-text-muted border border-glass-border'
+                    }`}
+                  >
+                    {item.severity} · {item.source}
+                  </span>
+                  <span className="font-bold text-sm text-text-primary">{item.title}</span>
+                </div>
+
+                <StatusPill
+                  variant={item.status === 'RESOLVED' ? 'present' : item.status === 'ACKNOWLEDGED' ? 'late' : 'danger'}
+                  label={item.status}
+                />
+              </div>
+
+              <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+                <div className="space-y-1.5 max-w-xl text-xs">
+                  <span className="font-semibold text-text-primary flex items-center gap-1.5">
+                    <AlertTriangle className="w-3.5 h-3.5 text-amber-400" />
+                    {item.incident_type.replace(/_/g, ' ')}
+                  </span>
+                  <p className="text-text-secondary leading-relaxed">
+                    {item.description ?? item.notes ?? 'No description was recorded.'}
+                  </p>
+                  <div className="flex flex-wrap items-center gap-3 text-[11px] font-mono text-text-muted pt-1">
+                    <span className="flex items-center gap-1">
+                      <MapPin className="w-3 h-3" /> {item.room_number ?? 'Room unknown'}
+                    </span>
+                    <span className="flex items-center gap-1">
+                      <Clock className="w-3 h-3" /> {new Date(item.timestamp).toLocaleString()}
+                    </span>
+                    {item.subject_name && <span>{item.subject_name}</span>}
+                    {item.incident_code && <span>{item.incident_code}</span>}
+                  </div>
+                </div>
+
+                <div className="flex flex-col sm:flex-row items-end sm:items-center gap-2 shrink-0">
+                  {item.status === 'REPORTED' && (
+                    <Button
+                      variant="secondary"
+                      size="sm"
+                      disabled={pendingId === item.id}
+                      onClick={() => runAction('acknowledge', item.id, item.source)}
+                    >
+                      {pendingId === item.id ? 'Acknowledging…' : 'Acknowledge'}
+                    </Button>
+                  )}
+                  {item.status !== 'RESOLVED' && (
+                    <Button
+                      variant="primary"
+                      size="sm"
+                      disabled={pendingId === item.id}
+                      onClick={() => runAction('resolve', item.id, item.source)}
+                      leftIcon={<CheckCircle2 className="w-3.5 h-3.5" />}
+                    >
+                      {pendingId === item.id ? 'Resolving…' : 'Resolve'}
+                    </Button>
+                  )}
+                  {item.status === 'RESOLVED' && (
+                    <span className="text-xs font-mono text-emerald-400 flex items-center gap-1">
+                      <CheckCircle2 className="w-3.5 h-3.5" /> Closed
+                    </span>
+                  )}
+                </div>
+              </div>
+            </SurfacePanel>
+          ))}
+        </div>
+      )}
     </div>
   );
 };

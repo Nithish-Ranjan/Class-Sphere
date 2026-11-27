@@ -96,8 +96,14 @@ export const LoginPage: React.FC = () => {
     }
   };
 
-  const handleSelectPersona = (roleKey: 'student' | 'faculty' | 'hod') => {
-    loginAsDemoPersona(roleKey);
+  const handleSelectPersona = async (roleKey: 'student' | 'faculty' | 'hod') => {
+    setErrorMessage(null);
+    setIsLoading(true);
+    try {
+      await loginAsDemoPersona(roleKey);
+    } finally {
+      setIsLoading(false);
+    }
     if (roleKey === 'student') navigate('/student/overview');
     else if (roleKey === 'faculty') navigate('/faculty/overview');
     else if (roleKey === 'hod') navigate('/hod/overview');

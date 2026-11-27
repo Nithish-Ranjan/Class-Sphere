@@ -4,7 +4,6 @@ import { AuthProvider, useAuth } from './context/AuthContext';
 import { LoginPage } from './pages/Auth/LoginPage';
 import { NotFoundPage } from './pages/Shared/NotFoundPage';
 import { AppShell } from './components/Layout/AppShell';
-import { PlaceholderRoleView } from './pages/Shared/PlaceholderRoleView';
 
 // Student Experience Pages
 import { StudentOverview } from './pages/Student/StudentOverview';
@@ -248,7 +247,7 @@ export const App: React.FC = () => {
             path="/hod/overview"
             element={
               <ProtectedRoute allowedRoles={['HOD']}>
-                <HODReview />
+                <HODDashboard />
               </ProtectedRoute>
             }
           />

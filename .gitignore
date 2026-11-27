@@ -37,3 +37,6 @@ pgdata/
 pgdata16/
 # PostgreSQL installation files
 pgsql16/
+# Locally compiled PostgreSQL toolchain (dev only, never commit)
+classsphere-backend/.pgsql/
+classsphere-backend/.pgbuild/

@@ -1,193 +1,222 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import {
-  Clock,
-  BookOpen,
-  Calendar,
-  CheckCircle2,
-  Camera,
-  Activity,
-  ArrowRight,
-  MapPin,
-  Users,
-  ShieldCheck,
-  Info,
-} from 'lucide-react';
+import { Clock, CheckCircle2, Camera, Activity, Users, Info } from 'lucide-react';
 import { PageHeader } from '../../components/ui/PageHeader';
 import { SurfacePanel } from '../../components/ui/SurfacePanel';
-import { StatusPill } from '../../components/ui/StatusPill';
+import { StatusPill, StatusVariant } from '../../components/ui/StatusPill';
 import { Button } from '../../components/ui/Button';
+import { LoadingState } from '../../components/ui/LoadingState';
+import { ErrorState } from '../../components/ui/ErrorState';
+import { EmptyState } from '../../components/ui/EmptyState';
+import { facultyApi } from '../../services/api';
+import { useApiQuery } from '../../hooks/useApiQuery';
 
 export const ClassLog: React.FC = () => {
   const navigate = useNavigate();
+  const { data: today } = useApiQuery(() => facultyApi.getTodayClasses(), []);
+  const [sessionId, setSessionId] = useState<string>('');
 
-  // Class selector matching Blueprint schedule
-  const [selectedClassId, setSelectedClassId] = useState<string>('cs301');
+  useEffect(() => {
+    if (!sessionId && today?.classes.length) {
+      const live = today.classes.find((c) => c.status === 'IN_PROGRESS') ?? today.classes[0];
+      setSessionId(live.session_id ?? live.id);
+    }
+  }, [today, sessionId]);
 
-  // Timeline events directly matching CampusPulse Blueprint Page 11
-  const timelineEvents = [
-    {
-      time: '10:00 AM',
-      title: 'CLASS START',
-      description: 'Scheduled lecture session commenced in Room 204. Local demo class-session context initialized.',
-      icon: Clock,
-      status: 'COMPLETED',
-      variant: 'neutral' as const,
-    },
-    {
-      time: '10:02 AM',
-      title: 'TEACHER ENTERED',
-      description: 'Dr. S. Kumar checked in at instructor terminal. Console workspace unlocked.',
-      icon: Users,
-      status: 'VERIFIED',
-      variant: 'present' as const,
-    },
-    {
-      time: '10:05 AM',
-      title: 'ATTENDANCE',
-      description: 'Classroom group photograph captured via local camera device. Candidate roster verification initialized.',
-      icon: Camera,
-      status: 'COMPLETED',
-      variant: 'present' as const,
-    },
-    {
-      time: '10:05 – 10:55 AM',
-      title: 'CLASS IN PROGRESS',
-      description: 'Lecture on Relational Normalization: 3NF & BCNF Fundamentals. Observable telemetry recorded (Phone: 8, Talking: 11, Out: 3).',
-      icon: Activity,
-      status: 'COMPLETED',
-      variant: 'present' as const,
-    },
-    {
-      time: '11:00 AM',
-      title: 'CLASS ENDED',
-      description: 'Lecture session formally concluded. Room terminal locked. Summary logs committed.',
-      icon: CheckCircle2,
-      status: 'FINALIZED',
-      variant: 'present' as const,
-    },
-  ];
+  const { data, loading, error, refetch } = useApiQuery(
+    () => facultyApi.getClassLog(sessionId),
+    [sessionId],
+    { enabled: !!sessionId }
+  );
+
+  const session = data?.session;
+  const breakdown = data?.attendance_breakdown ?? {};
+  const activity = data?.activity_breakdown ?? {};
+  const activityTotal = Object.values(activity).reduce((sum, item) => sum + item.total, 0);
+
+  const timeline = session
+    ? [
+        {
+          time: session.scheduled_time ?? '—',
+          title: 'CLASS SCHEDULED',
+          description: `${session.subject_name} (${session.subject_code}) for section ${session.section_name ?? '—'} in ${session.room_number ?? 'room TBA'}.`,
+          status: 'COMPLETED',
+          variant: 'neutral' as StatusVariant,
+        },
+        {
+          time: session.scheduled_time ?? '—',
+          title: 'SESSION OPENED',
+          description: session.faculty_name
+            ? `${session.faculty_name} opened the classroom session for attendance capture.`
+            : 'Classroom session opened for attendance capture.',
+          status: session.attendance_taken ? 'VERIFIED' : 'PENDING',
+          variant: (session.attendance_taken ? 'present' : 'warning') as StatusVariant,
+        },
+        {
+          time: session.scheduled_time ?? '—',
+          title: 'ATTENDANCE VERIFIED',
+          description: session.attendance_taken
+            ? `${breakdown.PRESENT ?? 0} present, ${breakdown.LATE ?? 0} late, ${breakdown.UNVERIFIED ?? 0} unverified, ${breakdown.ABSENT ?? 0} absent of ${session.total_enrolled} enrolled.`
+            : 'No attendance has been recorded for this session yet.',
+          status: session.attendance_taken ? 'COMPLETED' : 'NOT TAKEN',
+          variant: (session.attendance_taken ? 'present' : 'warning') as StatusVariant,
+        },
+        {
+          time: 'During class',
+          title: 'OBSERVABLE ACTIVITY',
+          description: `${activityTotal} event${activityTotal === 1 ? '' : 's'} recorded across ${Object.keys(activity).length} event type(s).`,
+          status: activityTotal > 0 ? 'RECORDED' : 'NONE',
+          variant: (activityTotal > 0 ? 'present' : 'neutral') as StatusVariant,
+        },
+        {
+          time: session.scheduled_end ?? '—',
+          title: 'SESSION STATE',
+          description:
+            session.status === 'IN_PROGRESS'
+              ? 'Session is still open. Attendance can be corrected until it is finalized.'
+              : session.status === 'COMPLETED'
+              ? 'Session is closed. Use the attendance console to correct a record or finalize the roster.'
+              : session.status === 'CANCELLED'
+              ? 'This lecture was cancelled, so no attendance is expected.'
+              : 'Session has not started yet.',
+          status: session.status,
+          variant: (session.status === 'COMPLETED' ? 'present' : 'info') as StatusVariant,
+        },
+      ]
+    : [];
 
   return (
     <div className="space-y-8 animate-in fade-in duration-200">
       <PageHeader
-        eyebrow="CampusPulse Blueprint · Feature 11"
+        eyebrow="Faculty Console · Session"
         title="Class Log"
-        description="Granular single-class timeline log documenting the operational progression of a lecture from start to conclusion."
+        description="The operational timeline of a single lecture, built from its stored session, attendance and event records."
         actions={
           <div className="flex items-center gap-2">
-            <span className="text-[11px] font-mono uppercase px-2.5 py-1 rounded bg-amber-500/10 text-amber-400 border border-amber-500/25">
-              DEMO / BLUEPRINT REFERENCE
-            </span>
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => navigate('/faculty/class-dashboard')}
-            >
-              Class Dashboard →
+            <StatusPill variant="present" label="LIVE TENANT DATA" pulse />
+            <Button variant="secondary" size="sm" onClick={() => navigate('/faculty/attendance')}>
+              Attendance console →
             </Button>
           </div>
         }
       />
 
-      {/* Blueprint Page 11 Focal Header */}
       <div className="max-w-3xl mx-auto space-y-6">
-        <SurfacePanel
-          variant="deep"
-          className="p-6 sm:p-8 space-y-6 border border-glass-border shadow-glass-dropdown"
-        >
-          {/* Header row */}
-          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-glass-border">
-            <div>
-              <span className="text-[11px] font-mono uppercase text-teal block">
-                LOG OF A SINGLE CLASS · ONE CLASS TIMELINE (Blueprint Page 11)
-              </span>
-              <h2 className="text-2xl font-bold tracking-tight text-text-primary mt-1">
-                DBMS · CSE-A · ROOM 204
-              </h2>
-              <span className="text-xs text-text-secondary mt-0.5 block">
-                Instructor: Dr. S. Kumar · Session: 10:00 – 11:00 AM · Duration: 1 Hour
-              </span>
+        {today && today.classes.length > 1 && (
+          <div className="flex items-center gap-2">
+            <label className="text-xs text-text-secondary shrink-0" htmlFor="class-select">
+              Session
+            </label>
+            <select
+              id="class-select"
+              value={sessionId}
+              onChange={(e) => setSessionId(e.target.value)}
+              className="w-full h-10 bg-surface-deep text-text-primary text-xs rounded-xl border border-input-border px-3 focus-ring"
+            >
+              {today.classes.map((c) => (
+                <option key={c.id} value={c.session_id ?? c.id}>
+                  {c.scheduled_time} · {c.subject_code} · {c.section_name} · {c.status}
+                </option>
+              ))}
+            </select>
+          </div>
+        )}
+
+        {loading && <LoadingState label="Loading class timeline..." />}
+        {!loading && error && <ErrorState message={error} onRetry={refetch} />}
+        {!loading && !error && !session && (
+          <EmptyState title="No session selected" description="Pick a lecture to see its timeline." />
+        )}
+
+        {!loading && !error && session && (
+          <SurfacePanel variant="deep" className="p-6 sm:p-8 space-y-6 border border-glass-border shadow-glass-dropdown">
+            <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 border-b border-glass-border">
+              <div>
+                <span className="text-[11px] font-mono uppercase text-teal block">Single class timeline</span>
+                <h2 className="text-2xl font-bold tracking-tight text-text-primary mt-1">
+                  {session.subject_code} · {session.section_name ?? '—'} · {session.room_number ?? 'Room TBA'}
+                </h2>
+                <span className="text-xs text-text-secondary mt-0.5 block">
+                  {session.faculty_name ?? 'Faculty TBA'} · {session.scheduled_time} – {session.scheduled_end} ·{' '}
+                  {data?.attendance_rate != null ? `${data.attendance_rate.toFixed(1)}% attendance` : 'no attendance'}
+                </span>
+              </div>
+              <StatusPill
+                variant={session.status === 'COMPLETED' ? 'present' : session.status === 'IN_PROGRESS' ? 'info' : 'neutral'}
+                label={session.status}
+                pulse={session.status === 'IN_PROGRESS'}
+              />
             </div>
 
-            <StatusPill variant="present" label="CLASS LOG: VERIFIED (DEMO)" />
-          </div>
-
-          {/* Timeline Stack matching Blueprint Page 11 */}
-          <div className="relative pl-6 sm:pl-8 space-y-6 before:absolute before:left-2.5 sm:before:left-3.5 before:top-3 before:bottom-3 before:w-0.5 before:bg-glass-border">
-            {timelineEvents.map((ev, idx) => {
-              const Icon = ev.icon;
-              return (
+            <div className="relative pl-6 sm:pl-8 space-y-6 before:absolute before:left-2.5 sm:before:left-3.5 before:top-3 before:bottom-3 before:w-0.5 before:bg-glass-border">
+              {timeline.map((ev, idx) => (
                 <div key={idx} className="relative group">
-                  {/* Timeline node icon */}
                   <div className="absolute -left-6 sm:-left-8 top-1 w-6 h-6 rounded-full bg-surface-deep border-2 border-teal flex items-center justify-center text-teal">
                     <span className="w-1.5 h-1.5 rounded-full bg-teal" />
                   </div>
 
                   <div className="p-4 rounded-xl bg-surface-raised border border-glass-border space-y-1.5 transition-colors group-hover:border-teal/30">
-                    <div className="flex items-center justify-between">
-                      <span className="font-mono text-xs font-bold text-teal">
-                        {ev.time}
-                      </span>
+                    <div className="flex items-center justify-between gap-2">
+                      <span className="font-mono text-xs font-bold text-teal">{ev.time}</span>
                       <StatusPill variant={ev.variant} label={ev.status} />
                     </div>
-
-                    <h4 className="text-sm font-bold text-text-primary tracking-wide">
-                      {ev.title}
-                    </h4>
-
-                    <p className="text-xs text-text-secondary leading-relaxed">
-                      {ev.description}
-                    </p>
+                    <h4 className="text-sm font-bold text-text-primary tracking-wide">{ev.title}</h4>
+                    <p className="text-xs text-text-secondary leading-relaxed">{ev.description}</p>
                   </div>
                 </div>
-              );
-            })}
-          </div>
+              ))}
+            </div>
 
-          {/* Physical Room Occupancy Boundary Notice */}
-          <div className="p-3.5 rounded-xl bg-surface-deep border border-glass-border flex items-center gap-2.5 text-xs text-text-secondary">
-            <Info className="w-4 h-4 text-teal shrink-0" />
-            <span>
-              <strong>Occupancy Boundary:</strong> Physical room occupancy detection or verification is <strong>NOT YET CONNECTED</strong>. No IoT hardware sensor or occupancy-detection service is active.
-            </span>
-          </div>
+            <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
+              {[
+                { label: 'Present', value: breakdown.PRESENT ?? 0, icon: <CheckCircle2 className="w-4 h-4 text-emerald-400" /> },
+                { label: 'Late', value: breakdown.LATE ?? 0, icon: <Clock className="w-4 h-4 text-amber-400" /> },
+                { label: 'Unverified', value: breakdown.UNVERIFIED ?? 0, icon: <Camera className="w-4 h-4 text-rose-400" /> },
+                { label: 'Events', value: activityTotal, icon: <Activity className="w-4 h-4 text-teal" /> },
+              ].map((item) => (
+                <div key={item.label} className="p-3 rounded-xl bg-surface-raised border border-glass-border">
+                  <div className="flex items-center justify-center gap-1.5 text-xs text-text-muted">
+                    {item.icon}
+                    <span>{item.label}</span>
+                  </div>
+                  <span className="text-2xl font-bold font-mono text-text-primary block mt-1">{item.value}</span>
+                </div>
+              ))}
+            </div>
 
-          {/* Blueprint Page 11 Navigation Footer Buttons */}
-          <div className="pt-6 border-t border-glass-border grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <button
-              onClick={() => navigate('/faculty/class-dashboard')}
-              className="p-4 rounded-xl bg-surface-raised hover:bg-surface-raised/80 border border-glass-border text-left transition-all focus-ring group"
-            >
-              <span className="text-[10px] font-mono uppercase text-teal block">
-                Blueprint Page 12 Link
+            <div className="p-3.5 rounded-xl bg-surface-deep border border-glass-border flex items-center gap-2.5 text-xs text-text-secondary">
+              <Info className="w-4 h-4 text-teal shrink-0" />
+              <span>
+                Physical room occupancy detection is not deployed; this timeline only reports stored session,
+                attendance and event records.
               </span>
-              <span className="text-sm font-bold text-text-primary group-hover:text-teal transition-colors flex items-center justify-between mt-1">
-                <span>COMPLETE CLASS DASHBOARD</span>
-                <span>→</span>
-              </span>
-              <span className="text-[11px] text-text-muted mt-0.5 block">
-                Complete operational information for this single class
-              </span>
-            </button>
+            </div>
 
-            <button
-              onClick={() => navigate('/faculty/dashboard')}
-              className="p-4 rounded-xl bg-surface-raised hover:bg-surface-raised/80 border border-glass-border text-left transition-all focus-ring group"
-            >
-              <span className="text-[10px] font-mono uppercase text-sky-400 block">
-                Blueprint Page 16 Link
-              </span>
-              <span className="text-sm font-bold text-text-primary group-hover:text-sky-400 transition-colors flex items-center justify-between mt-1">
-                <span>COMPLETE FACULTY DASHBOARD</span>
-                <span>→</span>
-              </span>
-              <span className="text-[11px] text-text-muted mt-0.5 block">
-                All classes handled by this faculty member throughout the day
-              </span>
-            </button>
-          </div>
-        </SurfacePanel>
+            <div className="pt-6 border-t border-glass-border grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <button
+                onClick={() => navigate('/faculty/activity')}
+                className="p-4 rounded-xl bg-surface-raised hover:bg-surface-raised/80 border border-glass-border text-left transition-all focus-ring group"
+              >
+                <span className="text-[10px] font-mono uppercase text-teal block">Per-student events</span>
+                <span className="text-sm font-bold text-text-primary group-hover:text-teal transition-colors flex items-center justify-between mt-1">
+                  <span>CLASS ACTIVITY</span>
+                  <span>→</span>
+                </span>
+              </button>
+
+              <button
+                onClick={() => navigate('/faculty/today-classes')}
+                className="p-4 rounded-xl bg-surface-raised hover:bg-surface-raised/80 border border-glass-border text-left transition-all focus-ring group"
+              >
+                <span className="text-[10px] font-mono uppercase text-sky-400 block">Your agenda</span>
+                <span className="text-sm font-bold text-text-primary group-hover:text-sky-400 transition-colors flex items-center justify-between mt-1">
+                  <span>ALL OF TODAY'S CLASSES</span>
+                  <span>→</span>
+                </span>
+              </button>
+            </div>
+          </SurfacePanel>
+        )}
       </div>
     </div>
   );
