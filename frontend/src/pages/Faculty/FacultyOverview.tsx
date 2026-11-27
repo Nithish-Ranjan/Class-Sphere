@@ -148,7 +148,7 @@ export const FacultyOverview: React.FC = () => {
           },
           {
             icon: <Users className="w-5 h-5" />,
-            tone: 'text-sky-400 bg-sky-500/10 border-sky-500/20',
+            tone: 'text-sky-600 bg-sky-500/10 border-sky-500/20',
             label: 'Attendance rate',
             value: `${data.kpis.attendance_rate_today.toFixed(1)}%`,
             note: 'present + late, today',
@@ -162,7 +162,7 @@ export const FacultyOverview: React.FC = () => {
           },
           {
             icon: <ClipboardCheck className="w-5 h-5" />,
-            tone: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
+            tone: 'text-amber-600 bg-amber-500/10 border-amber-500/20',
             label: 'Pending reviews',
             value: data.kpis.pending_reviews,
             note: 'unverified matches',
@@ -247,11 +247,11 @@ export const FacultyOverview: React.FC = () => {
               {[
                 { to: '/faculty/attendance', icon: <Camera className="w-4 h-4 text-teal" />, label: 'Attendance console' },
                 { to: '/faculty/class-log', icon: <Clock className="w-4 h-4 text-teal" />, label: 'Class log timeline' },
-                { to: '/faculty/activity', icon: <Activity className="w-4 h-4 text-sky-400" />, label: 'Activity telemetry' },
+                { to: '/faculty/activity', icon: <Activity className="w-4 h-4 text-sky-600" />, label: 'Activity telemetry' },
                 { to: '/faculty/daily-overview', icon: <Calendar className="w-4 h-4 text-teal" />, label: 'Daily overview' },
                 {
                   to: '/faculty/alerts',
-                  icon: <AlertTriangle className="w-4 h-4 text-amber-400" />,
+                  icon: <AlertTriangle className="w-4 h-4 text-amber-600" />,
                   label: 'Incident alerts',
                   meta: `${openIncidents.length}`,
                 },
@@ -273,12 +273,12 @@ export const FacultyOverview: React.FC = () => {
 
           <SurfacePanel variant="deep" className="p-6 border border-rose-500/20 bg-rose-500/5 space-y-3">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-lg bg-rose-500/15 border border-rose-500/30 text-rose-400 flex items-center justify-center">
+              <div className="w-8 h-8 rounded-lg bg-rose-500/15 border border-rose-500/30 text-rose-600 flex items-center justify-center">
                 <AlertTriangle className="w-4 h-4" />
               </div>
               <div>
                 <h4 className="text-sm font-bold text-text-primary">Emergency SOS verification</h4>
-                <span className="text-[10px] font-mono text-rose-300">{openIncidents.length} open incident(s)</span>
+                <span className="text-[10px] font-mono text-rose-700">{openIncidents.length} open incident(s)</span>
               </div>
             </div>
             <p className="text-xs text-text-secondary leading-relaxed">

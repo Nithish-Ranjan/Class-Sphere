@@ -113,15 +113,15 @@ export const CompleteClassDashboard: React.FC = () => {
                 </div>
                 <div className="grid grid-cols-3 gap-2 text-center pt-1 font-mono">
                   <div>
-                    <span className="text-2xl font-bold text-emerald-400 block">{session.present_count}</span>
+                    <span className="text-2xl font-bold text-emerald-600 block">{session.present_count}</span>
                     <span className="text-[10px] uppercase text-text-muted mt-0.5 block">Present</span>
                   </div>
                   <div>
-                    <span className="text-2xl font-bold text-amber-400 block">{session.late_count}</span>
+                    <span className="text-2xl font-bold text-amber-600 block">{session.late_count}</span>
                     <span className="text-[10px] uppercase text-text-muted mt-0.5 block">Late</span>
                   </div>
                   <div>
-                    <span className="text-2xl font-bold text-rose-400 block">{session.unverified_count}</span>
+                    <span className="text-2xl font-bold text-rose-600 block">{session.unverified_count}</span>
                     <span className="text-[10px] uppercase text-text-muted mt-0.5 block">Unverified</span>
                   </div>
                 </div>
@@ -130,7 +130,7 @@ export const CompleteClassDashboard: React.FC = () => {
               <div className="p-5 rounded-2xl bg-surface-raised border border-glass-border space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold uppercase tracking-wider text-text-primary">Activity</span>
-                  <span className="text-[10px] font-mono text-sky-400">Total: {activityTotal}</span>
+                  <span className="text-[10px] font-mono text-sky-600">Total: {activityTotal}</span>
                 </div>
                 <div className="grid grid-cols-3 gap-2 text-center pt-1 font-mono">
                   <div>
@@ -138,11 +138,11 @@ export const CompleteClassDashboard: React.FC = () => {
                     <span className="text-[10px] uppercase text-text-muted mt-0.5 block">Phone</span>
                   </div>
                   <div>
-                    <span className="text-2xl font-bold text-sky-400 block">{activityTotals.talking}</span>
+                    <span className="text-2xl font-bold text-sky-600 block">{activityTotals.talking}</span>
                     <span className="text-[10px] uppercase text-text-muted mt-0.5 block">Talking</span>
                   </div>
                   <div>
-                    <span className="text-2xl font-bold text-amber-400 block">{activityTotals.out}</span>
+                    <span className="text-2xl font-bold text-amber-600 block">{activityTotals.out}</span>
                     <span className="text-[10px] uppercase text-text-muted mt-0.5 block">Other</span>
                   </div>
                 </div>
@@ -151,7 +151,7 @@ export const CompleteClassDashboard: React.FC = () => {
               <div className="p-5 rounded-2xl bg-surface-raised border border-glass-border space-y-3">
                 <div className="flex items-center justify-between">
                   <span className="text-xs font-bold uppercase tracking-wider text-text-primary">Verification</span>
-                  <span className="text-[10px] font-mono text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
+                  <span className="text-[10px] font-mono text-emerald-600 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
                     {session.pending_reviews_count === 0 ? 'CLEAR' : 'REVIEW'}
                   </span>
                 </div>
@@ -166,7 +166,7 @@ export const CompleteClassDashboard: React.FC = () => {
                   </div>
                   <div className="flex justify-between">
                     <span className="text-text-muted">Pending review</span>
-                    <span className={session.pending_reviews_count > 0 ? 'text-amber-400' : 'text-text-primary'}>
+                    <span className={session.pending_reviews_count > 0 ? 'text-amber-600' : 'text-text-primary'}>
                       {session.pending_reviews_count}
                     </span>
                   </div>
@@ -248,9 +248,9 @@ export const CompleteClassDashboard: React.FC = () => {
 
           <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
             {[
-              { label: 'Present', value: session.present_count, icon: <CheckCircle2 className="w-4 h-4 text-emerald-400" /> },
-              { label: 'Late', value: session.late_count, icon: <Clock className="w-4 h-4 text-amber-400" /> },
-              { label: 'Unverified', value: session.unverified_count, icon: <AlertTriangle className="w-4 h-4 text-rose-400" /> },
+              { label: 'Present', value: session.present_count, icon: <CheckCircle2 className="w-4 h-4 text-emerald-600" /> },
+              { label: 'Late', value: session.late_count, icon: <Clock className="w-4 h-4 text-amber-600" /> },
+              { label: 'Unverified', value: session.unverified_count, icon: <AlertTriangle className="w-4 h-4 text-rose-600" /> },
               { label: 'Events', value: activityTotal, icon: <Activity className="w-4 h-4 text-teal" /> },
             ].map((item) => (
               <div key={item.label} className="p-3 rounded-xl bg-surface-deep border border-glass-border">

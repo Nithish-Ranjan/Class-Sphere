@@ -27,8 +27,8 @@ export const CardHeader: React.FC<{
   return (
     <div className={`p-5 sm:p-6 border-b border-slate-100 flex flex-col sm:flex-row sm:items-center justify-between gap-3 ${className}`}>
       <div>
-        <h3 className="text-base font-semibold text-textPrimary tracking-tight">{title}</h3>
-        {subtitle && <p className="text-xs text-textSecondary mt-0.5 leading-relaxed">{subtitle}</p>}
+        <h3 className="text-base font-semibold text-text-primary tracking-tight">{title}</h3>
+        {subtitle && <p className="text-xs text-text-secondary mt-0.5 leading-relaxed">{subtitle}</p>}
       </div>
       {action && <div className="flex items-center gap-2">{action}</div>}
     </div>

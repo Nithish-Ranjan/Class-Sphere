@@ -247,9 +247,9 @@ export const StudentOverview: React.FC = () => {
                 <span
                   className={`text-[10px] font-semibold px-1.5 py-0.5 rounded border ${
                     weekly.phone.trend === 'DECREASED'
-                      ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20'
+                      ? 'text-emerald-600 bg-emerald-500/10 border-emerald-500/20'
                       : weekly.phone.trend === 'INCREASED'
-                      ? 'text-rose-400 bg-rose-500/10 border-rose-500/20'
+                      ? 'text-rose-600 bg-rose-500/10 border-rose-500/20'
                       : 'text-text-muted bg-surface-deep border-glass-border'
                   }`}
                 >
@@ -272,9 +272,9 @@ export const StudentOverview: React.FC = () => {
                 <span
                   className={`text-[10px] font-semibold px-1.5 py-0.5 rounded border ${
                     weekly.talking.trend === 'DECREASED'
-                      ? 'text-emerald-400 bg-emerald-500/10 border-emerald-500/20'
+                      ? 'text-emerald-600 bg-emerald-500/10 border-emerald-500/20'
                       : weekly.talking.trend === 'INCREASED'
-                      ? 'text-rose-400 bg-rose-500/10 border-rose-500/20'
+                      ? 'text-rose-600 bg-rose-500/10 border-rose-500/20'
                       : 'text-text-muted bg-surface-deep border-glass-border'
                   }`}
                 >
@@ -358,7 +358,7 @@ export const StudentOverview: React.FC = () => {
 
         <SurfacePanel variant="deep" className="p-6 border border-rose-500/20 bg-rose-500/5 flex flex-col justify-between space-y-4">
           <div className="space-y-3">
-            <div className="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-400 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-600 flex items-center justify-center">
               <AlertCircle className="w-5 h-5" />
             </div>
             <div>

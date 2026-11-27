@@ -105,12 +105,12 @@ export const MobileTopNav: React.FC = () => {
             >
               <path
                 d="M6 16h5l3-7 4 14 3-7h5"
-                stroke="#36B5A5"
+                stroke="#0F766E"
                 strokeWidth="2.5"
                 strokeLinecap="round"
                 strokeLinejoin="round"
               />
-              <circle cx="18" cy="23" r="2" fill="#36B5A5" />
+              <circle cx="18" cy="23" r="2" fill="#0F766E" />
             </svg>
           </div>
           <span className="text-sm font-bold tracking-tight text-text-primary">
@@ -171,9 +171,9 @@ export const MobileTopNav: React.FC = () => {
                     isActive
                       ? 'bg-teal/15 text-teal border border-teal/30 font-semibold'
                       : link.highlight === 'danger'
-                      ? 'text-rose-400 hover:bg-rose-500/10'
+                      ? 'text-rose-600 hover:bg-rose-500/10'
                       : link.highlight === 'warning'
-                      ? 'text-amber-400 hover:bg-amber-500/10'
+                      ? 'text-amber-600 hover:bg-amber-500/10'
                       : 'text-text-secondary hover:text-text-primary hover:bg-surface-raised'
                   )
                 }
@@ -188,7 +188,7 @@ export const MobileTopNav: React.FC = () => {
           <div className="p-4 border-t border-glass-border bg-surface-deep">
             <button
               onClick={handleLogout}
-              className="w-full min-h-[48px] px-4 py-3 rounded-xl text-sm font-medium flex items-center justify-center gap-2 bg-rose-500/10 text-rose-400 hover:bg-rose-500/20 border border-rose-500/20 transition-colors focus-ring"
+              className="w-full min-h-[48px] px-4 py-3 rounded-xl text-sm font-medium flex items-center justify-center gap-2 bg-rose-500/10 text-rose-600 hover:bg-rose-500/20 border border-rose-500/20 transition-colors focus-ring"
             >
               <LogOut className="w-4 h-4" />
               <span>Sign Out</span>

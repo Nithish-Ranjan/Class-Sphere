@@ -90,7 +90,7 @@ export const ClassCompanion: React.FC = () => {
                     Session status: {data.status?.replace('_', ' ')}
                   </span>
                 </div>
-                <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center shrink-0">
+                <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-600 flex items-center justify-center shrink-0">
                   <Clock className="w-5 h-5" />
                 </div>
               </div>
@@ -105,11 +105,11 @@ export const ClassCompanion: React.FC = () => {
                       <span
                         className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-sm font-semibold font-mono border ${
                           data.my_attendance_status === 'PRESENT'
-                            ? 'bg-emerald-500/15 text-emerald-400 border-emerald-500/30'
+                            ? 'bg-emerald-500/15 text-emerald-600 border-emerald-500/30'
                             : data.my_attendance_status === 'LATE'
-                            ? 'bg-amber-500/15 text-amber-400 border-amber-500/30'
+                            ? 'bg-amber-500/15 text-amber-600 border-amber-500/30'
                             : data.my_attendance_status === 'ABSENT'
-                            ? 'bg-rose-500/15 text-rose-400 border-rose-500/30'
+                            ? 'bg-rose-500/15 text-rose-600 border-rose-500/30'
                             : 'bg-surface-deep text-text-secondary border-glass-border'
                         }`}
                       >
@@ -117,7 +117,7 @@ export const ClassCompanion: React.FC = () => {
                         <span>{data.my_attendance_status}</span>
                       </span>
                     ) : (
-                      <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-500/15 text-amber-400 border border-amber-500/30 text-sm font-semibold font-mono">
+                      <span className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full bg-amber-500/15 text-amber-600 border border-amber-500/30 text-sm font-semibold font-mono">
                         <AlertCircle className="w-4 h-4" />
                         <span>{data.attendance_taken ? 'UNVERIFIED' : 'NOT TAKEN YET'}</span>
                       </span>

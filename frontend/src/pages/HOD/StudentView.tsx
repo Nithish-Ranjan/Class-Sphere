@@ -63,7 +63,7 @@ export const StudentView: React.FC = () => {
               key={value}
               onClick={() => setRisk(value)}
               className={`px-3 py-1.5 rounded-lg text-[11px] font-medium transition-colors focus-ring whitespace-nowrap ${
-                risk === value ? 'bg-teal text-canvas font-semibold' : 'text-text-secondary hover:text-text-primary'
+                risk === value ? 'bg-teal text-white font-semibold' : 'text-text-secondary hover:text-text-primary'
               }`}
             >
               {value.replace('_', ' ')}
@@ -110,9 +110,9 @@ export const StudentView: React.FC = () => {
                       </td>
                       <td className="py-3 px-3 font-mono text-text-muted">{student.section_name}</td>
                       <td className="py-3 px-3 text-center font-mono">{student.classes_conducted}</td>
-                      <td className="py-3 px-3 text-center font-mono text-emerald-400">{student.classes_attended}</td>
-                      <td className="py-3 px-3 text-center font-mono text-rose-400">{student.classes_missed}</td>
-                      <td className="py-3 px-3 text-center font-mono text-amber-400">{student.classes_unverified}</td>
+                      <td className="py-3 px-3 text-center font-mono text-emerald-600">{student.classes_attended}</td>
+                      <td className="py-3 px-3 text-center font-mono text-rose-600">{student.classes_missed}</td>
+                      <td className="py-3 px-3 text-center font-mono text-amber-600">{student.classes_unverified}</td>
                       <td className="py-3 px-3 text-right">
                         <div className="flex items-center justify-end gap-2">
                           <span className="font-mono font-semibold text-text-primary">

@@ -10,7 +10,7 @@ interface AppShellProps {
 export const AppShell: React.FC<AppShellProps> = ({ children }) => {
   return (
     <NavProvider>
-      <div className="min-h-screen bg-canvas text-text-primary flex flex-col">
+      <div className="min-h-screen bg-gradient-to-b from-canvas to-canvas-deep text-text-primary flex flex-col">
         {/* Desktop Retractable Horizontal Navigation (>= 1024px) */}
         <div className="hidden lg:block">
           <DesktopTopNav />

@@ -63,7 +63,7 @@ export const PlaceholderRoleView: React.FC<PlaceholderRoleViewProps> = ({
 
         <SurfacePanel variant="deep" className="p-6 space-y-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-600 flex items-center justify-center">
               <Info className="w-5 h-5" />
             </div>
             <div>
@@ -82,7 +82,7 @@ export const PlaceholderRoleView: React.FC<PlaceholderRoleViewProps> = ({
 
         <SurfacePanel variant="deep" className="p-6 space-y-4">
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-400 flex items-center justify-center">
+            <div className="w-10 h-10 rounded-xl bg-amber-500/10 border border-amber-500/20 text-amber-600 flex items-center justify-center">
               <CheckCircle2 className="w-5 h-5" />
             </div>
             <div>

@@ -78,7 +78,7 @@ export const StudentAttendance: React.FC = () => {
             onClick={() => setActiveTab(key)}
             className={`px-4 py-2 rounded-lg text-xs font-medium transition-colors focus-ring min-h-[36px] whitespace-nowrap ${
               activeTab === key
-                ? 'bg-teal text-canvas font-semibold shadow-sm'
+                ? 'bg-teal text-white font-semibold shadow-sm'
                 : 'text-text-secondary hover:text-text-primary'
             }`}
           >
@@ -139,7 +139,7 @@ export const StudentAttendance: React.FC = () => {
           />
 
           <div className="p-4 rounded-2xl bg-surface-deep border border-amber-500/25 flex items-start gap-3">
-            <Radio className="w-5 h-5 text-amber-400 shrink-0 mt-0.5" />
+            <Radio className="w-5 h-5 text-amber-600 shrink-0 mt-0.5" />
             <div>
               <h4 className="text-xs sm:text-sm font-bold text-text-primary">This capture does not mark attendance</h4>
               <p className="text-[11px] text-text-secondary mt-0.5 leading-relaxed">
@@ -156,7 +156,7 @@ export const StudentAttendance: React.FC = () => {
           <div>
             <div className="flex items-center gap-2 flex-wrap">
               <h3 className="text-base font-semibold text-text-primary">Ask for a recheck</h3>
-              <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">
+              <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-amber-500/10 text-amber-600 border border-amber-500/20">
                 Preview · not submitted
               </span>
             </div>
@@ -168,8 +168,8 @@ export const StudentAttendance: React.FC = () => {
 
           {recheckSubmitted ? (
             <div className="p-5 rounded-2xl bg-amber-500/10 border border-amber-500/25 space-y-3 text-center">
-              <CheckCircle2 className="w-8 h-8 text-amber-400 mx-auto" />
-              <h4 className="text-sm font-semibold text-amber-300">Form validated locally</h4>
+              <CheckCircle2 className="w-8 h-8 text-amber-600 mx-auto" />
+              <h4 className="text-sm font-semibold text-amber-700">Form validated locally</h4>
               <p className="text-xs text-text-secondary max-w-sm mx-auto">
                 Nothing was transmitted. This preview exists to show the intended flow only.
               </p>

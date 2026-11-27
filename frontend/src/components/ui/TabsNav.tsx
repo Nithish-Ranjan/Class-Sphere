@@ -29,13 +29,13 @@ export const TabsNav: React.FC<TabsNavProps> = ({ tabs, className = '' }) => {
                 `group inline-flex items-center gap-2 py-3 px-1 border-b-2 text-xs font-semibold whitespace-nowrap transition-all ${
                   isActive
                     ? 'border-teal text-teal'
-                    : 'border-transparent text-textSecondary hover:text-textPrimary hover:border-slate-300'
+                    : 'border-transparent text-text-secondary hover:text-text-primary hover:border-slate-300'
                 }`
               }
             >
               {Icon && (
                 <Icon
-                  className="w-4 h-4 text-slate-400 group-hover:text-slate-600 transition-colors"
+                  className="w-4 h-4 text-slate-500 group-hover:text-slate-600 transition-colors"
                   aria-hidden="true"
                 />
               )}

@@ -50,7 +50,7 @@ export const AdminReview: React.FC = () => {
             </SurfacePanel>
             <SurfacePanel variant="deep" className="p-5 space-y-1 border border-glass-border">
               <span className="text-[11px] font-semibold text-text-muted uppercase tracking-wider block">Integrity</span>
-              <span className={`text-2xl font-bold font-mono block ${data.chain_valid ? 'text-emerald-400' : 'text-rose-400'}`}>
+              <span className={`text-2xl font-bold font-mono block ${data.chain_valid ? 'text-emerald-600' : 'text-rose-600'}`}>
                 {data.chain_valid ? 'VERIFIED' : 'FAILED'}
               </span>
               <span className="text-[11px] text-text-secondary block flex items-center gap-1">
@@ -66,7 +66,7 @@ export const AdminReview: React.FC = () => {
                 key={value}
                 onClick={() => setTab(value)}
                 className={`px-4 py-2 rounded-lg text-xs font-medium transition-colors focus-ring ${
-                  tab === value ? 'bg-teal text-canvas font-semibold shadow-sm' : 'text-text-secondary hover:text-text-primary'
+                  tab === value ? 'bg-teal text-white font-semibold shadow-sm' : 'text-text-secondary hover:text-text-primary'
                 }`}
               >
                 {value === 'corrections' ? `Corrections (${audits.length})` : `Ledger (${ledger.length})`}

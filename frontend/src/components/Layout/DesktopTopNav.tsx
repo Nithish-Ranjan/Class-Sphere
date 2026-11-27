@@ -133,7 +133,7 @@ export const DesktopTopNav: React.FC = () => {
             to="/student/sos"
             className={({ isActive }) =>
               clsx(
-                'px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 focus-ring text-rose-400 hover:text-rose-300 hover:bg-rose-500/10',
+                'px-3.5 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 focus-ring text-rose-600 hover:text-rose-700 hover:bg-rose-500/10',
                 isActive && 'bg-rose-500/15 border border-rose-500/30'
               )
             }
@@ -272,7 +272,7 @@ export const DesktopTopNav: React.FC = () => {
             to="/faculty/sos"
             className={({ isActive }) =>
               clsx(
-                'px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 focus-ring text-rose-400 hover:text-rose-300 hover:bg-rose-500/10',
+                'px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 focus-ring text-rose-600 hover:text-rose-700 hover:bg-rose-500/10',
                 isActive && 'bg-rose-500/15 border border-rose-500/30'
               )
             }
@@ -444,7 +444,7 @@ export const DesktopTopNav: React.FC = () => {
             to="/hod/sos"
             className={({ isActive }) =>
               clsx(
-                'px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 focus-ring text-rose-400 hover:text-rose-300 hover:bg-rose-500/10',
+                'px-3 py-1.5 rounded-lg text-xs font-medium transition-all duration-150 focus-ring text-rose-600 hover:text-rose-700 hover:bg-rose-500/10',
                 isActive && 'bg-rose-500/15 border border-rose-500/30'
               )
             }
@@ -518,12 +518,12 @@ export const DesktopTopNav: React.FC = () => {
                 >
                   <path
                     d="M6 16h5l3-7 4 14 3-7h5"
-                    stroke="#36B5A5"
+                    stroke="#0F766E"
                     strokeWidth="2.5"
                     strokeLinecap="round"
                     strokeLinejoin="round"
                   />
-                  <circle cx="18" cy="23" r="2" fill="#36B5A5" />
+                  <circle cx="18" cy="23" r="2" fill="#0F766E" />
                 </svg>
               </div>
               <div className="text-left">
@@ -612,7 +612,7 @@ export const DesktopTopNav: React.FC = () => {
 
                   <button
                     onClick={handleLogout}
-                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-rose-400 hover:text-rose-300 hover:bg-rose-500/10 transition-colors focus-ring"
+                    className="w-full flex items-center gap-2 px-3 py-2 rounded-lg text-xs font-medium text-rose-600 hover:text-rose-700 hover:bg-rose-500/10 transition-colors focus-ring"
                     role="menuitem"
                   >
                     <LogOut className="w-3.5 h-3.5" />

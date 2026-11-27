@@ -21,7 +21,7 @@ export const NotConnectedState: React.FC<NotConnectedStateProps> = ({
       className={`p-6 border border-amber-500/20 bg-amber-500/5 ${className}`}
     >
       <div className="flex items-start gap-4">
-        <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-400 shrink-0 border border-amber-500/20">
+        <div className="w-10 h-10 rounded-xl bg-amber-500/10 flex items-center justify-center text-amber-600 shrink-0 border border-amber-500/20">
           <Radio className="w-5 h-5 animate-pulse" />
         </div>
         <div className="space-y-1">
@@ -29,7 +29,7 @@ export const NotConnectedState: React.FC<NotConnectedStateProps> = ({
             <h4 className="text-sm font-semibold text-text-primary">
               {moduleName}: Service Not Connected
             </h4>
-            <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-amber-500/15 text-amber-300 border border-amber-500/25">
+            <span className="text-[10px] font-mono uppercase px-2 py-0.5 rounded bg-amber-500/15 text-amber-700 border border-amber-500/25">
               {serviceType} Offline
             </span>
           </div>

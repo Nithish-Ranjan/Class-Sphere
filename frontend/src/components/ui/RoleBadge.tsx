@@ -20,9 +20,9 @@ export const RoleBadge: React.FC<RoleBadgeProps> = ({ role, isDemo = false, clas
 
   const roleStyles: Record<Role, string> = {
     STUDENT: 'text-teal border-teal/30 bg-teal/10',
-    FACULTY: 'text-sky-400 border-sky-400/30 bg-sky-400/10',
-    HOD: 'text-amber-400 border-amber-400/30 bg-amber-400/10',
-    ADMIN: 'text-rose-400 border-rose-400/30 bg-rose-400/10',
+    FACULTY: 'text-sky-600 border-sky-400/30 bg-sky-400/10',
+    HOD: 'text-amber-600 border-amber-400/30 bg-amber-400/10',
+    ADMIN: 'text-rose-600 border-rose-400/30 bg-rose-400/10',
   };
 
   return (

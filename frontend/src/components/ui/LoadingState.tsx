@@ -23,7 +23,7 @@ export const LoadingState: React.FC<LoadingStateProps> = ({
         className={`${sizeClasses[size]} border-teal border-t-transparent rounded-full animate-spin`}
         aria-hidden="true"
       />
-      {label && <p className="mt-3 text-xs font-medium text-textSecondary tracking-wide">{label}</p>}
+      {label && <p className="mt-3 text-xs font-medium text-text-secondary tracking-wide">{label}</p>}
       <span className="sr-only">Loading</span>
     </div>
   );

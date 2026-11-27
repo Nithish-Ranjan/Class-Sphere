@@ -83,7 +83,7 @@ export const StudentSOS: React.FC = () => {
 
       <div className="p-4 rounded-2xl bg-surface-deep border border-rose-500/25 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
         <div className="flex items-center gap-3">
-          <div className="w-9 h-9 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex items-center justify-center shrink-0">
+          <div className="w-9 h-9 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-600 flex items-center justify-center shrink-0">
             <ShieldAlert className="w-5 h-5" />
           </div>
           <div>
@@ -112,7 +112,7 @@ export const StudentSOS: React.FC = () => {
           <SurfacePanel variant="deep" className="p-6 sm:p-8 space-y-6 border border-rose-500/30 shadow-glass-dropdown">
             <div className="flex items-start justify-between gap-3 pb-4 border-b border-glass-border">
               <div className="flex items-center gap-3">
-                <div className="w-10 h-10 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-400 flex items-center justify-center">
+                <div className="w-10 h-10 rounded-xl bg-rose-500/15 border border-rose-500/30 text-rose-600 flex items-center justify-center">
                   <Siren className={`w-5 h-5 ${resolved ? '' : 'animate-pulse'}`} />
                 </div>
                 <div>
@@ -130,7 +130,7 @@ export const StudentSOS: React.FC = () => {
             <div className="space-y-3">
               <div className="p-3.5 rounded-xl bg-surface-raised border border-glass-border flex items-center justify-between gap-3 text-xs">
                 <div className="flex items-center gap-2.5">
-                  <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                  <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                   <div>
                     <span className="font-semibold text-text-primary block">1. Signal raised and stored</span>
                     <span className="text-[11px] text-text-muted">
@@ -139,15 +139,15 @@ export const StudentSOS: React.FC = () => {
                     </span>
                   </div>
                 </div>
-                <span className="font-mono text-emerald-400 text-[11px]">RECORDED</span>
+                <span className="font-mono text-emerald-600 text-[11px]">RECORDED</span>
               </div>
 
               <div className="p-3.5 rounded-xl bg-surface-raised border border-glass-border flex items-center justify-between gap-3 text-xs">
                 <div className="flex items-center gap-2.5">
                   {acknowledged ? (
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                   ) : (
-                    <Clock className="w-4 h-4 text-amber-400 shrink-0 animate-spin" />
+                    <Clock className="w-4 h-4 text-amber-600 shrink-0 animate-spin" />
                   )}
                   <div>
                     <span className="font-semibold text-text-primary block">2. Faculty on-site verification</span>
@@ -172,7 +172,7 @@ export const StudentSOS: React.FC = () => {
               >
                 <div className="flex items-center gap-2.5">
                   {resolved ? (
-                    <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0" />
                   ) : (
                     <Clock className="w-4 h-4 text-text-muted shrink-0" />
                   )}
@@ -254,7 +254,7 @@ export const StudentSOS: React.FC = () => {
               detail first so responders can find you.
             </p>
             {dispatchError && (
-              <p role="alert" className="text-[11px] text-rose-300 bg-rose-500/10 border border-rose-500/25 rounded-xl p-2.5">
+              <p role="alert" className="text-[11px] text-rose-700 bg-rose-500/10 border border-rose-500/25 rounded-xl p-2.5">
                 {dispatchError}
               </p>
             )}
@@ -294,16 +294,16 @@ export const StudentSOS: React.FC = () => {
               disabled={dispatching}
               className="p-8 rounded-3xl bg-surface-deep hover:bg-surface-deep/80 border-2 border-rose-500/30 hover:border-rose-500 shadow-glass-dropdown text-center space-y-4 transition-all duration-150 active:scale-[0.98] focus-ring group disabled:opacity-60"
             >
-              <div className="w-16 h-16 rounded-2xl bg-rose-500/10 border border-rose-500/25 text-rose-400 flex items-center justify-center mx-auto group-hover:scale-105 transition-transform">
+              <div className="w-16 h-16 rounded-2xl bg-rose-500/10 border border-rose-500/25 text-rose-600 flex items-center justify-center mx-auto group-hover:scale-105 transition-transform">
                 <AlertTriangle className="w-8 h-8" />
               </div>
               <div>
-                <span className="text-lg sm:text-xl font-bold uppercase tracking-wider text-rose-400 block">Someone fell</span>
+                <span className="text-lg sm:text-xl font-bold uppercase tracking-wider text-rose-600 block">Someone fell</span>
                 <span className="text-xs text-text-secondary mt-1 block">
                   Sudden physical fall, seizure, syncope or mobility emergency
                 </span>
               </div>
-              <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-rose-500/15 text-rose-300 border border-rose-500/30 text-xs font-semibold">
+              <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-rose-500/15 text-rose-700 border border-rose-500/30 text-xs font-semibold">
                 {dispatching ? 'Recording…' : 'Raise fall incident →'}
               </span>
             </button>
@@ -313,18 +313,18 @@ export const StudentSOS: React.FC = () => {
               disabled={dispatching}
               className="p-8 rounded-3xl bg-surface-deep hover:bg-surface-deep/80 border-2 border-amber-500/30 hover:border-amber-500 shadow-glass-dropdown text-center space-y-4 transition-all duration-150 active:scale-[0.98] focus-ring group disabled:opacity-60"
             >
-              <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/25 text-amber-400 flex items-center justify-center mx-auto group-hover:scale-105 transition-transform">
+              <div className="w-16 h-16 rounded-2xl bg-amber-500/10 border border-amber-500/25 text-amber-600 flex items-center justify-center mx-auto group-hover:scale-105 transition-transform">
                 <ShieldAlert className="w-8 h-8" />
               </div>
               <div>
-                <span className="text-lg sm:text-xl font-bold uppercase tracking-wider text-amber-400 block">
+                <span className="text-lg sm:text-xl font-bold uppercase tracking-wider text-amber-600 block">
                   Something happened
                 </span>
                 <span className="text-xs text-text-secondary mt-1 block">
                   Medical event, acute distress, harassment or lab hazard
                 </span>
               </div>
-              <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-amber-500/15 text-amber-300 border border-amber-500/30 text-xs font-semibold">
+              <span className="inline-flex items-center gap-1.5 px-4 py-1.5 rounded-full bg-amber-500/15 text-amber-700 border border-amber-500/30 text-xs font-semibold">
                 {dispatching ? 'Recording…' : 'Raise safety incident →'}
               </span>
             </button>

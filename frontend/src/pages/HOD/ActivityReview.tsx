@@ -38,9 +38,9 @@ export const ActivityReview: React.FC = () => {
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-4">
             {[
               { label: 'Phone', value: totals.phone, icon: <Smartphone className="w-4 h-4" />, tone: 'text-teal bg-teal/10 border-teal/20' },
-              { label: 'Talking', value: totals.talking, icon: <MessageSquare className="w-4 h-4" />, tone: 'text-sky-400 bg-sky-500/10 border-sky-500/20' },
-              { label: 'Out of seat', value: totals.out_of_seat, icon: <DoorOpen className="w-4 h-4" />, tone: 'text-amber-400 bg-amber-500/10 border-amber-500/20' },
-              { label: 'All events', value: totals.total, icon: <Activity className="w-4 h-4" />, tone: 'text-purple-400 bg-purple-500/10 border-purple-500/20' },
+              { label: 'Talking', value: totals.talking, icon: <MessageSquare className="w-4 h-4" />, tone: 'text-sky-600 bg-sky-500/10 border-sky-500/20' },
+              { label: 'Out of seat', value: totals.out_of_seat, icon: <DoorOpen className="w-4 h-4" />, tone: 'text-amber-600 bg-amber-500/10 border-amber-500/20' },
+              { label: 'All events', value: totals.total, icon: <Activity className="w-4 h-4" />, tone: 'text-purple-600 bg-purple-500/10 border-purple-500/20' },
             ].map((kpi) => (
               <SurfacePanel key={kpi.label} variant="deep" className="p-5 space-y-2 border border-glass-border">
                 <div className={`w-8 h-8 rounded-xl border flex items-center justify-center ${kpi.tone}`}>{kpi.icon}</div>
@@ -89,8 +89,8 @@ export const ActivityReview: React.FC = () => {
                           <td className="py-3 px-3 font-mono">{session.section_name ?? '—'}</td>
                           <td className="py-3 px-3">{session.faculty_name ?? '—'}</td>
                           <td className="py-3 px-3 text-center font-mono text-teal">{session.phone_events}</td>
-                          <td className="py-3 px-3 text-center font-mono text-sky-400">{session.talking_events}</td>
-                          <td className="py-3 px-3 text-center font-mono text-amber-400">{session.out_of_seat_events}</td>
+                          <td className="py-3 px-3 text-center font-mono text-sky-600">{session.talking_events}</td>
+                          <td className="py-3 px-3 text-center font-mono text-amber-600">{session.out_of_seat_events}</td>
                           <td className="py-3 px-3 text-right font-mono font-bold text-text-primary">{session.total_events}</td>
                         </tr>
                       ))}

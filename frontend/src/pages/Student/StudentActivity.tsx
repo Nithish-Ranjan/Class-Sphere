@@ -95,16 +95,16 @@ export const StudentActivity: React.FC = () => {
               </div>
 
               <div className="p-6 rounded-2xl bg-surface-raised border border-glass-border text-center space-y-2">
-                <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-400 flex items-center justify-center mx-auto">
+                <div className="w-10 h-10 rounded-xl bg-sky-500/10 border border-sky-500/20 text-sky-600 flex items-center justify-center mx-auto">
                   <MessageSquare className="w-5 h-5" />
                 </div>
                 <span className="text-xs font-semibold text-text-muted uppercase tracking-wider block">Talking</span>
-                <span className="text-4xl sm:text-5xl font-bold font-mono text-sky-400 block">{talking}</span>
+                <span className="text-4xl sm:text-5xl font-bold font-mono text-sky-600 block">{talking}</span>
                 <span className="text-xs text-text-secondary block">events</span>
               </div>
 
               <div className="p-6 rounded-2xl bg-surface-raised border border-glass-border text-center space-y-2">
-                <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-400 flex items-center justify-center mx-auto">
+                <div className="w-10 h-10 rounded-xl bg-purple-500/10 border border-purple-500/20 text-purple-600 flex items-center justify-center mx-auto">
                   <Activity className="w-5 h-5" />
                 </div>
                 <span className="text-xs font-semibold text-text-muted uppercase tracking-wider block">Total</span>

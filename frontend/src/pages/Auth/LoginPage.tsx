@@ -112,13 +112,13 @@ export const LoginPage: React.FC = () => {
   return (
     <div className="min-h-screen w-full bg-canvas flex flex-col lg:flex-row">
       {/* Left Column: Architectural Editorial Identity & Telemetry Graphic */}
-      <div className="lg:w-1/2 p-6 sm:p-10 lg:p-16 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-glass-border bg-gradient-to-br from-surface-deep via-canvas to-surface-deep relative overflow-hidden">
+      <div className="lg:w-1/2 p-6 sm:p-10 lg:p-16 flex flex-col justify-between border-b lg:border-b-0 lg:border-r border-glass-border bg-gradient-to-br from-white via-canvas to-teal/10 relative overflow-hidden">
         {/* Subtle grid pattern background */}
         <div
-          className="absolute inset-0 opacity-[0.03] pointer-events-none"
+          className="absolute inset-0 opacity-[0.05] pointer-events-none"
           style={{
             backgroundImage:
-              'linear-gradient(rgba(207,225,231,0.4) 1px, transparent 1px), linear-gradient(90deg, rgba(207,225,231,0.4) 1px, transparent 1px)',
+              'linear-gradient(rgba(15,23,42,0.5) 1px, transparent 1px), linear-gradient(90deg, rgba(15,23,42,0.5) 1px, transparent 1px)',
             backgroundSize: '32px 32px',
           }}
           aria-hidden="true"
@@ -136,12 +136,12 @@ export const LoginPage: React.FC = () => {
               >
                 <path
                   d="M6 16h5l3-7 4 14 3-7h5"
-                  stroke="#36B5A5"
+                  stroke="#0F766E"
                   strokeWidth="2.5"
                   strokeLinecap="round"
                   strokeLinejoin="round"
                 />
-                <circle cx="18" cy="23" r="2" fill="#36B5A5" />
+                <circle cx="18" cy="23" r="2" fill="#0F766E" />
               </svg>
             </div>
             <div>
@@ -222,9 +222,9 @@ export const LoginPage: React.FC = () => {
             {errorMessage && (
               <div
                 role="alert"
-                className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-300 text-xs flex items-start gap-2.5 animate-in fade-in duration-150"
+                className="p-3.5 rounded-xl bg-rose-500/10 border border-rose-500/25 text-rose-700 text-xs flex items-start gap-2.5 animate-in fade-in duration-150"
               >
-                <Info className="w-4 h-4 shrink-0 mt-0.5 text-rose-400" />
+                <Info className="w-4 h-4 shrink-0 mt-0.5 text-rose-600" />
                 <span className="leading-relaxed">{errorMessage}</span>
               </div>
             )}
@@ -394,7 +394,7 @@ export const LoginPage: React.FC = () => {
                   className="w-full p-2.5 rounded-xl bg-surface-raised hover:bg-surface-raised/80 border border-glass-border flex items-center justify-between transition-colors focus-ring text-left"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-400 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-lg bg-sky-500/10 text-sky-600 flex items-center justify-center">
                       <BookOpen className="w-4 h-4" />
                     </div>
                     <div>
@@ -406,7 +406,7 @@ export const LoginPage: React.FC = () => {
                       </p>
                     </div>
                   </div>
-                  <span className="text-xs text-sky-400 font-medium">Launch Demo →</span>
+                  <span className="text-xs text-sky-600 font-medium">Launch Demo →</span>
                 </button>
 
                 {/* HOD Persona */}
@@ -416,7 +416,7 @@ export const LoginPage: React.FC = () => {
                   className="w-full p-2.5 rounded-xl bg-surface-raised hover:bg-surface-raised/80 border border-glass-border flex items-center justify-between transition-colors focus-ring text-left"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-400 flex items-center justify-center">
+                    <div className="w-8 h-8 rounded-lg bg-amber-500/10 text-amber-600 flex items-center justify-center">
                       <Building className="w-4 h-4" />
                     </div>
                     <div>
@@ -428,7 +428,7 @@ export const LoginPage: React.FC = () => {
                       </p>
                     </div>
                   </div>
-                  <span className="text-xs text-amber-400 font-medium">Launch Demo →</span>
+                  <span className="text-xs text-amber-600 font-medium">Launch Demo →</span>
                 </button>
               </div>
             </div>

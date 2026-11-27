@@ -4,23 +4,28 @@
 
 @layer base {
   :root {
-    color-scheme: dark;
+    color-scheme: light;
   }
 
   html {
-    background-color: #0B1117;
-    color: #F2F6F7;
+    background-color: #F5F7FB;
+    color: #0F172A;
     font-family: 'Geist', system-ui, -apple-system, sans-serif;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
   }
 
   body {
-    background-color: #0B1117;
-    color: #F2F6F7;
+    background-color: #F5F7FB;
+    color: #0F172A;
     min-height: 100vh;
     margin: 0;
     padding: 0;
+  }
+
+  ::selection {
+    background-color: rgba(13, 148, 136, 0.18);
+    color: #0F172A;
   }
 
   /* Monospace utilities */
@@ -34,24 +39,24 @@
   }
 }
 
-/* Institutional custom dark scrollbar */
+/* Light institutional scrollbar */
 ::-webkit-scrollbar {
-  width: 6px;
-  height: 6px;
+  width: 10px;
+  height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #0B1117;
+  background: #EEF2F7;
 }
 
 ::-webkit-scrollbar-thumb {
-  background: #1A2933;
-  border-radius: 3px;
-  border: 1px solid rgba(207, 225, 231, 0.08);
+  background: #CBD5E1;
+  border-radius: 8px;
+  border: 2px solid #EEF2F7;
 }
 
 ::-webkit-scrollbar-thumb:hover {
-  background: #243644;
+  background: #94A3B8;
 }
 
 /* Accessibility: Accessible focus rings */
@@ -62,14 +67,23 @@
 
 .focus-ring:focus-visible {
   outline: none;
-  border-color: #36B5A5;
-  box-shadow: 0 0 0 2px rgba(54, 181, 165, 0.35);
+  border-color: #0F766E;
+  box-shadow: 0 0 0 3px rgba(13, 148, 136, 0.18);
+}
+
+/* Soft elevation for light surfaces */
+.card-elevation {
+  box-shadow: 0 1px 2px rgba(15, 23, 42, 0.04), 0 6px 18px -10px rgba(15, 23, 42, 0.18);
+}
+
+.card-elevation-hover {
+  box-shadow: 0 2px 4px rgba(15, 23, 42, 0.06), 0 14px 30px -12px rgba(15, 23, 42, 0.22);
 }
 
 /* Fallback for browsers without backdrop-filter */
 @supports not (backdrop-filter: blur(20px)) {
   .frosted-fallback {
-    background-color: #121D26 !important;
+    background-color: #FFFFFF !important;
   }
 }
 

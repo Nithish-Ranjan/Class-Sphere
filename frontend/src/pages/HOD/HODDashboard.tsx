@@ -78,7 +78,7 @@ export const HODDashboard: React.FC = () => {
           },
           {
             icon: <Users className="w-5 h-5" />,
-            tone: 'text-sky-400 bg-sky-500/10 border-sky-500/20',
+            tone: 'text-sky-600 bg-sky-500/10 border-sky-500/20',
             label: 'Faculty',
             value: kpis.faculty,
             note: `${kpis.subjects} subjects`,
@@ -92,7 +92,7 @@ export const HODDashboard: React.FC = () => {
           },
           {
             icon: <TrendingDown className="w-5 h-5" />,
-            tone: 'text-amber-400 bg-amber-500/10 border-amber-500/20',
+            tone: 'text-amber-600 bg-amber-500/10 border-amber-500/20',
             label: 'Below 75%',
             value: kpis.at_risk_students,
             note: 'students at risk',
@@ -195,9 +195,9 @@ export const HODDashboard: React.FC = () => {
           <SurfacePanel variant="deep" className="p-6 space-y-3 border border-amber-500/20">
             <div className="flex items-center justify-between pb-2 border-b border-glass-border">
               <h3 className="text-base font-semibold text-text-primary flex items-center gap-2">
-                <AlertTriangle className="w-4 h-4 text-amber-400" /> Open incidents
+                <AlertTriangle className="w-4 h-4 text-amber-600" /> Open incidents
               </h3>
-              <span className="text-[10px] font-mono text-amber-300 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
+              <span className="text-[10px] font-mono text-amber-700 bg-amber-500/10 px-2 py-0.5 rounded border border-amber-500/20">
                 {openIncidents.length}
               </span>
             </div>
@@ -253,7 +253,7 @@ export const HODDashboard: React.FC = () => {
                     </span>
                   </div>
                   <div className="flex items-center gap-2 shrink-0">
-                    <span className="font-mono text-xs text-rose-300">{student.attendance_percentage.toFixed(1)}%</span>
+                    <span className="font-mono text-xs text-rose-700">{student.attendance_percentage.toFixed(1)}%</span>
                     <StatusPill variant={riskVariant(student.status)} label={student.status.replace('_', ' ')} />
                   </div>
                 </div>

@@ -169,9 +169,9 @@ export const ClassLog: React.FC = () => {
 
             <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 text-center">
               {[
-                { label: 'Present', value: breakdown.PRESENT ?? 0, icon: <CheckCircle2 className="w-4 h-4 text-emerald-400" /> },
-                { label: 'Late', value: breakdown.LATE ?? 0, icon: <Clock className="w-4 h-4 text-amber-400" /> },
-                { label: 'Unverified', value: breakdown.UNVERIFIED ?? 0, icon: <Camera className="w-4 h-4 text-rose-400" /> },
+                { label: 'Present', value: breakdown.PRESENT ?? 0, icon: <CheckCircle2 className="w-4 h-4 text-emerald-600" /> },
+                { label: 'Late', value: breakdown.LATE ?? 0, icon: <Clock className="w-4 h-4 text-amber-600" /> },
+                { label: 'Unverified', value: breakdown.UNVERIFIED ?? 0, icon: <Camera className="w-4 h-4 text-rose-600" /> },
                 { label: 'Events', value: activityTotal, icon: <Activity className="w-4 h-4 text-teal" /> },
               ].map((item) => (
                 <div key={item.label} className="p-3 rounded-xl bg-surface-raised border border-glass-border">
@@ -208,8 +208,8 @@ export const ClassLog: React.FC = () => {
                 onClick={() => navigate('/faculty/today-classes')}
                 className="p-4 rounded-xl bg-surface-raised hover:bg-surface-raised/80 border border-glass-border text-left transition-all focus-ring group"
               >
-                <span className="text-[10px] font-mono uppercase text-sky-400 block">Your agenda</span>
-                <span className="text-sm font-bold text-text-primary group-hover:text-sky-400 transition-colors flex items-center justify-between mt-1">
+                <span className="text-[10px] font-mono uppercase text-sky-600 block">Your agenda</span>
+                <span className="text-sm font-bold text-text-primary group-hover:text-sky-600 transition-colors flex items-center justify-between mt-1">
                   <span>ALL OF TODAY'S CLASSES</span>
                   <span>→</span>
                 </span>
